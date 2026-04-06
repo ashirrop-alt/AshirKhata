@@ -25,7 +25,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent className="sm:max-w-[425px] w-full rounded-t-[20px] sm:rounded-xl fixed bottom-0 sm:bottom-auto sm:top-[50%] sm:translate-y-[-50%] p-6 bg-white outline-none">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold">Naya Customer</DialogTitle>
         </DialogHeader>
