@@ -27,8 +27,7 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="fixed bottom-0 left-0 right-0 top-auto sm:top-[50%] sm:bottom-auto sm:left-[50%] sm:translate-x-[-50%] sm:translate-y-[-50%] sm:max-w-[425px] w-full rounded-t-[20px] sm:rounded-xl p-6 bg-white outline-none z-[100] mb-[env(keyboard-inset-height,0px)]">
-
+      <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100] transform transition-transform duration-300 ease-in-out sm:mb-0 mb-[10vh]">
         <DialogHeader>
           <DialogTitle className={`text-lg font-semibold ${isUdhar ? "text-destructive" : "text-success"}`}>
             {isUdhar ? "Udhar Diya" : "Paisa Mila"}
