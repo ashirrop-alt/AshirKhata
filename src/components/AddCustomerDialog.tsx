@@ -18,25 +18,20 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validation: Dono cheezein zaroori hain
-    if (!name.trim() || !phone.trim() || loading) {
-      toast.error("Naam aur Phone Number dono likhna zaroori hain!");
-      return;
-    }
+    if (!name.trim() || !phone.trim() || loading) return;
 
     setLoading(true);
     try {
       const { data: { user } } = await supabase.auth.getUser();
-      
       if (!user) {
-        toast.error("Pehle login karein!");
+        alert("Pehle login karein!");
         return;
       }
 
-      // 1. Database mein insert
+      // TABLE NAME CHECK: Aapke DB mein 'customer' hai ya 'customers'? 
+      // Agar 'customers' se nahi ho raha toh 'customer' try karein.
       const { error } = await supabase
-        .from('customers')
+        .from('customers') 
         .insert([
           { 
             name: name.trim(), 
@@ -46,24 +41,23 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           }
         ]);
 
-      if (error) throw error;
+      if (error) {
+        console.error("DB Error:", error);
+        alert("Database Error: " + error.message);
+        throw error;
+      }
 
       toast.success("Customer save ho gaya!");
-      
-      // 2. UI update karein
       onAdd(name.trim(), phone.trim());
-      
-      // 3. Clear and Close
       setName("");
       setPhone("");
       onClose();
-
-      // 4. Force refresh taake naya banda foran list mein nazar aaye
-      window.location.reload();
+      
+      // Refresh taake data load ho jaye
+      setTimeout(() => window.location.reload(), 500);
 
     } catch (error: any) {
-      console.error("Error:", error);
-      toast.error(error.message || "Customer save nahi ho saka");
+      alert("System Error: " + error.message);
     } finally {
       setLoading(false);
     }
@@ -73,30 +67,30 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-center">Naya Customer Add Karo</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-center">Naya Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <Input
-            placeholder="Customer ka naam"
+            placeholder="Naam likhein"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-12 text-base"
+            className="h-12"
             required
           />
           <Input
-            placeholder="Phone number (WhatsApp ke liye)"
+            placeholder="WhatsApp Number"
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
             type="tel"
-            className="h-12 text-base"
+            className="h-12"
             required
           />
           <Button 
             type="submit" 
-            className="w-full h-12 text-base font-semibold bg-indigo-600 hover:bg-indigo-700 text-white" 
+            className="w-full h-12 bg-indigo-600" 
             disabled={loading}
           >
-            {loading ? "Sabr karein..." : "Customer Add Karo"}
+            {loading ? "Saving..." : "Save Karein"}
           </Button>
         </form>
       </DialogContent>
