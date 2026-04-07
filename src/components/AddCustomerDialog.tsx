@@ -31,15 +31,15 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
       // TABLE NAME CHECK: Aapke DB mein 'customer' hai ya 'customers'? 
       // Agar 'customers' se nahi ho raha toh 'customer' try karein.
       const { error } = await supabase
-        .from('customers') 
-        .insert([
-          { 
-            name: name.trim(), 
-            phone: phone.trim(), 
-            user_id: user.id,
-            transactions: [] 
-          }
-        ]);
+  .from('customers')
+  .insert([
+    { 
+      name: name.trim(), 
+      phone: phone.trim(), 
+      user_id: user.id,
+      transactions: [] // Khali array (Ye JSONB ke liye sahi hai)
+    }
+  ]);
 
       if (error) {
         console.error("DB Error:", error);
