@@ -1,27 +1,51 @@
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-import { Toaster as Sonner } from "@/components/ui/sonner";
-import { Toaster } from "@/components/ui/toaster";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import Index from "./pages/Index.tsx";
-import NotFound from "./pages/NotFound.tsx";
+import { useEffect, useState } from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { supabase } from './lib/supabase';
 
-const queryClient = new QueryClient();
+// 1. Pages ko mangwana (Imports)
+import Login from './pages/auth/Login';
+import Signup from './pages/auth/Signup';
+import Index from './pages/Index'; 
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-      </BrowserRouter>
-    </TooltipProvider>
-  </QueryClientProvider>
-);
+function App() {
+  // 2. Auth State Check: Yeh check karta hai banda login hai ya nahi
+  const [session, setSession] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Current session check karein
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    // Login ya Logout hone par status update karein
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // Jab tak check ho raha ho, screen khali rakho
+  if (loading) return null;
+
+  // 3. Routing: Faisla karna ke kaunsa page dikhana hai
+  return (
+    <BrowserRouter>
+      <Routes>
+        {/* Agar login nahi hai toh Login/Signup dikhao */}
+        <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
+        <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
+
+        {/* Agar login hai toh Index (Main App) dikhao, warna Login par bhej do */}
+        <Route path="/" element={session ? <Index /> : <Navigate to="/login" />} />
+        
+        {/* Ghalat link par hamesha Home/Login par wapas le jao */}
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
+    </BrowserRouter>
+  );
+}
 
 export default App;
