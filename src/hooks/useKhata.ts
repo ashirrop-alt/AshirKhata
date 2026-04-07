@@ -1,89 +1,97 @@
-import { useState, useEffect } from "react";
-import { AppData, Customer, Transaction, loadData, saveData, generateId, syncCustomerOnline } from "@/lib/store";
-import { supabase } from "@/lib/supabase"; // <--- Yeh line missing thi
+import { useState, useEffect, useCallback } from "react";
+import { AppData, Customer, loadData, saveData, generateId } from "@/lib/store";
+import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 
 export function useKhata() {
-  const [data, setData] = useState<AppData>(loadData());
+  const [data, setData] = useState<AppData>({
+    shopName: localStorage.getItem("shopName") || "",
+    customers: []
+  });
 
-  useEffect(() => {
-    const fetchData = async () => {
-      // User ki current session check karein
-      const { data: { user } } = await supabase.auth.getUser();
+  // 1. Fetch Data Function (Ab ye scope se bahar hai)
+  const fetchData = useCallback(async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
+
+    const { data: onlineCustomers, error } = await supabase
+      .from('customers')
+      .select('*')
+      .eq('user_id', user.id)
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error("Fetch error:", error);
+      return;
+    }
+
+    if (onlineCustomers) {
+      // Transactions ko sahi format mein handle karna
+      const formattedCustomers = onlineCustomers.map(c => ({
+        ...c,
+        transactions: c.transactions || []
+      }));
       
-      if (!user) return;
-
-      // Sirf is user ka data mangwayein
-      const { data: onlineCustomers, error } = await supabase
-        .from('customers')
-        .select('*')
-        .eq('user_id', user.id)
-        .order('created_at', { ascending: false });
-
-      if (!error && onlineCustomers) {
-        const newData = { ...data, customers: onlineCustomers };
-        setData(newData);
-        saveData(newData);
-      }
-    };
-
-    fetchData();
+      setData(prev => ({ ...prev, customers: formattedCustomers }));
+      saveData({ ...data, customers: formattedCustomers });
+    }
   }, []);
 
+  // 2. Load on Mount
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
   const setShopName = (name: string) => {
-    const newData = { ...data, shopName: name };
-    setData(newData);
-    saveData(newData);
+    localStorage.setItem("shopName", name);
+    setData(prev => ({ ...prev, shopName: name }));
   };
 
   const addCustomer = async (name: string, phone: string) => {
-    const newCustomer: Customer = { id: generateId(), name, phone, transactions: [] };
-    const newData = { ...data, customers: [...data.customers, newCustomer] };
-    setData(newData);
-    saveData(newData);
-    await syncCustomerOnline(newCustomer);
-    toast.success("Customer save ho gaya!");
-  };
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      toast.error("Pehle login karein!");
+      return;
+    }
 
-  const deleteCustomer = (id: string) => {
-    const newData = { ...data, customers: data.customers.filter(c => c.id !== id) };
-    setData(newData);
-    saveData(newData);
-  };
-
-  const addTransaction = async (customerId: string, type: "udhar" | "payment", amount: number) => {
-    const newTransaction: Transaction = {
+    const newCustomer = {
       id: generateId(),
-      type,
-      amount,
-      date: new Date().toISOString(),
+      name,
+      phone,
+      transactions: [],
+      user_id: user.id
     };
-    const updatedCustomers = data.customers.map((c) => {
-      if (c.id === customerId) {
-        const updated = { ...c, transactions: [newTransaction, ...c.transactions] };
-        syncCustomerOnline(updated);
-        return updated;
-      }
-      return c;
-    });
-    const newData = { ...data, customers: updatedCustomers };
-    setData(newData);
-    saveData(newData);
+
+    const { error } = await supabase.from('customers').insert([newCustomer]);
+
+    if (error) {
+      toast.error("Database mein save nahi hua");
+    } else {
+      setData(prev => ({
+        ...prev,
+        customers: [newCustomer, ...prev.customers]
+      }));
+      toast.success("Customer add ho gaya!");
+    }
   };
 
-  const deleteTransaction = (customerId: string, transactionId: string) => {
-    const updatedCustomers = data.customers.map((c) => {
-      if (c.id === customerId) {
-        const updated = { ...c, transactions: c.transactions.filter(t => t.id !== transactionId) };
-        syncCustomerOnline(updated);
-        return updated;
-      }
-      return c;
-    });
-    const newData = { ...data, customers: updatedCustomers };
-    setData(newData);
-    saveData(newData);
+  // Delete Customer
+  const deleteCustomer = async (id: string) => {
+    const { error } = await supabase.from('customers').delete().eq('id', id);
+    if (!error) {
+      setData(prev => ({
+        ...prev,
+        customers: prev.customers.filter(c => c.id !== id)
+      }));
+      toast.success("Customer delete ho gaya");
+    }
   };
 
-  return { data, setData, setShopName, addCustomer, deleteCustomer, addTransaction, deleteTransaction };
+  return { 
+    data, 
+    setShopName, 
+    addCustomer, 
+    deleteCustomer,
+    refreshData: fetchData 
+  };
 }
