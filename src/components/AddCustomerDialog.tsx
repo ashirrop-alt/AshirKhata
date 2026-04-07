@@ -3,7 +3,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
-import { supabase } from "@/lib/supabase"; // <--- Yeh line add ki hai
+import { supabase } from "@/lib/supabase";
 
 interface Props {
   open: boolean;
@@ -14,7 +14,7 @@ interface Props {
 export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
-  const [loading, setLoading] = useState(false); // <--- Yeh state missing thi
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +22,6 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
     setLoading(true);
     try {
-      // 1. Current user ki ID lein
       const { data: { user } } = await supabase.auth.getUser();
       
       if (!user) {
@@ -30,29 +29,37 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
         return;
       }
 
-      // 2. Database mein save karein
+      // 1. Database mein insert karein
       const { error } = await supabase
         .from('customers')
-        .insert([{ 
-          name, 
-          phone, 
-          user_id: user.id 
-        }]);
+        .insert([
+          { 
+            name: name.trim(), 
+            phone: phone.trim(), 
+            user_id: user.id,
+            transactions: [] 
+          }
+        ]);
 
       if (error) throw error;
 
+      // 2. Success message
       toast.success("Customer save ho gaya!");
       
-      // Parent component ko batana ke kaam ho gaya
-      onAdd(name, phone); 
+      // 3. Frontend list ko update karein
+      onAdd(name.trim(), phone.trim());
       
-      // Form saaf karein aur band karein
+      // 4. Form saaf karein aur band karein
       setName("");
       setPhone("");
       onClose();
-      
+
+      // 5. Page ko refresh karein taake data nazar aaye
+      window.location.reload();
+
     } catch (error: any) {
-      toast.error(error.message);
+      console.error("Error:", error);
+      toast.error(error.message || "Customer save nahi ho saka");
     } finally {
       setLoading(false);
     }
@@ -60,32 +67,30 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100]">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold">Naya Customer</DialogTitle>
+          <DialogTitle>Naya Customer Add Karein</DialogTitle>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
-          <Input
-            placeholder="Customer ka naam"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            className="h-12 text-base"
-            disabled={loading}
-          />
-          <Input
-            placeholder="Phone number (923...)"
-            value={phone}
-            onChange={e => setPhone(e.target.value)}
-            type="tel"
-            className="h-12 text-base"
-            disabled={loading}
-          />
-          <Button 
-            type="submit"
-            className="w-full h-12 text-base font-semibold" 
-            disabled={!name.trim() || loading}
-          >
-            {loading ? "Sabr karein..." : "Customer Add Karo"}
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Customer ka Naam</label>
+            <Input
+              placeholder="Maslan: Ali Ahmed"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium">Phone Number (Optional)</label>
+            <Input
+              placeholder="0300-1234567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+          </div>
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Saving..." : "Save Customer"}
           </Button>
         </form>
       </DialogContent>
