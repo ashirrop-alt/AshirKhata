@@ -1,8 +1,9 @@
+import { supabase } from "@/lib/supabase";
 import { useState } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut } from "lucide-react";
 
 interface Props {
   shopName: string;
@@ -17,6 +18,11 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
   const [tempName, setTempName] = useState(shopName);
   const [search, setSearch] = useState("");
   const totalUdhar = getTotalUdhar(customers);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.href = '/login';
+  };
 
   const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
@@ -48,13 +54,26 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
             </div>
           ) : (
             <div>
-              <button onClick={() => setEditingShop(true)} className="text-left w-full">
-                <div className="flex items-center gap-2 text-primary-foreground/70 mb-1">
-                  <Store className="w-4 h-4" />
-                  <span className="text-xs font-medium uppercase tracking-wide">Aapki Dukaan</span>
-                </div>
-                <h1 className="text-2xl font-bold text-primary-foreground">{shopName}</h1>
-              </button>
+              <div className="flex justify-between items-start">
+                <button onClick={() => setEditingShop(true)} className="text-left">
+                  <div className="flex items-center gap-2 text-primary-foreground/70 mb-1">
+                    <Store className="w-4 h-4" />
+                    <span className="text-xs font-medium uppercase tracking-wide">Aapki Dukaan</span>
+                  </div>
+                  <h1 className="text-2xl font-bold text-primary-foreground">{shopName}</h1>
+                </button>
+                
+                {/* Logout Button yahan add kiya hai */}
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  onClick={handleLogout}
+                  className="text-primary-foreground hover:bg-white/10"
+                >
+                  <LogOut className="w-4 h-4 mr-1" /> Logout
+                </Button>
+              </div>
+              
               <div className="mt-4 pt-4 border-t border-primary-foreground/20">
                 <p className="text-sm text-primary-foreground/70">Total Udhar</p>
                 <p className="text-3xl font-bold text-primary-foreground">Rs {totalUdhar.toLocaleString()}</p>

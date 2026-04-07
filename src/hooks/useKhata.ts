@@ -1,19 +1,32 @@
 import { useState, useEffect } from "react";
-import { AppData, Customer, Transaction, loadData, saveData, generateId, syncCustomerOnline, loadDataOnline } from "@/lib/store";
+import { AppData, Customer, Transaction, loadData, saveData, generateId, syncCustomerOnline } from "@/lib/store";
+import { supabase } from "@/lib/supabase"; // <--- Yeh line missing thi
 import { toast } from "sonner";
 
 export function useKhata() {
   const [data, setData] = useState<AppData>(loadData());
 
   useEffect(() => {
-    async function fetchData() {
-      const onlineCustomers = await loadDataOnline();
-      if (onlineCustomers.length > 0) {
+    const fetchData = async () => {
+      // User ki current session check karein
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) return;
+
+      // Sirf is user ka data mangwayein
+      const { data: onlineCustomers, error } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (!error && onlineCustomers) {
         const newData = { ...data, customers: onlineCustomers };
         setData(newData);
         saveData(newData);
       }
-    }
+    };
+
     fetchData();
   }, []);
 
