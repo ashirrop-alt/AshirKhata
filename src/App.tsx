@@ -5,7 +5,7 @@ import { supabase } from './lib/supabase';
 // 1. Pages ko mangwana (Imports)
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
-import Index from './pages/Index'; 
+import Index from './pages/Index';
 
 function App() {
   // 2. Auth State Check: Yeh check karta hai banda login hai ya nahi
@@ -31,17 +31,20 @@ function App() {
   if (loading) return null;
 
   // 3. Routing: Faisla karna ke kaunsa page dikhana hai
+  // ... baki imports wese hi rahenge
+
   return (
     <BrowserRouter>
       <Routes>
-        {/* Agar login nahi hai toh Login/Signup dikhao */}
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
         <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
 
-        {/* Agar login hai toh Index (Main App) dikhao, warna Login par bhej do */}
+        {/* Main Home Page */}
         <Route path="/" element={session ? <Index /> : <Navigate to="/login" />} />
-        
-        {/* Ghalat link par hamesha Home/Login par wapas le jao */}
+
+        {/* Naya Dynamic Route: Refresh karne par ye ID app ko batayegi kahan jana hai */}
+        <Route path="/customer/:id" element={session ? <Index /> : <Navigate to="/login" />} />
+
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </BrowserRouter>

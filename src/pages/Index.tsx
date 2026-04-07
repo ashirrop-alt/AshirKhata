@@ -1,21 +1,33 @@
 import { useState } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { useKhata } from "@/hooks/useKhata";
 import { HomeScreen } from "@/components/HomeScreen";
 import { CustomerDetail } from "@/components/CustomerDetail";
 import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 
 const Index = () => {
-  const { data, setShopName, addCustomer, deleteCustomer, addTransaction, deleteTransaction } = useKhata();
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const { id } = useParams();
+  const navigate = useNavigate();
+  const { data, setShopName, addCustomer, deleteCustomer, addTransaction, deleteTransaction }: any = useKhata();
   const [addOpen, setAddOpen] = useState(false);
 
-  const selectedCustomer = data.customers.find(c => c.id === selectedId);
+  // URL wali ID ke mutabiq customer dhundo
+  const selectedCustomer = data.customers.find((c: any) => String(c.id) === id);
+
+  const handleSelectCustomer = (customerId: any) => {
+    navigate(`/customer/${customerId}`);
+  };
+
+  const handleBack = () => {
+    navigate("/");
+  };
 
   if (selectedCustomer) {
     return (
       <CustomerDetail
         customer={selectedCustomer}
-        onBack={() => setSelectedId(null)}
+        onBack={handleBack}
+        // In dono functions ko CustomerDetail ab accept karega
         onAddTransaction={addTransaction}
         onDeleteTransaction={deleteTransaction}
       />
@@ -28,7 +40,7 @@ const Index = () => {
         shopName={data.shopName}
         customers={data.customers}
         onSetShopName={setShopName}
-        onSelectCustomer={setSelectedId}
+        onSelectCustomer={handleSelectCustomer}
         onAddCustomer={() => setAddOpen(true)}
       />
       <AddCustomerDialog

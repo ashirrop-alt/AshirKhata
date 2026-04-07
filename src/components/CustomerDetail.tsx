@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Customer, getCustomerTotal } from "@/lib/store";
+import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, MessageCircle, Trash2, Loader2 } from "lucide-react";
@@ -17,9 +17,12 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 
+// Yahan functions add kiye hain taake Index.tsx se error khatam ho
 interface Props {
   customer: Customer;
   onBack: () => void;
+  onAddTransaction?: (customerId: string, type: "udhar" | "payment", amount: number) => void;
+  onDeleteTransaction?: (customerId: string, txId: string) => void;
 }
 
 export function CustomerDetail({ customer, onBack }: Props) {
@@ -27,7 +30,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   
-  // State use kar rahe hain taake screen foran update ho bina refresh ke
   const [transactions, setTransactions] = useState(customer.transactions || []);
   
   const total = transactions.reduce((acc, tx) => {
@@ -53,7 +55,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       if (error) throw error;
 
-      // 1. Database update ho gaya, ab state update karein (No Reload)
       setTransactions(updatedTransactions);
       toast.success("Hisaab save ho gaya!");
       setEntryOpen(false);
@@ -76,7 +77,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       if (error) throw error;
 
-      // State update karein taake entry screen se gayab ho jaye
       setTransactions(updatedTransactions);
       toast.success("Entry delete ho gayi!");
 
