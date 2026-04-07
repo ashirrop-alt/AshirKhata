@@ -31,15 +31,14 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
       // TABLE NAME CHECK: Aapke DB mein 'customer' hai ya 'customers'? 
       // Agar 'customers' se nahi ho raha toh 'customer' try karein.
       const { error } = await supabase
-  .from('customers')
-  .insert([
-    { 
-      name: name.trim(), 
-      phone: phone.trim(), 
-      user_id: user.id,
-      transactions: [] // Khali array (Ye JSONB ke liye sahi hai)
-    }
-  ]);
+        .from('customers')
+        .insert([
+          {
+            name: name.trim(),
+            phone: phone.trim(),
+            user_id: user.id
+          }
+        ]);
 
       if (error) {
         console.error("DB Error:", error);
@@ -52,7 +51,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
       setName("");
       setPhone("");
       onClose();
-      
+
       // Refresh taake data load ho jaye
       setTimeout(() => window.location.reload(), 500);
 
@@ -85,9 +84,9 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
             className="h-12"
             required
           />
-          <Button 
-            type="submit" 
-            className="w-full h-12 bg-indigo-600" 
+          <Button
+            type="submit"
+            className="w-full h-12 bg-indigo-600"
             disabled={loading}
           >
             {loading ? "Saving..." : "Save Karein"}
