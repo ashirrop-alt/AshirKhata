@@ -28,15 +28,15 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
         return;
       }
 
-      // TABLE NAME CHECK: Aapke DB mein 'customer' hai ya 'customers'? 
-      // Agar 'customers' se nahi ho raha toh 'customer' try karein.
+      // Naya customer save karte waqt 'transactions' ko khali array bhej rahe hain
       const { error } = await supabase
         .from('customers')
         .insert([
           {
             name: name.trim(),
             phone: phone.trim(),
-            user_id: user.id
+            user_id: user.id,
+            transactions: [] // Ye line database errors se bachayegi
           }
         ]);
 
@@ -48,15 +48,17 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
       toast.success("Customer save ho gaya!");
       onAdd(name.trim(), phone.trim());
+      
+      // Form reset
       setName("");
       setPhone("");
       onClose();
 
-      // Refresh taake data load ho jaye
+      // Refresh taake data UI mein nazar aaye
       setTimeout(() => window.location.reload(), 500);
 
     } catch (error: any) {
-      alert("System Error: " + error.message);
+      console.error("System Error:", error);
     } finally {
       setLoading(false);
     }
@@ -66,27 +68,33 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100]">
         <DialogHeader>
-          <DialogTitle className="text-lg font-semibold text-center">Naya Customer</DialogTitle>
+          <DialogTitle className="text-lg font-semibold text-center text-gray-900">Naya Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
-          <Input
-            placeholder="Naam likhein"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="h-12"
-            required
-          />
-          <Input
-            placeholder="WhatsApp Number"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            type="tel"
-            className="h-12"
-            required
-          />
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-gray-700">Customer ka Naam</p>
+            <Input
+              placeholder="Maslan: Ali Ahmed"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="h-12 text-base border-gray-300 focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-gray-700">WhatsApp Number</p>
+            <Input
+              placeholder="03001234567"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              type="tel"
+              className="h-12 text-base border-gray-300 focus:ring-2 focus:ring-indigo-500"
+              required
+            />
+          </div>
           <Button
             type="submit"
-            className="w-full h-12 bg-indigo-600"
+            className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all"
             disabled={loading}
           >
             {loading ? "Saving..." : "Save Karein"}
