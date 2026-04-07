@@ -32,6 +32,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const total = getCustomerTotal(customer);
 
   // --- Naya Saving Logic ---
+  // --- Naya Saving Logic (Without Full Page Reload) ---
   const handleAddEntry = async (type: "udhar" | "payment", amount: number) => {
     setLoading(true);
     try {
@@ -42,7 +43,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
         date: new Date().toISOString()
       };
 
-      // Purani transactions mein nayi add karein
       const updatedTransactions = [...(customer.transactions || []), newTransaction];
 
       const { error } = await supabase
@@ -53,14 +53,39 @@ export function CustomerDetail({ customer, onBack }: Props) {
       if (error) throw error;
 
       toast.success("Hisaab save ho gaya!");
+      
+      // 1. Dialog band karein
       setEntryOpen(false);
       
-      // Screen refresh taake naya balance dikhe
-      setTimeout(() => window.location.reload(), 500);
+      // 2. Sirf data update karein, page refresh NAHI karein
+      // Is se aap usi screen par rahenge
+      customer.transactions = updatedTransactions; 
+
     } catch (error: any) {
       toast.error("Save nahi hua: " + error.message);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDeleteEntry = async (txId: string) => {
+    try {
+      const updatedTransactions = customer.transactions.filter(t => t.id !== txId);
+
+      const { error } = await supabase
+        .from('customers')
+        .update({ transactions: updatedTransactions })
+        .eq('id', customer.id);
+
+      if (error) throw error;
+
+      toast.success("Entry delete ho gayi!");
+      
+      // UI update without reload
+      customer.transactions = updatedTransactions;
+
+    } catch (error: any) {
+      toast.error("Delete nahi ho saka");
     }
   };
 
