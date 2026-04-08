@@ -14,10 +14,7 @@ interface Props {
 export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
   const [amount, setAmount] = useState("");
 
-  const handleSubmit = (e?: React.FormEvent) => {
-    // Form submit hone par page refresh rokne ke liye
-    if (e) e.preventDefault();
-    
+  const handleSubmit = () => {
     const num = parseFloat(amount);
     if (!num || num <= 0) return;
     
@@ -25,6 +22,14 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
     toast.success("Entry save ho gayi!");
     setAmount("");
     onClose();
+  };
+
+  // Naya function: Jab kisi bhi key ko press kiya jaye
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.preventDefault(); // Default behavior roko
+      handleSubmit();     // Direct function call karo
+    }
   };
 
   const isUdhar = type === "udhar";
@@ -38,20 +43,19 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
           </DialogTitle>
         </DialogHeader>
 
-        {/* --- Form tag add kiya gaya hai taake Enter kaam kare --- */}
-        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+        <div className="space-y-4 pt-2">
           <Input
             placeholder="Amount (Rs)"
             value={amount}
             onChange={e => setAmount(e.target.value)}
+            onKeyDown={handleKeyDown} // Yahan listener add kiya hai
             type="number"
             inputMode="numeric"
             className="h-14 text-xl font-semibold text-center"
             autoFocus
-            required
           />
           <Button
-            type="submit" // Type hamesha submit hona chahiye
+            onClick={handleSubmit} // Click par bhi chale
             className={`w-full h-12 text-base font-semibold ${
               isUdhar
                 ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
@@ -61,7 +65,7 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
           >
             Save Karo
           </Button>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );
