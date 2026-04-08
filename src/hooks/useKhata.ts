@@ -9,50 +9,51 @@ interface AppData {
 
 export function useKhata() {
   const [data, setData] = useState<AppData>({
-    shopName: "", // Initial empty rakhein
+    shopName: "", 
     customers: []
   });
   
-  // Naya loading state: Ye track karega ke data fetch ho raha hai ya nahi
   const [isLoading, setIsLoading] = useState(true);
 
-  // useKhata.ts mein sirf ye fetch wala hissa update karein
-const fetchData = useCallback(async () => {
-  setIsLoading(true);
-  try {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      setIsLoading(false);
-      return;
-    }
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        setIsLoading(false);
+        return;
+      }
 
-    // 1. Shop name fetch karein (maybeSingle zaroori hai)
-    const { data: shopData, error: shopError } = await supabase
-      .from('shops')
-      .select('name')
-      .eq('user_id', user.id)
-      .maybeSingle();
+      // 1. Fetch Shop Name
+      const { data: shopData, error: shopError } = await supabase
+        .from('shops')
+        .select('name')
+        .eq('user_id', user.id)
+        .maybeSingle();
 
-    // 2. Customers fetch karein
-    const { data: onlineCustomers, error: custError } = await supabase
-      .from('customers')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      if (shopError) throw shopError;
 
-    if (!shopError && !custError) {
+      // 2. Fetch Customers
+      const { data: onlineCustomers, error: custError } = await supabase
+        .from('customers')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (custError) throw custError;
+
       setData({
-        // Yahan ensure karein ke agar shopData null hai toh "" jaye
         shopName: shopData?.name || "", 
         customers: onlineCustomers || []
       });
+
+    } catch (err: any) {
+      console.error("Fetch Error:", err);
+      toast.error("Data load nahi ho saka. Connection check karein.");
+    } finally {
+      setIsLoading(false);
     }
-  } catch (err) {
-    console.error("Fetch Error:", err);
-  } finally {
-    setIsLoading(false);
-  }
-}, []);
+  }, []);
 
   useEffect(() => {
     fetchData();
@@ -67,10 +68,10 @@ const fetchData = useCallback(async () => {
       .upsert({ user_id: user.id, name: name }, { onConflict: 'user_id' });
 
     if (error) {
-      toast.error("Shop name save nahi hua");
+      toast.error("Dukaan ka naam save nahi ho saka");
     } else {
       setData(prev => ({ ...prev, shopName: name }));
-      toast.success("Shop name update ho gaya!");
+      toast.success("Dukaan ka naam update ho gaya! ✨");
     }
   };
 
@@ -95,34 +96,32 @@ const fetchData = useCallback(async () => {
       .single();
 
     if (error) {
-      toast.error("Database mein save nahi hua");
+      toast.error("Customer save nahi ho saka. Dobara koshish karein.");
     } else {
-      setData(prev => {
-        const exists = prev.customers.find(c => c.id === insertedData.id);
-        if (exists) return prev;
-        return {
-          ...prev,
-          customers: [insertedData, ...prev.customers]
-        };
-      });
-      toast.success("Customer add ho gaya!");
+      setData(prev => ({
+        ...prev,
+        customers: [insertedData, ...prev.customers]
+      }));
+      toast.success(`${name} ka khata shuru ho gaya! ✅`);
     }
   };
 
   const deleteCustomer = async (id: string) => {
     const { error } = await supabase.from('customers').delete().eq('id', id);
-    if (!error) {
+    if (error) {
+      toast.error("Delete nahi ho saka");
+    } else {
       setData(prev => ({
         ...prev,
         customers: prev.customers.filter(c => c.id !== id)
       }));
-      toast.success("Customer delete ho gaya");
+      toast.info("Customer delete ho gaya");
     }
   };
 
   return { 
     data, 
-    isLoading, // Isay return karna zaroori hai taake UI mein check kar sakein
+    isLoading, 
     setShopName, 
     addCustomer, 
     deleteCustomer,
