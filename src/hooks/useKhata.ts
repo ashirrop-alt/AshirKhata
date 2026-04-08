@@ -80,22 +80,25 @@ export function useKhata() {
     user_id: user.id
   };
 
-  // 1. Database mein insert karein aur wapsi mein inserted row lein
   const { data: insertedData, error } = await supabase
     .from('customers')
     .insert([newCustomer])
-    .select() // Ye zaroori hai taake humein ID ke saath fresh data mile
+    .select()
     .single();
 
   if (error) {
     toast.error("Database mein save nahi hua");
   } else {
-    // 2. Speed fix: fetchData() call karne ki zarurat nahi
-    // Sirf local state ko update karein jo Supabase ne wapis bheja hai
-    setData(prev => ({
-      ...prev,
-      customers: [insertedData, ...prev.customers]
-    }));
+    // Check karein ke kahin ye ID pehle se list mein toh nahi?
+    setData(prev => {
+      const exists = prev.customers.find(c => c.id === insertedData.id);
+      if (exists) return prev; // Agar pehle se hai (double trigger), toh kuch na karo
+      
+      return {
+        ...prev,
+        customers: [insertedData, ...prev.customers]
+      };
+    });
     toast.success("Customer add ho gaya!");
   }
 };

@@ -2,13 +2,11 @@ import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
-import { supabase } from "@/lib/supabase";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onAdd: (name: string, phone: string) => void;
+  onAdd: (name: string, phone: string) => Promise<void>; // useKhata ka function async hai
 }
 
 export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
@@ -22,41 +20,15 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
     setLoading(true);
     try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        alert("Pehle login karein!");
-        return;
-      }
-
-      // Naya customer save karte waqt 'transactions' ko khali array bhej rahe hain
-      const { error } = await supabase
-        .from('customers')
-        .insert([
-          {
-            name: name.trim(),
-            phone: phone.trim(),
-            user_id: user.id,
-            transactions: [] // Ye line database errors se bachayegi
-          }
-        ]);
-
-      if (error) {
-        console.error("DB Error:", error);
-        alert("Database Error: " + error.message);
-        throw error;
-      }
-
-      toast.success("Customer save ho gaya!");
-      onAdd(name.trim(), phone.trim());
+      // Saara insertion ka kaam onAdd (useKhata) handle karega
+      await onAdd(name.trim(), phone.trim());
       
-      // Form reset
+      // Form reset aur dialog close
       setName("");
       setPhone("");
       onClose();
-
-      // Refresh taake data UI mein nazar aaye
-      setTimeout(() => window.location.reload(), 500);
-
+      
+      // window.location.reload() nikal diya hai taake refresh aur double record na ho
     } catch (error: any) {
       console.error("System Error:", error);
     } finally {
