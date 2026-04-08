@@ -36,7 +36,9 @@ function App() {
       {/* Step 2*/}
       <Toaster
         richColors
-        position="bottom-center"
+        // Ye line check karegi: Agar screen 640px se badi hai (Laptop), 
+        // toh bottom-right dikhao, warna bottom-center.
+        position={window.innerWidth > 640 ? "bottom-right" : "bottom-center"}
         visibleToasts={1}
       />
 
