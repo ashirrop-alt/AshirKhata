@@ -1,23 +1,36 @@
 import { supabase } from "@/lib/supabase";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2 } from "lucide-react";
 
 interface Props {
   shopName: string;
   customers: Customer[];
+  isLoading?: boolean; // Naya prop loading state ke liye
   onSetShopName: (name: string) => void;
   onSelectCustomer: (id: string) => void;
   onAddCustomer: () => void;
 }
 
-export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustomer, onAddCustomer }: Props) {
-  const [editingShop, setEditingShop] = useState(!shopName);
+export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSelectCustomer, onAddCustomer }: Props) {
+  // Shuru mein editingShop ko false rakhein
+  const [editingShop, setEditingShop] = useState(false);
   const [tempName, setTempName] = useState(shopName);
   const [search, setSearch] = useState("");
   const totalUdhar = getTotalUdhar(customers);
+
+  // Jab shopName database se load ho jaye, tab update karein
+  useEffect(() => {
+    setTempName(shopName);
+    // Agar loading khatam ho gayi aur naam phir bhi khali hai, toh input dikhao
+    if (!isLoading && !shopName) {
+      setEditingShop(true);
+    } else {
+      setEditingShop(false);
+    }
+  }, [shopName, isLoading]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -25,6 +38,15 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
   };
 
   const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+
+  // Agar data load ho raha hai toh professional loader dikhayein
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -37,33 +59,40 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
                 <Store className="w-4 h-4" />
                 <span className="text-sm font-medium">Apni dukaan ka naam likhein</span>
               </div>
-              <Input
-                value={tempName}
-                onChange={e => setTempName(e.target.value)}
-                placeholder="Dukaan ka naam"
-                className="h-12 text-base bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50"
-                autoFocus
-              />
-              <Button
-                onClick={() => { if (tempName.trim()) { onSetShopName(tempName.trim()); setEditingShop(false); } }}
-                variant="secondary"
-                className="w-full h-10 font-semibold"
-              >
-                Save
-              </Button>
+              <form onSubmit={(e) => {
+                e.preventDefault();
+                if (tempName.trim()) {
+                  onSetShopName(tempName.trim());
+                  setEditingShop(false);
+                }
+              }}>
+                <Input
+                  value={tempName}
+                  onChange={e => setTempName(e.target.value)}
+                  placeholder="Dukaan ka naam"
+                  className="h-12 text-base bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 mb-3"
+                  autoFocus
+                />
+                <Button
+                  type="submit"
+                  variant="secondary"
+                  className="w-full h-10 font-semibold"
+                >
+                  Save
+                </Button>
+              </form>
             </div>
           ) : (
             <div>
               <div className="flex justify-between items-start">
-                <button onClick={() => setEditingShop(true)} className="text-left">
+                <button onClick={() => setEditingShop(true)} className="text-left group">
                   <div className="flex items-center gap-2 text-primary-foreground/70 mb-1">
                     <Store className="w-4 h-4" />
                     <span className="text-xs font-medium uppercase tracking-wide">Aapki Dukaan</span>
                   </div>
-                  <h1 className="text-2xl font-bold text-primary-foreground">{shopName}</h1>
+                  <h1 className="text-2xl font-bold text-primary-foreground group-hover:underline">{shopName || "N/A"}</h1>
                 </button>
                 
-                {/* Logout Button yahan add kiya hai */}
                 <Button 
                   variant="ghost" 
                   size="sm" 
@@ -82,6 +111,7 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
           )}
         </div>
 
+        {/* Baki ka code (Search aur List) same rahega... */}
         {/* Search */}
         {customers.length > 3 && (
           <div className="relative">
@@ -140,7 +170,6 @@ export function HomeScreen({ shopName, customers, onSetShopName, onSelectCustome
         </div>
       </div>
 
-      {/* Floating Add Button */}
       <button
         onClick={onAddCustomer}
         className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow active:scale-95"

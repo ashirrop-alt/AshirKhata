@@ -8,10 +8,20 @@ import { AddCustomerDialog } from "@/components/AddCustomerDialog";
 const Index = () => {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { data, setShopName, addCustomer, deleteCustomer, addTransaction, deleteTransaction }: any = useKhata();
+  
+  // Yahan isLoading ko bhi add kar diya hai
+  const { 
+    data, 
+    isLoading, // Ye zaroori tha
+    setShopName, 
+    addCustomer, 
+    deleteCustomer, 
+    addTransaction, 
+    deleteTransaction 
+  }: any = useKhata();
+
   const [addOpen, setAddOpen] = useState(false);
 
-  // URL wali ID ke mutabiq customer dhundo
   const selectedCustomer = data.customers.find((c: any) => String(c.id) === id);
 
   const handleSelectCustomer = (customerId: any) => {
@@ -27,7 +37,6 @@ const Index = () => {
       <CustomerDetail
         customer={selectedCustomer}
         onBack={handleBack}
-        // In dono functions ko CustomerDetail ab accept karega
         onAddTransaction={addTransaction}
         onDeleteTransaction={deleteTransaction}
       />
@@ -39,10 +48,12 @@ const Index = () => {
       <HomeScreen
         shopName={data.shopName}
         customers={data.customers}
+        isLoading={isLoading} 
         onSetShopName={setShopName}
         onSelectCustomer={handleSelectCustomer}
         onAddCustomer={() => setAddOpen(true)}
-      />
+      /> {/* Yahan tag sahi se band kar diya hai */}
+      
       <AddCustomerDialog
         open={addOpen}
         onClose={() => setAddOpen(false)}
