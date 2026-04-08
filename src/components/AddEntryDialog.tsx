@@ -14,9 +14,13 @@ interface Props {
 export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
   const [amount, setAmount] = useState("");
 
-  const handleSubmit = () => {
+  const handleSubmit = (e?: React.FormEvent) => {
+    // Form submit hone par page refresh rokne ke liye
+    if (e) e.preventDefault();
+    
     const num = parseFloat(amount);
     if (!num || num <= 0) return;
+    
     onAdd(type, num);
     toast.success("Entry save ho gayi!");
     setAmount("");
@@ -33,7 +37,9 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
             {isUdhar ? "Udhar Diya" : "Paisa Mila"}
           </DialogTitle>
         </DialogHeader>
-        <div className="space-y-4 pt-2">
+
+        {/* --- Form tag add kiya gaya hai taake Enter kaam kare --- */}
+        <form onSubmit={handleSubmit} className="space-y-4 pt-2">
           <Input
             placeholder="Amount (Rs)"
             value={amount}
@@ -42,9 +48,10 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
             inputMode="numeric"
             className="h-14 text-xl font-semibold text-center"
             autoFocus
+            required
           />
           <Button
-            onClick={handleSubmit}
+            type="submit" // Type hamesha submit hona chahiye
             className={`w-full h-12 text-base font-semibold ${
               isUdhar
                 ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
@@ -54,7 +61,7 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
           >
             Save Karo
           </Button>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );
