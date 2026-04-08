@@ -46,7 +46,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           <div className="space-y-1">
             <p className="text-sm font-medium text-gray-700">Customer ka Naam</p>
             <Input
-              placeholder="Maslan: Ali Ahmed"
+              placeholder=""
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="h-12 text-base border-gray-300 focus:ring-2 focus:ring-indigo-500"
@@ -54,9 +54,9 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
             />
           </div>
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-700">WhatsApp Number</p>
+            <p className="text-sm font-medium text-gray-700">Phone Number</p>
             <Input
-              placeholder="03001234567"
+              placeholder=""
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
