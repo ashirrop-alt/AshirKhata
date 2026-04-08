@@ -9,10 +9,9 @@ const Index = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   
-  // Yahan isLoading ko bhi add kar diya hai
   const { 
     data, 
-    isLoading, // Ye zaroori tha
+    isLoading, 
     setShopName, 
     addCustomer, 
     deleteCustomer, 
@@ -32,34 +31,33 @@ const Index = () => {
     navigate("/");
   };
 
-  if (selectedCustomer) {
-    return (
-      <CustomerDetail
-        customer={selectedCustomer}
-        onBack={handleBack}
-        onAddTransaction={addTransaction}
-        onDeleteTransaction={deleteTransaction}
-      />
-    );
-  }
-
+  // Main wrapper jo poori screen ko control karega aur bahar ka scroll rokay ga
   return (
-    <>
-      <HomeScreen
-        shopName={data.shopName}
-        customers={data.customers}
-        isLoading={isLoading} 
-        onSetShopName={setShopName}
-        onSelectCustomer={handleSelectCustomer}
-        onAddCustomer={() => setAddOpen(true)}
-      /> {/* Yahan tag sahi se band kar diya hai */}
+    <div className="h-screen w-full overflow-hidden bg-slate-50">
+      {selectedCustomer ? (
+        <CustomerDetail
+          customer={selectedCustomer}
+          onBack={handleBack}
+          onAddTransaction={addTransaction}
+          onDeleteTransaction={deleteTransaction}
+        />
+      ) : (
+        <HomeScreen
+          shopName={data.shopName}
+          customers={data.customers}
+          isLoading={isLoading} 
+          onSetShopName={setShopName}
+          onSelectCustomer={handleSelectCustomer}
+          onAddCustomer={() => setAddOpen(true)}
+        />
+      )}
       
       <AddCustomerDialog
         open={addOpen}
         onClose={() => setAddOpen(false)}
         onAdd={addCustomer}
       />
-    </>
+    </div>
   );
 };
 
