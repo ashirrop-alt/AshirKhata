@@ -19,7 +19,6 @@ export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
     if (!num || num <= 0) return;
     
     onAdd(type, num);
-    toast.success("Entry save ho gayi!");
     setAmount("");
     onClose();
   };

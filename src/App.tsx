@@ -33,8 +33,12 @@ function App() {
 
   return (
     <BrowserRouter>
-      {/* Step 2: Toaster ko yahan rakha hai taake ye har page ke upar dikh sake */}
-      <Toaster richColors position="top-center" /> 
+      {/* Step 2*/}
+      <Toaster
+        richColors
+        position="bottom-center"
+        visibleToasts={1}
+      />
 
       <Routes>
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
