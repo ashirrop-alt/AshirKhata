@@ -10,7 +10,7 @@ interface AppData {
 
 export function useKhata() {
   const [data, setData] = useState<AppData>({
-    shopName: "Loading...",
+    shopName: "",
     customers: []
   });
 
