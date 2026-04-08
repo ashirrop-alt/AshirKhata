@@ -67,35 +67,38 @@ export function useKhata() {
   };
 
   const addCustomer = async (name: string, phone: string) => {
-    const { data: { user } } = await supabase.auth.getUser();
-    if (!user) {
-      toast.error("Pehle login karein!");
-      return;
-    }
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) {
+    toast.error("Pehle login karein!");
+    return;
+  }
 
-    const newCustomer = {
-      name,
-      phone,
-      transactions: [],
-      user_id: user.id
-    };
-
-    const { data: insertedData, error } = await supabase
-      .from('customers')
-      .insert([newCustomer])
-      .select()
-      .single();
-
-    if (error) {
-      toast.error("Database mein save nahi hua");
-    } else {
-      setData(prev => ({
-        ...prev,
-        customers: [insertedData, ...prev.customers]
-      }));
-      toast.success("Customer add ho gaya!");
-    }
+  const newCustomer = {
+    name,
+    phone,
+    transactions: [],
+    user_id: user.id
   };
+
+  // 1. Database mein insert karein aur wapsi mein inserted row lein
+  const { data: insertedData, error } = await supabase
+    .from('customers')
+    .insert([newCustomer])
+    .select() // Ye zaroori hai taake humein ID ke saath fresh data mile
+    .single();
+
+  if (error) {
+    toast.error("Database mein save nahi hua");
+  } else {
+    // 2. Speed fix: fetchData() call karne ki zarurat nahi
+    // Sirf local state ko update karein jo Supabase ne wapis bheja hai
+    setData(prev => ({
+      ...prev,
+      customers: [insertedData, ...prev.customers]
+    }));
+    toast.success("Customer add ho gaya!");
+  }
+};
 
   const deleteCustomer = async (id: string) => {
     const { error } = await supabase.from('customers').delete().eq('id', id);
