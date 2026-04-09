@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle, Trash2, History, Phone, WalletCards, MoreVertical, PhoneCall } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -79,50 +79,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
     if (type === 'phone') {
       window.open(`tel:${customer.phone}`, "_self");
     } else {
-      // Laptop par Desktop App trigger karne ke liye 'send?phone=' best hai
       const waLink = `whatsapp://send?phone=${cleanPhone}`;
       window.location.href = waLink;
-
-      // Fallback: Agar 2 second tak app nahi khulti, toh web open kar de (Optional)
-      setTimeout(() => {
-        if (document.hasFocus()) {
-          // Agar user abhi bhi isi page par hai, matlab app nahi khuli
-          // window.open(`https://web.whatsapp.com/send?phone=${cleanPhone}`, "_blank");
-        }
-      }, 2000);
     }
   };
 
   const sendReminder = async () => {
     if (!customer.phone) return;
-
     try {
-      // 1. Login user ki ID lo
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
-      // 2. 'shops' table se is user ki dukan ka naam uthao
       const { data: shopData } = await supabase
         .from('shops')
         .select('name')
         .eq('user_id', user.id)
         .single();
 
-      // 3. Agar table mein naam hai toh wo, warna "Dukan" fallback
       const currentShopName = shopData?.name || "Dukan";
-
       const cleanPhone = customer.phone.replace(/^0/, "92");
       const message = encodeURIComponent(
         `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${currentShopName}`
       );
-
-      // Laptop aur Mobile dono ke liye standard app protocol
-      const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
-      window.location.href = waLink;
-
+      window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
     } catch (error) {
-      console.error("Error:", error);
-      // Error ki surat mein bhi message chala jaye (fallback ke saath)
       const cleanPhone = customer.phone.replace(/^0/, "92");
       window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.\n\nShukriya.`)}`;
     }
@@ -130,7 +110,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
-      {/* 1. HEADER - CLEAN & SPACIOUS */}
+      {/* 1. HEADER */}
       <header className="flex-none bg-white border-b px-4 py-3 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -146,32 +126,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Call Action with Dropdown */}
             {customer.phone && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full w-10 h-10 bg-slate-50 hover:bg-emerald-50 text-emerald-600 transition-colors"
-                  >
-                    {/* Naya Logo Yahan Hai */}
-                    <svg
-                      viewBox="0 0 24 24"
-                      width="20"
-                      height="20"
-                      fill="currentColor"
-                    >
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.149-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.885-9.885 9.885m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
-                    </svg>
+                  {/* Header Button wapis purana PhoneCall logo */}
+                  <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors">
+                    <PhoneCall className="w-5 h-5" />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100">
                   <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
                     <Phone className="w-4 h-4 text-blue-500" /> Phone Call
                   </DropdownMenuItem>
+                  
+                  {/* WhatsApp Call with Original Logo */}
                   <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
-                    <MessageCircle className="w-4 h-4 text-emerald-500" /> WhatsApp Call
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                    </svg>
+                    WhatsApp Call
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -187,8 +160,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* 2. MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto sm:overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-
-          {/* SIDEBAR: Actions */}
+          
+          {/* SIDEBAR */}
           <div className="w-full md:w-80 space-y-4">
             <div className={`rounded-3xl p-6 sm:p-8 shadow-md border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Baqaya Rakam</p>
@@ -211,19 +184,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 - Paisa Mila
               </Button>
 
+              {/* Reminder Button - Fixed Styling (Font Black) */}
               <Button
                 variant="outline"
-                className="w-full py-6 text-lg font-medium border-green-200 hover:bg-green-50 hover:text-green-700 transition-all gap-3"
+                className="w-full py-7 text-base font-black uppercase tracking-tight border-green-200 hover:bg-green-50 hover:text-green-700 transition-all gap-3 rounded-2xl"
                 onClick={sendReminder}
               >
-                {/* Original WhatsApp SVG Logo */}
-                <svg
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                  fill="currentColor"
-                  className="text-[#25D366]"
-                >
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="#25D366">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
                 </svg>
                 WhatsApp Reminder
@@ -236,9 +203,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             <div className="px-6 py-5 border-b flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <History className="w-5 h-5 text-slate-400" />
-                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500">
-                  Hisaab Kitab ({transactions.length})
-                </h2>
+                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500">Hisaab Kitab ({transactions.length})</h2>
               </div>
             </div>
 
@@ -246,49 +211,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {[...transactions].reverse().map(tx => (
                 <div key={tx.id} className="bg-slate-50/50 rounded-2xl p-4 border border-transparent hover:border-slate-200 transition-all flex items-center justify-between group">
                   <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner ${tx.type === "udhar" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"
-                      }`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner ${tx.type === "udhar" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"}`}>
                       {tx.type === "udhar" ? "+" : "-"}
                     </div>
                     <div>
-                      <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>
-                        Rs {tx.amount.toLocaleString()}
-                      </p>
+                      <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>Rs {tx.amount.toLocaleString()}</p>
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                         {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-PK")}
                       </p>
                     </div>
                   </div>
-
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100 focus:opacity-100">
-                        <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
+                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </AlertDialogTrigger>
-
-                    {/* Standard Sizing: Laptop par chota (max-w-[380px]) aur Mobile par centered compact card */}
-                    <AlertDialogContent className="w-[92%] max-w-[380px] rounded-[24px] p-5 sm:p-6 border-none shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+                    <AlertDialogContent className="w-[92%] max-w-[380px] rounded-[24px] p-5 sm:p-6 border-none shadow-2xl">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-lg font-bold text-slate-900 leading-tight">
-                          Delete Entry?
-                        </AlertDialogTitle>
-                        <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">
-                          Is hisaab ko khatam kar dein? Ye wapas nahi ayega.
-                        </AlertDialogDescription>
+                        <AlertDialogTitle className="text-lg font-bold text-slate-900">Delete Entry?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">Ye wapas nahi ayega.</AlertDialogDescription>
                       </AlertDialogHeader>
-
                       <AlertDialogFooter className="mt-5 flex flex-row gap-3">
-                        {/* Buttons side-by-side even on mobile for a tighter look */}
-                        <AlertDialogCancel className="flex-1 rounded-xl h-10 sm:h-11 font-bold border-slate-100 text-slate-600 hover:bg-slate-50 mt-0">
-                          Nahi
-                        </AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => handleDeleteEntry(tx.id)}
-                          className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl h-10 sm:h-11 font-bold shadow-sm"
-                        >
-                          Haan, Delete
-                        </AlertDialogAction>
+                        <AlertDialogCancel className="flex-1 rounded-xl h-10 font-bold border-slate-100 text-slate-600 mt-0">Nahi</AlertDialogCancel>
+                        <AlertDialogAction onClick={() => handleDeleteEntry(tx.id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl h-10 font-bold shadow-sm">Haan, Delete</AlertDialogAction>
                       </AlertDialogFooter>
                     </AlertDialogContent>
                   </AlertDialog>
@@ -299,12 +245,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </div>
       </main>
 
-      <AddEntryDialog
-        open={entryOpen}
-        onClose={() => setEntryOpen(false)}
-        type={entryType}
-        onAdd={handleAddEntry}
-      />
+      <AddEntryDialog open={entryOpen} onClose={() => setEntryOpen(false)} type={entryType} onAdd={handleAddEntry} />
     </div>
   );
 }
