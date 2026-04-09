@@ -1,3 +1,7 @@
+import { useRef } from 'react';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
+import InvoiceTemplate from './InvoiceTemplate'; // Jo file aapne abhi banayi
 import { useState } from "react";
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
@@ -29,6 +33,7 @@ interface Props {
 }
 
 export function CustomerDetail({ customer, onBack }: Props) {
+  const invoiceRef = useRef<HTMLDivElement>(null);
   const [entryType, setEntryType] = useState<"udhar" | "payment">("udhar");
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
