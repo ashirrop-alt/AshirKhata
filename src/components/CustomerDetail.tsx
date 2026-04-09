@@ -214,7 +214,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                           Delete Entry?
                         </AlertDialogTitle>
                         <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">
-                          Kya aap waqai is entry ko khatam karna chahte hain? Ye amal wapas nahi hoga.
+                          Is hisaab ko khatam kar dein? Ye wapas nahi ayega.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
 
