@@ -79,25 +79,27 @@ export function CustomerDetail({ customer, onBack }: Props) {
     if (type === 'phone') {
       window.open(`tel:${customer.phone}`, "_self");
     } else {
-      // Direct WhatsApp link protocol
-      const waLink = /iPhone|Android|iPad/i.test(navigator.userAgent)
-        ? `whatsapp://send?phone=${cleanPhone}`
-        : `https://web.whatsapp.com/send?phone=${cleanPhone}`;
-      
+      // Laptop par Desktop App trigger karne ke liye 'send?phone=' best hai
+      const waLink = `whatsapp://send?phone=${cleanPhone}`;
       window.location.href = waLink;
+
+      // Fallback: Agar 2 second tak app nahi khulti, toh web open kar de (Optional)
+      setTimeout(() => {
+        if (document.hasFocus()) {
+           // Agar user abhi bhi isi page par hai, matlab app nahi khuli
+           // window.open(`https://web.whatsapp.com/send?phone=${cleanPhone}`, "_blank");
+        }
+      }, 2000);
     }
   };
 
   const sendReminder = () => {
     if (!customer.phone) return;
     const cleanPhone = customer.phone.replace(/^0/, "92");
-    const message = encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.`);
+    const message = encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.`);
     
-    // Direct link with message
-    const waLink = /iPhone|Android|iPad/i.test(navigator.userAgent)
-      ? `whatsapp://send?phone=${cleanPhone}&text=${message}`
-      : `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${message}`;
-    
+    // Desktop App direct protocol with message
+    const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
     window.location.href = waLink;
   };
 
