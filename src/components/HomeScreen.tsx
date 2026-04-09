@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2 } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users } from "lucide-react";
 
 interface Props {
   shopName: string;
@@ -45,131 +45,148 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    // 1. h-screen aur flex-col se screen ko control kiya
-    <div className="h-screen flex flex-col bg-background overflow-hidden">
+    <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
       
-      {/* 2. Header Section (Fixed - flex-none) */}
-      <div className="flex-none w-full max-w-lg mx-auto p-4">
-        <div className="bg-primary rounded-2xl p-6 shadow-lg text-primary-foreground">
-          {editingShop ? (
-            <div className="space-y-3">
-              <div className="flex items-center gap-2 text-primary-foreground/80">
-                <Store className="w-4 h-4" />
-                <span className="text-sm font-medium">Apni dukaan ka naam likhein</span>
-              </div>
-              <form onSubmit={(e) => {
-                e.preventDefault();
-                if (tempName.trim()) {
-                  onSetShopName(tempName.trim());
-                  setEditingShop(false);
-                }
-              }}>
-                <Input
-                  value={tempName}
-                  onChange={e => setTempName(e.target.value)}
-                  placeholder="Dukaan ka naam"
-                  className="h-12 text-base bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground placeholder:text-primary-foreground/50 mb-3"
-                  autoFocus
-                />
-                <Button type="submit" variant="secondary" className="w-full h-10 font-semibold">
-                  Save
-                </Button>
-              </form>
+      {/* --- TOP NAVBAR --- */}
+      <header className="flex-none bg-white border-b px-4 py-3 z-30 shadow-sm">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <button onClick={() => setEditingShop(true)} className="flex items-center gap-2 group">
+            <div className="bg-primary p-2 rounded-lg text-primary-foreground">
+              <Store className="w-5 h-5" />
             </div>
-          ) : (
-            <div>
-              <div className="flex justify-between items-start">
-                <button onClick={() => setEditingShop(true)} className="text-left group">
-                  <div className="flex items-center gap-2 text-primary-foreground/70 mb-1">
-                    <Store className="w-4 h-4" />
-                    <span className="text-xs font-medium uppercase tracking-wide">Aapki Dukaan</span>
-                  </div>
-                  <h1 className="text-2xl font-bold group-hover:underline">{shopName || "N/A"}</h1>
-                </button>
-                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-primary-foreground hover:bg-white/10">
-                  <LogOut className="w-4 h-4 mr-1" /> Logout
-                </Button>
-              </div>
-              <div className="mt-4 pt-4 border-t border-primary-foreground/20">
-                <p className="text-sm text-primary-foreground/70">Total Udhar</p>
-                <p className="text-3xl font-bold">Rs {totalUdhar.toLocaleString()}</p>
-              </div>
-            </div>
-          )}
-        </div>
-      </div>
-
-      {/* 3. Scrollable Content (flex-1 overflow-y-auto) */}
-      <div className="flex-1 overflow-y-auto px-4 pb-24">
-        <div className="max-w-lg mx-auto space-y-4">
+            <h1 className="text-xl font-black tracking-tight group-hover:underline">
+              {shopName || "Apni Dukaan"}
+            </h1>
+          </button>
           
-          {/* Search (Sticky inside scroll) */}
-          {customers.length > 3 && (
-            <div className="sticky top-0 pt-2 pb-2 bg-background/95 backdrop-blur-sm z-10">
-              <div className="relative">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                <Input
-                  placeholder="Customer dhundein..."
-                  value={search}
-                  onChange={e => setSearch(e.target.value)}
-                  className="h-11 pl-10 text-base rounded-xl shadow-sm bg-card"
-                />
-              </div>
-            </div>
-          )}
+          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground gap-2">
+            <LogOut className="w-4 h-4" />
+            <span className="hidden sm:inline">Logout</span>
+          </Button>
+        </div>
+      </header>
 
-          {/* Customer List */}
-          <div>
-            <h2 className="text-sm font-semibold text-muted-foreground uppercase tracking-wide mb-3 px-1">
-              Customers ({customers.length})
-            </h2>
-            {filtered.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground">
-                <p className="text-lg">Koi customer nahi hai</p>
-                <p className="text-sm mt-1">Neeche "+" button dabao</p>
-              </div>
-            ) : (
-              <div className="space-y-2">
-                {filtered.map(c => {
-                  const total = getCustomerTotal(c);
-                  return (
-                    <button
-                      key={c.id}
-                      onClick={() => onSelectCustomer(c.id)}
-                      className="w-full bg-card rounded-xl p-4 shadow-sm border flex items-center justify-between hover:shadow-md transition-shadow text-left"
-                    >
-                      <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                          <span className="text-sm font-bold text-primary">
-                            {c.name.charAt(0).toUpperCase()}
-                          </span>
-                        </div>
-                        <div>
-                          <p className="font-semibold text-foreground">{c.name}</p>
-                          <p className="text-xs text-muted-foreground">{c.transactions.length} entries</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`text-lg font-bold ${total > 0 ? "text-destructive" : "text-success"}`}>
-                          Rs {Math.abs(total).toLocaleString()}
-                        </span>
-                        <ChevronRight className="w-4 h-4 text-muted-foreground" />
-                      </div>
-                    </button>
-                  );
-                })}
+      {/* --- MAIN CONTENT AREA --- */}
+      <main className="flex-1 overflow-hidden">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-6 p-4 md:p-6">
+          
+          {/* LEFT SIDE: Stats & Actions (Laptop pe side pe, Mobile pe top pe) */}
+          <div className="flex-none w-full md:w-80 space-y-4">
+            
+            {/* Shop Name Editor (If active) */}
+            {editingShop && (
+              <div className="bg-white p-4 rounded-2xl shadow-sm border border-primary/20 animate-in fade-in slide-in-from-top-2">
+                <form onSubmit={(e) => {
+                  e.preventDefault();
+                  if (tempName.trim()) {
+                    onSetShopName(tempName.trim());
+                    setEditingShop(false);
+                  }
+                }} className="space-y-3">
+                  <Input
+                    value={tempName}
+                    onChange={e => setTempName(e.target.value)}
+                    placeholder="Dukaan ka naam"
+                    className="h-10 text-sm"
+                    autoFocus
+                  />
+                  <div className="flex gap-2">
+                    <Button type="submit" className="flex-1 h-9 text-xs">Save</Button>
+                    <Button type="button" variant="ghost" onClick={() => setEditingShop(false)} className="h-9 text-xs">Cancel</Button>
+                  </div>
+                </form>
               </div>
             )}
-          </div>
-        </div>
-      </div>
 
-      {/* 4. Fixed Plus Button */}
+            {/* Total Balance Card */}
+            <div className="bg-primary rounded-[2rem] p-6 text-primary-foreground shadow-2xl shadow-primary/20 relative overflow-hidden">
+              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/10 rounded-full" />
+              <p className="text-xs font-bold uppercase tracking-widest opacity-80">Kul Udhar</p>
+              <h2 className="text-4xl font-black mt-2">Rs {totalUdhar.toLocaleString()}</h2>
+            </div>
+
+            {/* Actions & Search */}
+            <div className="space-y-3">
+              <Button 
+                onClick={onAddCustomer}
+                className="w-full h-14 rounded-2xl bg-white border-2 border-primary/10 text-primary hover:bg-primary hover:text-white text-lg font-bold shadow-sm transition-all flex gap-2 items-center justify-center group"
+              >
+                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
+                Naya Customer
+              </Button>
+
+              <div className="relative group">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Input 
+                  placeholder="Customer dhunndien..." 
+                  className="pl-12 h-14 rounded-2xl bg-white border-none shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          {/* RIGHT SIDE: Scrollable Customer List */}
+          <div className="flex-1 flex flex-col min-h-0">
+            <div className="flex items-center justify-between mb-4 px-2">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Users className="w-4 h-4" />
+                <span className="text-xs font-bold uppercase tracking-widest">
+                  Customers ({filtered.length})
+                </span>
+              </div>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6">
+              {filtered.length === 0 ? (
+                <div className="h-full flex flex-col items-center justify-center text-center py-20 bg-white/50 rounded-[2rem] border-2 border-dashed">
+                  <p className="text-muted-foreground font-medium">Koi customer nahi mila</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                  {filtered.map(c => {
+                    const total = getCustomerTotal(c);
+                    return (
+                      <button
+                        key={c.id}
+                        onClick={() => onSelectCustomer(c.id)}
+                        className="w-full bg-white rounded-2xl p-4 shadow-sm border border-transparent hover:border-primary/20 flex items-center justify-between hover:shadow-md transition-all text-left group active:scale-[0.98]"
+                      >
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-white text-primary">
+                            <span className="text-lg font-bold">
+                              {c.name.charAt(0).toUpperCase()}
+                            </span>
+                          </div>
+                          <div>
+                            <p className="font-bold text-foreground text-lg">{c.name}</p>
+                            <p className="text-xs text-muted-foreground">{c.transactions.length} entries</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <span className={`text-lg font-black ${total > 0 ? "text-destructive" : "text-success"}`}>
+                            Rs {Math.abs(total).toLocaleString()}
+                          </span>
+                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary transition-colors" />
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          </div>
+
+        </div>
+      </main>
+
+      {/* Mobile-Only Plus Button (Sirf tab dikhega jab screen choti ho) */}
       <button
         onClick={onAddCustomer}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-primary text-primary-foreground rounded-full shadow-lg flex items-center justify-center hover:shadow-xl transition-shadow active:scale-95 z-50"
+        className="md:hidden fixed bottom-6 right-6 w-16 h-16 bg-primary text-primary-foreground rounded-full shadow-2xl flex items-center justify-center active:scale-90 transition-transform z-50"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-8 h-8" />
       </button>
     </div>
   );
