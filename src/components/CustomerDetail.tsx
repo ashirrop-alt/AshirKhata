@@ -75,18 +75,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const makeCall = (type: 'phone' | 'whatsapp') => {
     if (!customer.phone) return;
     const cleanPhone = customer.phone.replace(/^0/, "92");
+    
     if (type === 'phone') {
       window.open(`tel:${customer.phone}`, "_self");
     } else {
-      window.open(`https://wa.me/${cleanPhone}`, "_blank");
+      // Direct WhatsApp link protocol
+      const waLink = /iPhone|Android|iPad/i.test(navigator.userAgent)
+        ? `whatsapp://send?phone=${cleanPhone}`
+        : `https://web.whatsapp.com/send?phone=${cleanPhone}`;
+      
+      window.location.href = waLink;
     }
   };
 
   const sendReminder = () => {
     if (!customer.phone) return;
-    const phone = customer.phone.replace(/^0/, "92");
-    const message = `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.`;
-    window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, "_blank");
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    const message = encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.`);
+    
+    // Direct link with message
+    const waLink = /iPhone|Android|iPad/i.test(navigator.userAgent)
+      ? `whatsapp://send?phone=${cleanPhone}&text=${message}`
+      : `https://web.whatsapp.com/send?phone=${cleanPhone}&text=${message}`;
+    
+    window.location.href = waLink;
   };
 
   return (
