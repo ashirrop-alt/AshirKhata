@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, MessageCircle, Trash2, History, Phone, WalletCards } from "lucide-react";
+import { ArrowLeft, MessageCircle, Trash2, History, Phone, WalletCards, MoreVertical, PhoneCall } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -16,6 +16,12 @@ import {
   AlertDialogTitle,
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   customer: Customer;
@@ -66,6 +72,16 @@ export function CustomerDetail({ customer, onBack }: Props) {
     }
   };
 
+  const makeCall = (type: 'phone' | 'whatsapp') => {
+    if (!customer.phone) return;
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    if (type === 'phone') {
+      window.open(`tel:${customer.phone}`, "_self");
+    } else {
+      window.open(`https://wa.me/${cleanPhone}`, "_blank");
+    }
+  };
+
   const sendReminder = () => {
     if (!customer.phone) return;
     const phone = customer.phone.replace(/^0/, "92");
@@ -75,55 +91,71 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
-      {/* 1. HEADER */}
-      <header className="flex-none bg-white border-b px-3 sm:px-4 py-2 sm:py-3 z-40 shadow-sm">
+      {/* 1. HEADER - CLEAN & SPACIOUS */}
+      <header className="flex-none bg-white border-b px-4 py-3 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2 sm:gap-3">
-            <button onClick={onBack} className="p-1.5 sm:p-2 rounded-xl hover:bg-slate-100 transition-all active:scale-90">
-              <ArrowLeft className="w-5 h-5 sm:w-6 sm:h-6 text-slate-600" />
+          <div className="flex items-center gap-4">
+            <button onClick={onBack} className="p-2 -ml-2 rounded-full hover:bg-slate-100 transition-all active:scale-90">
+              <ArrowLeft className="w-6 h-6 text-slate-600" />
             </button>
-            <div>
-              <h1 className="text-base sm:text-xl font-black text-slate-800 leading-tight">{customer.name}</h1>
-              <div className="flex items-center gap-1 text-slate-500">
-                <Phone className="w-2.5 h-2.5" />
-                <span className="text-[10px] sm:text-xs font-semibold">{customer.phone || "No Number"}</span>
-              </div>
+            <div className="flex flex-col">
+              <h1 className="text-lg sm:text-xl font-black text-slate-800 leading-none mb-1">{customer.name}</h1>
+              {customer.phone && (
+                <span className="text-[11px] sm:text-xs font-bold text-slate-400 tracking-tight">{customer.phone}</span>
+              )}
             </div>
           </div>
-          <div className="hidden sm:flex bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-600 items-center gap-1">
-             <WalletCards className="w-3.5 h-3.5" /> Customer Profile
+
+          <div className="flex items-center gap-2">
+             {/* Call Action with Dropdown */}
+             {customer.phone && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                      <PhoneCall className="w-5 h-5" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100">
+                    <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
+                      <Phone className="w-4 h-4 text-blue-500" /> Phone Call
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
+                      <MessageCircle className="w-4 h-4 text-emerald-500" /> WhatsApp Call
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+             )}
+             
+             <div className="hidden sm:flex bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-600 items-center gap-1">
+               <WalletCards className="w-3.5 h-3.5" /> Profile
+             </div>
           </div>
         </div>
       </header>
 
       {/* 2. MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto sm:overflow-hidden">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-3 sm:p-6">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
           
           {/* SIDEBAR: Actions */}
-          <div className="w-full md:w-80 space-y-3 sm:space-y-4">
-            {/* Balance Card - Compact, BUT Amount size is Increased! */}
-            <div className={`rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 shadow-md border-b-4 sm:border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
-              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 sm:mb-2">Baqaya Rakam</p>
-              
-              {/* --- INCREASED AMOUNT SIZE HERE --- */}
+          <div className="w-full md:w-80 space-y-4">
+            <div className={`rounded-3xl p-6 sm:p-8 shadow-md border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Baqaya Rakam</p>
               <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter ${total > 0 ? "text-red-600" : "text-emerald-600"}`}>
                 Rs {Math.abs(total).toLocaleString()}
               </h2>
-              {/* ------------------------------------- */}
             </div>
 
-            {/* Buttons Grid - Smaller Height for Mobile */}
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-2.5">
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button 
                 onClick={() => { setEntryType("udhar"); setEntryOpen(true); }} 
-                className="h-12 sm:h-16 bg-red-600 hover:bg-red-700 text-white rounded-xl sm:rounded-2xl shadow-sm font-black text-xs sm:text-lg"
+                className="h-14 sm:h-16 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 + Udhar Diya
               </Button>
               <Button 
                 onClick={() => { setEntryType("payment"); setEntryOpen(true); }} 
-                className="h-12 sm:h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl sm:rounded-2xl shadow-sm font-black text-xs sm:text-lg"
+                className="h-14 sm:h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 - Paisa Mila
               </Button>
@@ -131,39 +163,39 @@ export function CustomerDetail({ customer, onBack }: Props) {
               <Button 
                 onClick={sendReminder}
                 variant="outline"
-                className="col-span-2 md:col-span-1 h-12 sm:h-16 bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 border-emerald-100 rounded-xl sm:rounded-2xl font-bold flex items-center justify-center gap-2 text-xs sm:text-base"
+                className="col-span-2 md:col-span-1 h-14 sm:h-16 bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 border-emerald-100 rounded-2xl font-bold flex items-center justify-center gap-2"
               >
-                <MessageCircle className="w-4 h-4 sm:w-5 sm:h-5 fill-emerald-600 text-emerald-50" />
+                <MessageCircle className="w-5 h-5 fill-emerald-600 text-emerald-50" />
                 <span>WhatsApp Reminder</span>
               </Button>
             </div>
           </div>
 
           {/* LIST: History */}
-          <div className="flex-1 bg-white rounded-2xl sm:rounded-[2.5rem] border shadow-sm overflow-hidden flex flex-col min-h-[400px]">
-            <div className="px-4 sm:px-6 py-3 sm:py-5 border-b flex items-center justify-between">
+          <div className="flex-1 bg-white rounded-3xl border shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+            <div className="px-6 py-5 border-b flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <History className="w-4 h-4 sm:w-5 sm:h-5 text-slate-400" />
-                <h2 className="text-[10px] sm:text-xs font-black uppercase tracking-widest text-slate-500">
+                <History className="w-5 h-5 text-slate-400" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500">
                   Hisaab Kitab ({transactions.length})
                 </h2>
               </div>
             </div>
             
-            <div className="flex-1 overflow-y-auto p-3 sm:p-6 space-y-2.5">
+            <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
               {[...transactions].reverse().map(tx => (
-                <div key={tx.id} className="bg-slate-50/50 rounded-xl sm:rounded-2xl p-3 sm:p-4 border border-transparent hover:border-slate-200 transition-all flex items-center justify-between group">
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-lg sm:rounded-xl flex items-center justify-center font-black text-lg sm:text-xl shadow-inner ${
+                <div key={tx.id} className="bg-slate-50/50 rounded-2xl p-4 border border-transparent hover:border-slate-200 transition-all flex items-center justify-between group">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner ${
                       tx.type === "udhar" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"
                     }`}>
                       {tx.type === "udhar" ? "+" : "-"}
                     </div>
                     <div>
-                      <p className={`font-black text-base sm:text-xl ${tx.type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>
+                      <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>
                         Rs {tx.amount.toLocaleString()}
                       </p>
-                      <p className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-tight">
+                      <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                         {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-PK")}
                       </p>
                     </div>
@@ -171,14 +203,14 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-lg sm:rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100">
-                        <Trash2 className="w-4 h-4 sm:w-5 sm:h-5" />
+                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100">
+                        <Trash2 className="w-5 h-5" />
                       </button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-3xl max-w-[90vw]">
+                    <AlertDialogContent className="rounded-3xl">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-lg sm:text-xl font-black">Entry Delete Karein?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-sm">
+                        <AlertDialogTitle className="text-xl font-black">Entry Delete Karein?</AlertDialogTitle>
+                        <AlertDialogDescription>
                           Kya aap waqai is entry ko hamesha ke liye khatam karna chahte hain?
                         </AlertDialogDescription>
                       </AlertDialogHeader>
@@ -197,7 +229,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
               ))}
             </div>
           </div>
-
         </div>
       </main>
 
