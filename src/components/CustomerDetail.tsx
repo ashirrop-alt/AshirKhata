@@ -93,22 +93,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
     }
   };
 
-  const sendReminder = () => {
-    if (!customer.phone) return;
+  const sendReminder = async () => {
+  if (!customer.phone) return;
 
-    // 1. Aap apni shop ka naam yahan likh dein (Ya dynamic variable use karein)
-    const myShopName = "Ali Foods";
+  // 1. Current Login User (Dukan) ka data fetch karein
+  const { data: { user } } = await supabase.auth.getUser();
+  
+  // 2. Dukan ka naam user metadata se nikalein (jo aapne registration ke waqt rakha tha)
+  const currentShopName = user?.user_metadata?.shop_name || user?.user_metadata?.full_name || "Dukan";
 
-    const cleanPhone = customer.phone.replace(/^0/, "92");
-
-    // 2. Message ke end mein variable add kar diya
-    const message = encodeURIComponent(
-      `Assalamu Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${myShopName}`
-    );
-
-    const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
-    window.location.href = waLink;
-  };
+  const cleanPhone = customer.phone.replace(/^0/, "92");
+  
+  // 3. Message mein wahi dynamic naam use karein
+  const message = encodeURIComponent(
+    `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${currentShopName}`
+  );
+  
+  const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
+  window.location.href = waLink;
+};
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
