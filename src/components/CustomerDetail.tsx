@@ -102,12 +102,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
           
           {/* SIDEBAR: Actions */}
           <div className="w-full md:w-80 space-y-3 sm:space-y-4">
-            {/* Balance Card - Compact on Mobile */}
+            {/* Balance Card - Compact, BUT Amount size is Increased! */}
             <div className={`rounded-2xl sm:rounded-[2rem] p-5 sm:p-8 shadow-md border-b-4 sm:border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
-              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1">Baqaya Rakam</p>
-              <h2 className={`text-2xl sm:text-4xl font-black tracking-tighter ${total > 0 ? "text-red-600" : "text-emerald-600"}`}>
+              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-slate-400 mb-1.5 sm:mb-2">Baqaya Rakam</p>
+              
+              {/* --- INCREASED AMOUNT SIZE HERE --- */}
+              <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter ${total > 0 ? "text-red-600" : "text-emerald-600"}`}>
                 Rs {Math.abs(total).toLocaleString()}
               </h2>
+              {/* ------------------------------------- */}
             </div>
 
             {/* Buttons Grid - Smaller Height for Mobile */}
