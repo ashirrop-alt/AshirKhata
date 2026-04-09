@@ -202,25 +202,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      {/* Desktop pe hover pe, mobile pe hamesha dikhayen gay */}
                       <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100 focus:opacity-100">
-                        <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" /> {/* Mobile par icon thora bara */}
+                        <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" />
                       </button>
                     </AlertDialogTrigger>
-                    {/* max-w-[90vw] mobile full screen ko rokega, max-w-md desktop standard height dega, rounded-3xl laptop jaisa card banayega */}
-                    <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md mx-auto rounded-3xl p-6 sm:p-8 border-none shadow-2xl animate-in fade-in slide-in-from-bottom-1 sm:slide-in-from-bottom-0">
+
+                    {/* Standard Sizing: Laptop par chota (max-w-[380px]) aur Mobile par centered compact card */}
+                    <AlertDialogContent className="w-[92%] max-w-[380px] rounded-[24px] p-5 sm:p-6 border-none shadow-2xl animate-in fade-in zoom-in-95 duration-200">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-xl font-black text-slate-900 leading-tight">Delete Karein?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-slate-500 font-semibold pt-1.5 text-sm sm:text-base">
-                          {/* Short & Clean Message */}
-                          Is hisaab ko khatam kar dein? Ye wapas nahi ayega.
+                        <AlertDialogTitle className="text-lg font-bold text-slate-900 leading-tight">
+                          Delete Entry?
+                        </AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">
+                          Kya aap waqai is entry ko khatam karna chahte hain? Ye amal wapas nahi hoga.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-6 flex flex-col-reverse sm:flex-row gap-3 sm:gap-2">
-                        <AlertDialogCancel className="w-full sm:w-auto rounded-2xl h-12 font-bold border-2 text-slate-700 hover:bg-slate-50">Nahi</AlertDialogCancel>
+
+                      <AlertDialogFooter className="mt-5 flex flex-row gap-3">
+                        {/* Buttons side-by-side even on mobile for a tighter look */}
+                        <AlertDialogCancel className="flex-1 rounded-xl h-10 sm:h-11 font-bold border-slate-100 text-slate-600 hover:bg-slate-50 mt-0">
+                          Nahi
+                        </AlertDialogCancel>
                         <AlertDialogAction
                           onClick={() => handleDeleteEntry(tx.id)}
-                          className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white rounded-2xl h-12 font-black shadow-md shadow-red-200"
+                          className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl h-10 sm:h-11 font-bold shadow-sm"
                         >
                           Haan, Delete
                         </AlertDialogAction>
