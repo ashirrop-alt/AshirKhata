@@ -96,21 +96,36 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const sendReminder = async () => {
   if (!customer.phone) return;
 
-  // 1. Current Login User (Dukan) ka data fetch karein
-  const { data: { user } } = await supabase.auth.getUser();
-  
-  // 2. Dukan ka naam user metadata se nikalein (jo aapne registration ke waqt rakha tha)
-  const currentShopName = user?.user_metadata?.shop_name || user?.user_metadata?.full_name || "Dukan";
+  try {
+    // 1. Login user ki ID lo
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return;
 
-  const cleanPhone = customer.phone.replace(/^0/, "92");
-  
-  // 3. Message mein wahi dynamic naam use karein
-  const message = encodeURIComponent(
-    `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${currentShopName}`
-  );
-  
-  const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
-  window.location.href = waLink;
+    // 2. 'shops' table se is user ki dukan ka naam uthao
+    const { data: shopData } = await supabase
+      .from('shops')
+      .select('name')
+      .eq('user_id', user.id)
+      .single();
+
+    // 3. Agar table mein naam hai toh wo, warna "Dukan" fallback
+    const currentShopName = shopData?.name || "Dukan";
+
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    const message = encodeURIComponent(
+      `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${currentShopName}`
+    );
+    
+    // Laptop aur Mobile dono ke liye standard app protocol
+    const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
+    window.location.href = waLink;
+
+  } catch (error) {
+    console.error("Error:", error);
+    // Error ki surat mein bhi message chala jaye (fallback ke saath)
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.\n\nShukriya.`)}`;
+  }
 };
 
   return (
