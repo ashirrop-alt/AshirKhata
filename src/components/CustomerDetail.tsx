@@ -100,9 +100,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   return (
     <div className="h-screen flex flex-col bg-background overflow-hidden">
       {/* Top Header */}
-      <div className="flex-none bg-card shadow-sm border-b px-4 py-4 z-10">
+      <div className="flex-none bg-card shadow-sm border-b px-4 py-4 z-30">
         <div className="max-w-6xl mx-auto flex items-center gap-3">
-          <button onClick={onBack} className="p-2 -ml-2 rounded-lg hover:bg-secondary">
+          <button onClick={onBack} className="p-2 -ml-2 rounded-lg hover:bg-secondary transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </button>
           <div className="flex-1">
@@ -128,17 +128,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button
                 onClick={() => { setEntryType("udhar"); setEntryOpen(true); }}
-                className="h-14 md:h-12 text-base font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl"
+                className="h-14 md:h-12 text-base font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-md transition-transform active:scale-95"
                 disabled={loading}
               >
-                {loading ? <Loader2 className="animate-spin" /> : "Udhar Diya"}
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Udhar Diya"}
               </Button>
               <Button
                 onClick={() => { setEntryType("payment"); setEntryOpen(true); }}
-                className="h-14 md:h-12 text-base font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl"
+                className="h-14 md:h-12 text-base font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl shadow-md transition-transform active:scale-95"
                 disabled={loading}
               >
-                {loading ? <Loader2 className="animate-spin" /> : "Paisa Mila"}
+                {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : "Paisa Mila"}
               </Button>
             </div>
 
@@ -146,7 +146,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
               <Button
                 onClick={sendReminder}
                 variant="outline"
-                className="w-full h-12 text-base font-medium rounded-xl border-2 border-green-500 text-green-600 gap-2"
+                className="w-full h-12 text-base font-medium rounded-xl border-2 border-green-500 text-green-600 gap-2 hover:bg-green-50 transition-colors"
               >
                 <MessageCircle className="w-5 h-5" />
                 WhatsApp Reminder
@@ -156,36 +156,51 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
           {/* RIGHT COLUMN: Transactions List (Independent Scroll) */}
           <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar border-t md:border-t-0 pt-4 md:pt-0">
-            <h2 className="text-xs font-bold text-gray-500 uppercase mb-3 sticky top-0 bg-background py-2">Hisaab Kitab</h2>
+            {/* Sticky Header Fix: Added background and higher z-index */}
+            <div className="sticky top-0 bg-background z-20 py-2 mb-1">
+              <h2 className="text-xs font-bold text-gray-500 uppercase tracking-widest">
+                Hisaab Kitab ({transactions.length})
+              </h2>
+            </div>
+
             {transactions.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">Koi entry nahi hai</p>
+              <div className="text-center py-12 bg-card/50 rounded-2xl border border-dashed mt-4">
+                <p className="text-muted-foreground">Abhi tak koi entry nahi hui hai</p>
+              </div>
             ) : (
-              <div className="space-y-2 pb-10">
+              <div className="space-y-3 pb-20">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="bg-card rounded-xl p-4 shadow-sm border flex items-center justify-between hover:border-primary/20 transition-colors">
+                  <div key={tx.id} className="bg-card rounded-xl p-4 shadow-sm border flex items-center justify-between hover:border-primary/30 hover:shadow-md transition-all">
                     <div>
                       <p className={`text-lg font-bold ${tx.type === "udhar" ? "text-red-600" : "text-green-600"}`}>
                         {tx.type === "udhar" ? "+" : "-"} Rs {tx.amount.toLocaleString()}
                       </p>
-                      <p className="text-xs text-muted-foreground mt-0.5">
+                      <p className="text-xs text-muted-foreground mt-1 font-medium">
                         {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
                       </p>
                     </div>
                     
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
+                        <button className="p-2 text-gray-300 hover:text-red-600 hover:bg-red-50 rounded-full transition-all">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </AlertDialogTrigger>
                       <AlertDialogContent>
                         <AlertDialogHeader>
                           <AlertDialogTitle>Delete Entry?</AlertDialogTitle>
-                          <AlertDialogDescription>Kya aap waqai ye entry khatam karna chahte hain?</AlertDialogDescription>
+                          <AlertDialogDescription>
+                            Kya aap waqai ye entry khatam karna chahte hain? Ye wapas nahi aa sakegi.
+                          </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel>Nahi</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDeleteEntry(tx.id)} className="bg-red-600 text-white">Haan, Delete</AlertDialogAction>
+                          <AlertDialogCancel className="rounded-xl">Nahi</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => handleDeleteEntry(tx.id)} 
+                            className="bg-red-600 text-white hover:bg-red-700 rounded-xl"
+                          >
+                            Haan, Delete
+                          </AlertDialogAction>
                         </AlertDialogFooter>
                       </AlertDialogContent>
                     </AlertDialog>
