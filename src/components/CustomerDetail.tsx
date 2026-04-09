@@ -98,12 +98,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   return (
-    // 1. h-screen aur flex-col se page ko lock kiya
     <div className="h-screen flex flex-col bg-background overflow-hidden">
-      
-      {/* 2. Header: Customer Name (Fixed) */}
+      {/* Top Header */}
       <div className="flex-none bg-card shadow-sm border-b px-4 py-4 z-10">
-        <div className="max-w-lg mx-auto flex items-center gap-3">
+        <div className="max-w-6xl mx-auto flex items-center gap-3">
           <button onClick={onBack} className="p-2 -ml-2 rounded-lg hover:bg-secondary">
             <ArrowLeft className="w-5 h-5" />
           </button>
@@ -114,58 +112,57 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </div>
       </div>
 
-      {/* 3. Scrollable Transactions Area */}
-      <div className="flex-1 overflow-y-auto">
-        <div className="max-w-lg mx-auto p-4 space-y-4">
+      {/* Main Body Area */}
+      <div className="flex-1 overflow-hidden">
+        <div className="max-w-6xl mx-auto h-full flex flex-col md:flex-row gap-6 p-4">
           
-          {/* Total Card (Sticky inside scroll) */}
-          <div className="sticky top-0 pt-1 pb-1 bg-background/95 backdrop-blur-sm z-10">
+          {/* LEFT COLUMN: Info & Buttons (Desktop pe fixed) */}
+          <div className="flex-none w-full md:w-80 space-y-4">
             <div className={`rounded-xl p-5 shadow-sm border ${total > 0 ? "bg-red-50 border-red-200" : "bg-green-50 border-green-200"}`}>
               <p className="text-sm font-medium text-gray-600">Total Udhar</p>
               <p className={`text-3xl font-bold mt-1 ${total > 0 ? "text-red-600" : "text-green-600"}`}>
                 Rs {Math.abs(total).toLocaleString()}
               </p>
             </div>
+
+            <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+              <Button
+                onClick={() => { setEntryType("udhar"); setEntryOpen(true); }}
+                className="h-14 md:h-12 text-base font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl"
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="animate-spin" /> : "Udhar Diya"}
+              </Button>
+              <Button
+                onClick={() => { setEntryType("payment"); setEntryOpen(true); }}
+                className="h-14 md:h-12 text-base font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl"
+                disabled={loading}
+              >
+                {loading ? <Loader2 className="animate-spin" /> : "Paisa Mila"}
+              </Button>
+            </div>
+
+            {customer.phone && total > 0 && (
+              <Button
+                onClick={sendReminder}
+                variant="outline"
+                className="w-full h-12 text-base font-medium rounded-xl border-2 border-green-500 text-green-600 gap-2"
+              >
+                <MessageCircle className="w-5 h-5" />
+                WhatsApp Reminder
+              </Button>
+            )}
           </div>
 
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-3">
-            <Button
-              onClick={() => { setEntryType("udhar"); setEntryOpen(true); }}
-              className="h-14 text-base font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl"
-              disabled={loading}
-            >
-              {loading ? <Loader2 className="animate-spin" /> : "Udhar Diya"}
-            </Button>
-            <Button
-              onClick={() => { setEntryType("payment"); setEntryOpen(true); }}
-              className="h-14 text-base font-bold bg-green-600 hover:bg-green-700 text-white rounded-xl"
-              disabled={loading}
-            >
-              {loading ? <Loader2 className="animate-spin" /> : "Paisa Mila"}
-            </Button>
-          </div>
-
-          {customer.phone && total > 0 && (
-            <Button
-              onClick={sendReminder}
-              variant="outline"
-              className="w-full h-12 text-base font-medium rounded-xl border-2 border-green-500 text-green-600 gap-2"
-            >
-              <MessageCircle className="w-5 h-5" />
-              WhatsApp Reminder
-            </Button>
-          )}
-
-          {/* Transactions List */}
-          <div>
-            <h2 className="text-xs font-bold text-gray-500 uppercase mb-3 px-1">Hisaab Kitab</h2>
+          {/* RIGHT COLUMN: Transactions List (Independent Scroll) */}
+          <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar border-t md:border-t-0 pt-4 md:pt-0">
+            <h2 className="text-xs font-bold text-gray-500 uppercase mb-3 sticky top-0 bg-background py-2">Hisaab Kitab</h2>
             {transactions.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">Koi entry nahi hai</p>
             ) : (
               <div className="space-y-2 pb-10">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="bg-card rounded-xl p-4 shadow-sm border flex items-center justify-between">
+                  <div key={tx.id} className="bg-card rounded-xl p-4 shadow-sm border flex items-center justify-between hover:border-primary/20 transition-colors">
                     <div>
                       <p className={`text-lg font-bold ${tx.type === "udhar" ? "text-red-600" : "text-green-600"}`}>
                         {tx.type === "udhar" ? "+" : "-"} Rs {tx.amount.toLocaleString()}
@@ -177,7 +174,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
-                        <button className="p-2 text-gray-400 hover:text-red-600">
+                        <button className="p-2 text-gray-400 hover:text-red-600 transition-colors">
                           <Trash2 className="w-4 h-4" />
                         </button>
                       </AlertDialogTrigger>
@@ -197,6 +194,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
               </div>
             )}
           </div>
+
         </div>
       </div>
 
