@@ -33,7 +33,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
-  
+
   const total = transactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
   }, 0);
@@ -107,28 +107,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
           </div>
 
           <div className="flex items-center gap-2">
-             {/* Call Action with Dropdown */}
-             {customer.phone && (
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
-                      <PhoneCall className="w-5 h-5" />
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100">
-                    <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
-                      <Phone className="w-4 h-4 text-blue-500" /> Phone Call
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
-                      <MessageCircle className="w-4 h-4 text-emerald-500" /> WhatsApp Call
-                    </DropdownMenuItem>
-                  </DropdownMenuContent>
-                </DropdownMenu>
-             )}
-             
-             <div className="hidden sm:flex bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-600 items-center gap-1">
-               <WalletCards className="w-3.5 h-3.5" /> Profile
-             </div>
+            {/* Call Action with Dropdown */}
+            {customer.phone && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 hover:bg-emerald-50 hover:text-emerald-600 transition-colors">
+                    <PhoneCall className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100">
+                  <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
+                    <Phone className="w-4 h-4 text-blue-500" /> Phone Call
+                  </DropdownMenuItem>
+                  <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
+                    <MessageCircle className="w-4 h-4 text-emerald-500" /> WhatsApp Call
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            )}
+
+            <div className="hidden sm:flex bg-slate-100 px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-600 items-center gap-1">
+              <WalletCards className="w-3.5 h-3.5" /> Profile
+            </div>
           </div>
         </div>
       </header>
@@ -136,7 +136,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* 2. MAIN CONTENT */}
       <main className="flex-1 overflow-y-auto sm:overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
-          
+
           {/* SIDEBAR: Actions */}
           <div className="w-full md:w-80 space-y-4">
             <div className={`rounded-3xl p-6 sm:p-8 shadow-md border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
@@ -147,20 +147,20 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
-              <Button 
-                onClick={() => { setEntryType("udhar"); setEntryOpen(true); }} 
+              <Button
+                onClick={() => { setEntryType("udhar"); setEntryOpen(true); }}
                 className="h-14 sm:h-16 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 + Udhar Diya
               </Button>
-              <Button 
-                onClick={() => { setEntryType("payment"); setEntryOpen(true); }} 
+              <Button
+                onClick={() => { setEntryType("payment"); setEntryOpen(true); }}
                 className="h-14 sm:h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 - Paisa Mila
               </Button>
-              
-              <Button 
+
+              <Button
                 onClick={sendReminder}
                 variant="outline"
                 className="col-span-2 md:col-span-1 h-14 sm:h-16 bg-emerald-50/50 hover:bg-emerald-100/50 text-emerald-700 border-emerald-100 rounded-2xl font-bold flex items-center justify-center gap-2"
@@ -181,14 +181,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 </h2>
               </div>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-3">
               {[...transactions].reverse().map(tx => (
                 <div key={tx.id} className="bg-slate-50/50 rounded-2xl p-4 border border-transparent hover:border-slate-200 transition-all flex items-center justify-between group">
                   <div className="flex items-center gap-4">
-                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner ${
-                      tx.type === "udhar" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"
-                    }`}>
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl shadow-inner ${tx.type === "udhar" ? "bg-red-50 text-red-500" : "bg-emerald-50 text-emerald-500"
+                      }`}>
                       {tx.type === "udhar" ? "+" : "-"}
                     </div>
                     <div>
@@ -200,25 +199,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
                       </p>
                     </div>
                   </div>
-                  
+
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100">
-                        <Trash2 className="w-5 h-5" />
+                      {/* Desktop pe hover pe, mobile pe hamesha dikhayen gay */}
+                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all md:opacity-0 md:group-hover:opacity-100 focus:opacity-100">
+                        <Trash2 className="w-5 h-5 sm:w-4 sm:h-4" /> {/* Mobile par icon thora bara */}
                       </button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent className="rounded-3xl">
+                    {/* max-w-[90vw] mobile full screen ko rokega, max-w-md desktop standard height dega, rounded-3xl laptop jaisa card banayega */}
+                    <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md mx-auto rounded-3xl p-6 sm:p-8 border-none shadow-2xl animate-in fade-in slide-in-from-bottom-1 sm:slide-in-from-bottom-0">
                       <AlertDialogHeader>
-                        <AlertDialogTitle className="text-xl font-black">Entry Delete Karein?</AlertDialogTitle>
-                        <AlertDialogDescription>
-                          Kya aap waqai is entry ko hamesha ke liye khatam karna chahte hain?
+                        <AlertDialogTitle className="text-xl font-black text-slate-900 leading-tight">Delete Karein?</AlertDialogTitle>
+                        <AlertDialogDescription className="text-slate-500 font-semibold pt-1.5 text-sm sm:text-base">
+                          {/* Short & Clean Message */}
+                          Is hisaab ko khatam kar dein? Ye wapas nahi ayega.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
-                      <AlertDialogFooter className="gap-2">
-                        <AlertDialogCancel className="rounded-xl font-bold">Nahi</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => handleDeleteEntry(tx.id)} 
-                          className="bg-red-600 hover:bg-red-700 text-white rounded-xl font-black"
+                      <AlertDialogFooter className="mt-6 flex flex-col-reverse sm:flex-row gap-3 sm:gap-2">
+                        <AlertDialogCancel className="w-full sm:w-auto rounded-2xl h-12 font-bold border-2 text-slate-700 hover:bg-slate-50">Nahi</AlertDialogCancel>
+                        <AlertDialogAction
+                          onClick={() => handleDeleteEntry(tx.id)}
+                          className="w-full sm:w-auto bg-red-600 hover:bg-red-700 text-white rounded-2xl h-12 font-black shadow-md shadow-red-200"
                         >
                           Haan, Delete
                         </AlertDialogAction>
@@ -232,11 +234,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </div>
       </main>
 
-      <AddEntryDialog 
-        open={entryOpen} 
-        onClose={() => setEntryOpen(false)} 
-        type={entryType} 
-        onAdd={handleAddEntry} 
+      <AddEntryDialog
+        open={entryOpen}
+        onClose={() => setEntryOpen(false)}
+        type={entryType}
+        onAdd={handleAddEntry}
       />
     </div>
   );
