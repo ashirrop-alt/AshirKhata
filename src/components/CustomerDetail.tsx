@@ -1,7 +1,7 @@
 import { useRef } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import InvoiceTemplate from './InvoiceTemplate'; // Jo file aapne abhi banayi
+import InvoiceTemplate from './InvoiceTemplate';
 import { useState } from "react";
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
@@ -89,6 +89,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
     }
   };
 
+  const shareFullHistory = () => {
+    let message = `*Hisaab Report - Digital Khata*\n`;
+    message += `Customer: ${customer.name}\n`;
+    message += `--------------------------\n`;
+    transactions.forEach((t) => {
+      message += `${new Date(t.date).toLocaleDateString()}: Rs ${t.amount} (${t.type === 'udhar' ? 'Udhar' : 'Mila'})\n`;
+    });
+    message += `--------------------------\n`;
+    message += `*Total Baqaya: Rs ${total}*`;
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+  };
+
   const sendReminder = async () => {
     if (!customer.phone) return;
     try {
@@ -112,11 +125,21 @@ export function CustomerDetail({ customer, onBack }: Props) {
       window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.\n\nShukriya.`)}`;
     }
   };
-  const downloadInvoice = async () => {
-    if (!invoiceRef.current) return;
 
+  const downloadInvoice = async () => {
+    if (!invoiceRef.current) {
+        toast.error("Template load nahi hua");
+        return;
+    }
+
+    const toastId = toast.loading("PDF ban rahi hai...");
     try {
-      const canvas = await html2canvas(invoiceRef.current, { scale: 2 });
+      const canvas = await html2canvas(invoiceRef.current, { 
+        scale: 2,
+        useCORS: true,
+        logging: false,
+        backgroundColor: "#ffffff"
+      });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('p', 'mm', 'a4');
       const imgProps = pdf.getImageProperties(imgData);
@@ -125,10 +148,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
       pdf.save(`${customer.name}_Invoice.pdf`);
+      toast.dismiss(toastId);
+      toast.success("PDF Download ho gayi!");
     } catch (error) {
       console.error("PDF Error:", error);
+      toast.dismiss(toastId);
+      toast.error("PDF banane mein masla aaya");
     }
   };
+
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
       {/* 1. HEADER */}
@@ -150,7 +178,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
             {customer.phone && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  {/* Header Button wapis purana PhoneCall logo */}
                   <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 hover:bg-slate-100 text-slate-600 transition-colors">
                     <PhoneCall className="w-5 h-5" />
                   </Button>
@@ -159,8 +186,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
                     <Phone className="w-4 h-4 text-blue-500" /> Phone Call
                   </DropdownMenuItem>
-
-                  {/* WhatsApp Call with Original Logo */}
                   <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700">
                     <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
                       <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
@@ -204,55 +229,42 @@ export function CustomerDetail({ customer, onBack }: Props) {
               >
                 - Paisa Mila
               </Button>
+            </div>
 
-              {/* Reminder Button - Fixed Styling (Font Black) */}
+            {/* Actions Section */}
+            <div className="flex flex-col gap-3 mt-4">
               <Button
                 variant="outline"
-                // Humne font-black aur uppercase hata kar font-semibold kar diya hai
-                className="w-full py-7 text-base font-semibold tracking-tight border-green-200 hover:bg-green-50 hover:text-green-700 transition-all gap-3 rounded-2xl"
+                className="w-full py-6 text-sm font-semibold border-green-200 hover:bg-green-50 text-slate-700 transition-all gap-2 rounded-2xl"
                 onClick={sendReminder}
               >
-                <svg viewBox="0 0 24 24" width="22" height="22" fill="#25D366">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
                   <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
                 </svg>
-                WhatsApp Message
+                WhatsApp Reminder
               </Button>
 
-              {/* Invoice & History Buttons */}
-              <div className="flex flex-col gap-2 mt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <Button
                   variant="outline"
                   onClick={downloadInvoice}
-                  className="w-full py-7 text-base font-semibold tracking-tight border-slate-200 hover:bg-slate-50 text-slate-700 transition-all gap-3 rounded-2xl"
+                  className="w-full py-6 text-sm font-semibold border-slate-200 hover:bg-slate-50 text-slate-700 transition-all gap-2 rounded-2xl"
                 >
-                  <History className="w-5 h-5 text-blue-500" />
-                  Download Invoice (PDF)
+                  <History className="w-4 h-4 text-blue-500" />
+                  Invoice PDF
                 </Button>
 
-                {/* Ye button poori history WhatsApp par text ki surat mein bhej dega */}
                 <Button
                   variant="outline"
-                  onClick={() => {
-                    let message = `*Hisaab Report - Digital Khata*\n`;
-                    message += `Customer: ${customer.name}\n`;
-                    message += `--------------------------\n`;
-                    transactions.forEach((t) => {
-                      message += `${new Date(t.date).toLocaleDateString()}: Rs ${t.amount} (${t.type === 'udhar' ? 'Udhar' : 'Mila'})\n`;
-                    });
-                    message += `--------------------------\n`;
-                    message += `*Total Baqaya: Rs ${total}*`;
-                    const cleanPhone = customer.phone.replace(/^0/, "92");
-                    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-                  }}
-                  className="w-full py-7 text-base font-semibold tracking-tight border-slate-200 hover:bg-slate-50 text-slate-700 transition-all gap-3 rounded-2xl"
+                  onClick={shareFullHistory}
+                  className="w-full py-6 text-sm font-semibold border-slate-200 hover:bg-slate-50 text-slate-700 transition-all gap-2 rounded-2xl"
                 >
-                  <svg viewBox="0 0 24 24" width="20" height="20" fill="#25D366">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
                     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
                   </svg>
-                  Share Full History
+                  History
                 </Button>
               </div>
-
             </div>
           </div>
 
@@ -305,23 +317,22 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       <AddEntryDialog open={entryOpen} onClose={() => setEntryOpen(false)} type={entryType} onAdd={handleAddEntry} />
 
-      {/* Hidden Invoice Template for PDF Generation */}
-      <div className="hidden">
-        <div style={{ position: 'absolute', left: '-9999px', top: '0' }}>
-          <InvoiceTemplate
-            ref={invoiceRef}
-            customerName={customer.name}
-            customerPhone={customer.phone || ""}
-            shopName="Ashir Khaata"
-            transactions={transactions.map(t => ({
-              id: t.id,
-              date: new Date(t.date).toLocaleDateString("en-PK"),
-              amount: t.amount,
-              type: t.type === 'udhar' ? 'dr' : 'cr'
-            }))}
-            totalBalance={total}
-          />
-        </div>
+      {/* Invisible Wrapper for PDF Generation */}
+      <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
+          <div ref={invoiceRef}>
+            <InvoiceTemplate
+                customerName={customer.name}
+                customerPhone={customer.phone || ""}
+                shopName="Ashir Khaata"
+                transactions={transactions.map(t => ({
+                id: t.id,
+                date: new Date(t.date).toLocaleDateString("en-PK"),
+                amount: t.amount,
+                type: t.type === 'udhar' ? 'dr' : 'cr'
+                }))}
+                totalBalance={total}
+            />
+          </div>
       </div>
 
     </div>
