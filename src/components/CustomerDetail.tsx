@@ -75,7 +75,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const makeCall = (type: 'phone' | 'whatsapp') => {
     if (!customer.phone) return;
     const cleanPhone = customer.phone.replace(/^0/, "92");
-    
+
     if (type === 'phone') {
       window.open(`tel:${customer.phone}`, "_self");
     } else {
@@ -86,8 +86,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
       // Fallback: Agar 2 second tak app nahi khulti, toh web open kar de (Optional)
       setTimeout(() => {
         if (document.hasFocus()) {
-           // Agar user abhi bhi isi page par hai, matlab app nahi khuli
-           // window.open(`https://web.whatsapp.com/send?phone=${cleanPhone}`, "_blank");
+          // Agar user abhi bhi isi page par hai, matlab app nahi khuli
+          // window.open(`https://web.whatsapp.com/send?phone=${cleanPhone}`, "_blank");
         }
       }, 2000);
     }
@@ -95,10 +95,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const sendReminder = () => {
     if (!customer.phone) return;
+
+    // 1. Aap apni shop ka naam yahan likh dein (Ya dynamic variable use karein)
+    const myShopName = "Ali Foods";
+
     const cleanPhone = customer.phone.replace(/^0/, "92");
-    const message = encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.`);
-    
-    // Desktop App direct protocol with message
+
+    // 2. Message ke end mein variable add kar diya
+    const message = encodeURIComponent(
+      `Assalamu Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${myShopName}`
+    );
+
     const waLink = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
     window.location.href = waLink;
   };
