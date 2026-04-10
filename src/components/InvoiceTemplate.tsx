@@ -21,10 +21,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   return (
     <div 
       ref={ref} 
-      className="p-10 bg-white w-[794px] h-auto text-slate-800 relative flex flex-col"
-      style={{ fontFamily: 'sans-serif' }} // Standard font forced
+      className="bg-white w-[794px] h-auto text-slate-800 relative flex flex-col overflow-hidden"
+      style={{ 
+        fontFamily: 'sans-serif', 
+        padding: '40px', // Standard padding for content
+        paddingTop: '50px' // Extra top padding taake header bar ke neeche na dabe
+      }}
     >
-      {/* CSS for Multi-page & Layout Fixes */}
+      {/* CSS for Multi-page & Font Fixes */}
       <style>{`
         @media print {
           tr { page-break-inside: avoid !important; }
@@ -32,17 +36,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         }
         table { page-break-inside: auto; width: 100%; border-collapse: collapse; }
         tr { page-break-inside: avoid; page-break-after: auto; }
-        /* Force no italics and clean fonts */
+        /* Force strictly normal fonts to avoid unwanted italics in PDF */
         * { font-style: normal !important; } 
       `}</style>
       
-      {/* Top Green Bar */}
-      <div className="absolute top-0 left-0 w-full h-2 bg-emerald-600"></div>
+      {/* TOP GREEN BAR - Sticky to the very top edge */}
+      <div className="absolute top-0 left-0 w-full h-[10px] bg-emerald-600 z-50"></div>
 
       {/* Header */}
-      <div className="flex justify-between border-b-2 border-slate-200 pb-8 mt-6">
+      <div className="flex justify-between border-b-2 border-slate-200 pb-8 mt-2">
         <div>
-          <h1 className="text-4xl font-bold text-emerald-600 uppercase tracking-tighter" style={{ fontStyle: 'normal' }}>
+          <h1 className="text-4xl font-bold text-emerald-600 uppercase tracking-tighter">
             {shopName}
           </h1>
           <p className="text-slate-500 mt-1 font-semibold text-sm">Digital Khata Report</p>
@@ -88,12 +92,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </table>
       </div>
 
-      {/* Summary Box - Clean & Bold, No Italics */}
+      {/* Summary Box */}
       <div className="mt-12 flex justify-end summary-container">
         <div className="w-72 bg-slate-900 text-white p-8 rounded-3xl shadow-2xl">
-          <p className="text-[10px] opacity-60 uppercase font-black tracking-[0.2em] mb-2 text-center">Total Net Balance</p>
+          <p className="text-[10px] opacity-60 uppercase font-black tracking-[0.2em] mb-2 text-center text-white">Total Net Balance</p>
           <div className="border-t border-white/20 pt-4">
-            <p className="text-3xl font-black text-center tracking-tight" style={{ fontStyle: 'normal' }}>
+            <p className="text-3xl font-black text-center tracking-tight text-white">
               Rs {totalBalance.toLocaleString()}
             </p>
           </div>
