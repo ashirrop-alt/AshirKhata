@@ -19,60 +19,67 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance 
 }, ref) => {
   return (
-    <div ref={ref} className="p-10 bg-white w-[794px] h-auto text-slate-800 font-sans relative flex flex-col">
-      {/* CSS for Multi-page PDF Handling */}
+    <div 
+      ref={ref} 
+      className="p-10 bg-white w-[794px] h-auto text-slate-800 relative flex flex-col"
+      style={{ fontFamily: 'sans-serif' }} // Standard font forced
+    >
+      {/* CSS for Multi-page & Layout Fixes */}
       <style>{`
         @media print {
           tr { page-break-inside: avoid !important; }
           .summary-container { page-break-inside: avoid !important; }
         }
-        /* Safely handle long tables */
-        table { page-break-inside: auto; }
+        table { page-break-inside: auto; width: 100%; border-collapse: collapse; }
         tr { page-break-inside: avoid; page-break-after: auto; }
+        /* Force no italics and clean fonts */
+        * { font-style: normal !important; } 
       `}</style>
       
       {/* Top Green Bar */}
       <div className="absolute top-0 left-0 w-full h-2 bg-emerald-600"></div>
 
       {/* Header */}
-      <div className="flex justify-between border-b-2 border-slate-200 pb-8 mt-4">
+      <div className="flex justify-between border-b-2 border-slate-200 pb-8 mt-6">
         <div>
-          <h1 className="text-4xl font-bold text-emerald-600 uppercase tracking-tighter">{shopName}</h1>
-          <p className="text-slate-500 mt-1 font-medium text-sm">Digital Khata Report</p>
+          <h1 className="text-4xl font-bold text-emerald-600 uppercase tracking-tighter" style={{ fontStyle: 'normal' }}>
+            {shopName}
+          </h1>
+          <p className="text-slate-500 mt-1 font-semibold text-sm">Digital Khata Report</p>
         </div>
         <div className="text-right">
-          <p className="font-semibold text-lg uppercase tracking-wider">Invoice</p>
-          <p className="text-slate-500 text-xs">Date: {new Date().toLocaleDateString('en-GB')}</p>
+          <p className="font-bold text-lg uppercase tracking-wider text-slate-700">Invoice</p>
+          <p className="text-slate-500 text-xs font-medium">Date: {new Date().toLocaleDateString('en-GB')}</p>
         </div>
       </div>
 
       {/* Customer Info */}
-      <div className="my-8">
-        <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 w-1/2">
-          <p className="text-[10px] text-slate-400 uppercase font-bold tracking-widest mb-1">Bill To:</p>
-          <p className="text-xl font-bold leading-tight">{customerName}</p>
-          <p className="text-slate-600 font-medium text-sm">{customerPhone}</p>
+      <div className="my-10">
+        <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 w-1/2 shadow-sm">
+          <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Bill To:</p>
+          <p className="text-xl font-bold text-slate-800 leading-tight">{customerName}</p>
+          <p className="text-slate-600 font-semibold text-sm mt-1">{customerPhone}</p>
         </div>
       </div>
 
-      {/* Table Container */}
+      {/* Table Section */}
       <div className="flex-grow">
-        <table className="w-full mt-2 border-collapse">
+        <table className="w-full mt-2">
           <thead>
-            <tr className="bg-slate-800 text-white">
-              <th className="py-2 px-4 text-left rounded-tl-lg font-bold uppercase text-[10px] tracking-wider text-white">Date</th>
-              <th className="py-2 px-4 text-left font-bold uppercase text-[10px] tracking-wider text-white">Description</th>
-              <th className="py-2 px-4 text-right rounded-tr-lg font-bold uppercase text-[10px] tracking-wider text-white">Amount (Rs)</th>
+            <tr className="bg-slate-800">
+              <th className="py-3 px-4 text-left rounded-tl-lg font-bold uppercase text-[10px] tracking-widest text-white">Date</th>
+              <th className="py-3 px-4 text-left font-bold uppercase text-[10px] tracking-widest text-white">Description</th>
+              <th className="py-3 px-4 text-right rounded-tr-lg font-bold uppercase text-[10px] tracking-widest text-white">Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map((t, index) => (
-              <tr key={t.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50'} border-b border-slate-100`}>
-                <td className="py-3 px-4 text-xs font-medium text-slate-600">{t.date}</td>
-                <td className="py-3 px-4 font-semibold text-sm text-slate-700">
+              <tr key={t.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} border-b border-slate-100`}>
+                <td className="py-4 px-4 text-xs font-bold text-slate-500">{t.date}</td>
+                <td className="py-4 px-4 font-bold text-sm text-slate-700">
                   {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                 </td>
-                <td className={`py-3 px-4 text-right font-bold text-sm ${t.type === 'dr' ? 'text-red-600' : 'text-emerald-600'}`}>
+                <td className={`py-4 px-4 text-right font-black text-base ${t.type === 'dr' ? 'text-red-600' : 'text-emerald-600'}`}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                 </td>
               </tr>
@@ -81,19 +88,21 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </table>
       </div>
 
-      {/* Summary Box */}
-      <div className="mt-8 flex justify-end summary-container">
-        <div className="w-64 bg-slate-800 text-white p-6 rounded-2xl shadow-xl">
-          <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] mb-1 font-bold text-center text-white">Total Net Balance</p>
-          <p className="text-2xl font-black text-center border-t border-white/20 pt-2 tracking-tight text-white">
-            Rs {totalBalance.toLocaleString()}
-          </p>
+      {/* Summary Box - Clean & Bold, No Italics */}
+      <div className="mt-12 flex justify-end summary-container">
+        <div className="w-72 bg-slate-900 text-white p-8 rounded-3xl shadow-2xl">
+          <p className="text-[10px] opacity-60 uppercase font-black tracking-[0.2em] mb-2 text-center">Total Net Balance</p>
+          <div className="border-t border-white/20 pt-4">
+            <p className="text-3xl font-black text-center tracking-tight" style={{ fontStyle: 'normal' }}>
+              Rs {totalBalance.toLocaleString()}
+            </p>
+          </div>
         </div>
       </div>
 
       {/* Footer */}
-      <div className="mt-16 mb-4 pt-6 border-t border-dotted border-slate-300 text-center">
-        <p className="text-slate-400 text-[10px] font-medium uppercase tracking-widest">
+      <div className="mt-20 mb-4 pt-8 border-t border-dotted border-slate-300 text-center">
+        <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
           Generated via {shopName} Digital Khata - 2026
         </p>
       </div>
