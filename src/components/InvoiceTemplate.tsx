@@ -19,8 +19,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance 
 }, ref) => {
   return (
-    /* h-auto lagaya hai taake content ke hisab se height barh jaye */
-    <div ref={ref} className="p-10 bg-white w-[794px] h-auto min-h-[1123px] text-slate-800 font-sans relative flex flex-col">
+    <div ref={ref} className="p-10 bg-white w-[794px] h-auto text-slate-800 font-sans relative flex flex-col">
+      {/* CSS for Multi-page PDF Handling */}
+      <style>{`
+        @media print {
+          tr { page-break-inside: avoid !important; }
+          .summary-container { page-break-inside: avoid !important; }
+        }
+        /* Safely handle long tables */
+        table { page-break-inside: auto; }
+        tr { page-break-inside: avoid; page-break-after: auto; }
+      `}</style>
       
       {/* Top Green Bar */}
       <div className="absolute top-0 left-0 w-full h-2 bg-emerald-600"></div>
@@ -46,14 +55,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </div>
       </div>
 
-      {/* Table Container - flex-grow ensures it pushes content down if needed */}
+      {/* Table Container */}
       <div className="flex-grow">
         <table className="w-full mt-2 border-collapse">
           <thead>
             <tr className="bg-slate-800 text-white">
-              <th className="py-2 px-4 text-left rounded-tl-lg font-bold uppercase text-[10px] tracking-wider">Date</th>
-              <th className="py-2 px-4 text-left font-bold uppercase text-[10px] tracking-wider">Description</th>
-              <th className="py-2 px-4 text-right rounded-tr-lg font-bold uppercase text-[10px] tracking-wider">Amount (Rs)</th>
+              <th className="py-2 px-4 text-left rounded-tl-lg font-bold uppercase text-[10px] tracking-wider text-white">Date</th>
+              <th className="py-2 px-4 text-left font-bold uppercase text-[10px] tracking-wider text-white">Description</th>
+              <th className="py-2 px-4 text-right rounded-tr-lg font-bold uppercase text-[10px] tracking-wider text-white">Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
@@ -72,17 +81,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </table>
       </div>
 
-      {/* Summary Box - Ab ye table ke khatam hone ke foran baad show hoga */}
-      <div className="mt-8 flex justify-end">
+      {/* Summary Box */}
+      <div className="mt-8 flex justify-end summary-container">
         <div className="w-64 bg-slate-800 text-white p-6 rounded-2xl shadow-xl">
-          <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] mb-1 font-bold text-center">Total Net Balance</p>
-          <p className="text-2xl font-black text-center border-t border-white/20 pt-2 tracking-tight">
+          <p className="text-[10px] opacity-70 uppercase tracking-[0.2em] mb-1 font-bold text-center text-white">Total Net Balance</p>
+          <p className="text-2xl font-black text-center border-t border-white/20 pt-2 tracking-tight text-white">
             Rs {totalBalance.toLocaleString()}
           </p>
         </div>
       </div>
 
-      {/* Footer - mb-4 lagaya hai taake page ke end se thora gap rahe */}
+      {/* Footer */}
       <div className="mt-16 mb-4 pt-6 border-t border-dotted border-slate-300 text-center">
         <p className="text-slate-400 text-[10px] font-medium uppercase tracking-widest">
           Generated via {shopName} Digital Khata - 2026

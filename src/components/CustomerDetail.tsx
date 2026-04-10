@@ -127,35 +127,43 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const downloadInvoice = async () => {
-    if (!invoiceRef.current) {
-      toast.error("Template load nahi hua");
-      return;
-    }
+  const element = invoiceRef.current;
+  if (!element) {
+    toast.error("Template load nahi hua");
+    return;
+  }
 
-    const toastId = toast.loading("PDF ban rahi hai...");
-    try {
-      const canvas = await html2canvas(invoiceRef.current, {
-        scale: 2,
-        useCORS: true,
-        logging: false,
-        backgroundColor: "#ffffff"
-      });
-      const imgData = canvas.toDataURL('image/png');
-      const pdf = new jsPDF('p', 'mm', 'a4');
-      const imgProps = pdf.getImageProperties(imgData);
-      const pdfWidth = pdf.internal.pageSize.getWidth();
-      const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
+  const toastId = toast.loading("PDF ban rahi hai...");
 
-      pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-      pdf.save(`${customer.name}_Invoice.pdf`);
-      toast.dismiss(toastId);
-      toast.success("PDF Download ho gayi!");
-    } catch (error) {
-      console.error("PDF Error:", error);
-      toast.dismiss(toastId);
-      toast.error("PDF banane mein masla aaya");
-    }
-  };
+  try {
+    // Naya jsPDF instance (A4 size)
+    const doc = new jsPDF({
+      orientation: 'p',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    // Advanced html method jo auto-paging handle karta hai
+    await doc.html(element, {
+      callback: function (doc) {
+        doc.save(`${customer.name}_Invoice.pdf`);
+        toast.dismiss(toastId);
+        toast.success("PDF Download ho gayi!");
+      },
+      x: 0,
+      y: 0,
+      width: 210, // A4 width in mm
+      windowWidth: 794, // Hamare InvoiceTemplate ki width
+      autoPaging: 'text', // Taake records table ke beech mein se na katain
+      margin: [10, 0, 10, 0] // Thora sa margin top aur bottom par
+    });
+
+  } catch (error) {
+    console.error("PDF Error:", error);
+    toast.dismiss(toastId);
+    toast.error("PDF banane mein masla aaya");
+  }
+};
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
