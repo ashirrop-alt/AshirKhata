@@ -84,16 +84,19 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
         {/* 4. TOTAL BOX - Using Margin instead of Absolute Positioning */}
         {/* 4. TOTAL BOX - Simple & Clean */}
+        {/* 4. TOTAL BOX - Fixed Page Break Issue */}
         <div style={{ 
           marginTop: '40px', 
-          display: 'flex', 
-          justifyContent: 'flex-end',
-          pageBreakInside: 'avoid'
+          display: 'block', // Flex ki jagah block zyada stable rehta hai printing mein
+          pageBreakInside: 'avoid', // Puray browsers ke liye
+          breakInside: 'avoid',      // Modern browsers ke liye
+          width: '100%'
         }}>
           <div style={{ 
             borderTop: '2px solid #1e293b', 
             paddingTop: '15px', 
             width: '250px', 
+            marginLeft: 'auto', // Isse box right side par hi rahega
             textAlign: 'right' 
           }}>
             <div style={{ 
