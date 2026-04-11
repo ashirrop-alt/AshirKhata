@@ -35,7 +35,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
       <div style={{ padding: '40px 50px' }}>
         
-        {/* Header Section */}
+        {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#059669', margin: 0 }}>{shopName}</h1>
@@ -53,38 +53,41 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           <p style={{ fontSize: '14px', color: '#475569', margin: 0 }}>{customerPhone}</p>
         </div>
 
-        {/* TRANSACTIONS SECTION */}
+        {/* TRANSACTIONS SECTION - GRID BASED FOR STABILITY */}
         <div style={{ width: '100%' }}>
+          {/* Table Header */}
           <div style={{ 
-            display: 'flex', 
+            display: 'grid', 
+            gridTemplateColumns: '120px 1fr 140px',
             borderBottom: '2px solid #e2e8f0', 
             padding: '12px 8px',
             fontWeight: 'bold',
             fontSize: '12px'
           }}>
-            <div style={{ width: '120px' }}>DATE</div>
-            <div style={{ flex: 1 }}>DESCRIPTION</div>
-            <div style={{ width: '140px', textAlign: 'right' }}>AMOUNT (Rs)</div>
+            <div>DATE</div>
+            <div>DESCRIPTION</div>
+            <div style={{ textAlign: 'right' }}>AMOUNT (Rs)</div>
           </div>
 
+          {/* Table Rows */}
           {transactions.map((t) => (
             <div key={t.id} style={{ 
-              display: 'flex', 
+              display: 'grid', 
+              gridTemplateColumns: '120px 1fr 140px',
               borderBottom: '1px solid #f1f5f9', 
               padding: '14px 8px',
               fontSize: '13px',
               pageBreakInside: 'avoid',
-              breakInside: 'avoid' // Modern browsers ke liye
+              breakInside: 'avoid'
             }}>
-              <div style={{ width: '120px', color: '#64748b' }}>{t.date}</div>
-              <div style={{ flex: 1 }}>
+              <div style={{ color: '#64748b' }}>{t.date}</div>
+              <div>
                 <span style={{ color: t.type === 'dr' ? '#ef4444' : '#10b981', fontWeight: 'bold', marginRight: '8px' }}>
                   {t.type === 'dr' ? '[DEBIT]' : '[CREDIT]'}
                 </span>
                 {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
               </div>
               <div style={{ 
-                width: '140px', 
                 textAlign: 'right', 
                 fontWeight: 'bold', 
                 color: t.type === 'dr' ? '#ef4444' : '#10b981' 
@@ -95,20 +98,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           ))}
         </div>
 
-        {/* FIXED TOTAL BOX: Bina style cheere alignment fix */}
+        {/* TOTAL BOX - GRID BASED ALIGNMENT */}
         <div style={{ 
           marginTop: '30px', 
-          width: '100%',
-          display: 'block',
-          // Ye properties alignment out hone se bachaengi:
-          pageBreakInside: 'avoid', 
+          display: 'grid',
+          gridTemplateColumns: '1fr 250px', // Poori width ko 2 hisson mein baant diya
+          pageBreakInside: 'avoid',
           breakInside: 'avoid'
         }}>
+          <div></div> {/* Khali column jo total ko right side dhakelta hai */}
           <div style={{ 
             borderTop: '2px solid #1e293b', 
             paddingTop: '15px', 
-            width: '250px', 
-            marginLeft: 'auto', 
             textAlign: 'right' 
           }}>
             <div style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>
@@ -127,8 +128,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           textAlign: 'center', 
           borderTop: '1px solid #e2e8f0', 
           paddingTop: '20px',
-          pageBreakInside: 'avoid',
-          breakInside: 'avoid'
+          pageBreakInside: 'avoid'
         }}>
           <p style={{ fontSize: '10px', color: '#94a3b8' }}>
             Generated via {shopName} Digital Khata - 2026
