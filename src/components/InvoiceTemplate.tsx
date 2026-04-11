@@ -46,7 +46,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
       <div style={{ padding: '60px 50px 40px 50px' }}>
         
-        {/* Header - Shop Name and Date Fix */}
+        {/* Header Section */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '40px' }}>
           <div>
             <h1 style={{ 
@@ -55,7 +55,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               color: '#059669', 
               margin: 0, 
               textTransform: 'uppercase', 
-              letterSpacing: '0.5px' // Reduced spacing as requested
+              letterSpacing: '0.5px'
             }}>
               {shopName}
             </h1>
@@ -70,7 +70,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* 2. BILL TO SECTION - Bold Texts */}
+        {/* 2. BILL TO SECTION */}
         <div style={{ marginBottom: '40px' }}>
           <div style={{ 
             backgroundColor: '#f8fafc', 
@@ -84,13 +84,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* Table - Debit/Credit Labels Included */}
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+        {/* Table - FIXED COLUMN WIDTHS FOR FULL AMOUNTS */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ backgroundColor: '#1e293b' }}>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Date</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Description</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Amount (Rs)</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '20%' }}>Date</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '50%' }}>Description</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '30%' }}>Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
@@ -114,6 +114,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   textAlign: 'right', 
                   fontSize: '15px', 
                   fontWeight: '900', 
+                  whiteSpace: 'nowrap', // Prevents amount from breaking into half
                   color: t.type === 'dr' ? '#ef4444' : '#10b981' 
                 }}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
@@ -123,7 +124,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* Summary Box - Extra Bold */}
+        {/* Summary Box */}
         <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ 
             backgroundColor: '#1e293b', 
