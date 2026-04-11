@@ -83,10 +83,55 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </table>
 
         {/* 4. TOTAL BOX - Using Margin instead of Absolute Positioning */}
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '40px', breakInside: 'avoid' }}>
-          <div style={{ backgroundColor: '#1e293b', color: 'white', padding: '20px', borderRadius: '12px', width: '250px', textAlign: 'center' }}>
-            <p style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Total Net Balance</p>
-            <p style={{ fontSize: '28px', fontWeight: 'bold', margin: 0 }}>Rs {totalBalance.toLocaleString()}</p>
+        {/* 4. TOTAL BOX - Modern Professional Design */}
+        <div style={{ 
+          marginTop: '50px', 
+          display: 'flex', 
+          justifyContent: 'flex-end', 
+          pageBreakInside: 'avoid' 
+        }}>
+          <div style={{ 
+            width: '320px', 
+            backgroundColor: '#f8fafc', // Light slate background
+            borderRadius: '16px',
+            borderLeft: '6px solid #059669', // Professional green accent
+            padding: '24px',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.05)',
+            border: '1px solid #e2e8f0'
+          }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+              <span style={{ fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                Status
+              </span>
+              <span style={{ 
+                fontSize: '10px', 
+                fontWeight: '900', 
+                padding: '4px 12px', 
+                borderRadius: '20px', 
+                backgroundColor: totalBalance >= 0 ? '#dcfce7' : '#fee2e2',
+                color: totalBalance >= 0 ? '#166534' : '#991b1b',
+                textTransform: 'uppercase'
+              }}>
+                {totalBalance >= 0 ? 'Settled' : 'Pending'}
+              </span>
+            </div>
+            
+            <div style={{ height: '1px', backgroundColor: '#e2e8f0', marginBottom: '16px' }}></div>
+            
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <span style={{ fontSize: '13px', fontWeight: '700', color: '#1e293b', marginBottom: '4px' }}>
+                Total Net Balance
+              </span>
+              <span style={{ 
+                fontSize: '32px', 
+                fontWeight: '900', 
+                color: '#1e293b',
+                letterSpacing: '-1px'
+              }}>
+                <span style={{ fontSize: '18px', marginRight: '4px' }}>Rs</span>
+                {totalBalance.toLocaleString()}
+              </span>
+            </div>
           </div>
         </div>
 
