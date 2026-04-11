@@ -21,86 +21,113 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   return (
     <div 
       ref={ref} 
-      id="invoice-root"
-      className="bg-white w-[794px] h-auto text-slate-800 relative flex flex-col"
-      style={{ fontFamily: 'sans-serif', fontStyle: 'normal', margin: '0', padding: '0' }}
+      style={{ 
+        width: '794px', 
+        minHeight: '1000px', 
+        backgroundColor: 'white', 
+        position: 'relative', 
+        fontFamily: 'Arial, sans-serif',
+        color: '#1e293b',
+        margin: '0 auto',
+        padding: '0'
+      }}
     >
-      <style>{`
-        * { font-style: normal !important; box-sizing: border-box; -webkit-print-color-adjust: exact; }
-        @media print {
-          body { margin: 0 !important; }
-          #invoice-root { height: auto !important; }
-        }
-      `}</style>
-      
-      {/* 1. GREEN BAR: Forced to Absolute Zero Edge */}
-      <div className="absolute top-0 left-0 w-full h-[8px] bg-emerald-600" style={{ zIndex: 9999 }}></div>
+      {/* 1. GREEN BAR: Inline style to force it to the absolute edge */}
+      <div style={{ 
+        position: 'absolute', 
+        top: 0, 
+        left: 0, 
+        width: '100%', 
+        height: '8px', 
+        backgroundColor: '#059669',
+        zIndex: 100 
+      }}></div>
 
-      {/* 2. INNER WRAPPER: Handles all spacing internally */}
-      <div className="w-full px-12 pt-14 pb-10">
+      {/* Main Content Padding */}
+      <div style={{ padding: '60px 50px 40px 50px' }}>
         
         {/* Header */}
-        <div className="flex justify-between items-start border-b-2 border-slate-100 pb-8">
+        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #f1f5f9', paddingBottom: '30px' }}>
           <div>
-            <h1 className="text-4xl font-black text-emerald-600 uppercase tracking-tighter" style={{ margin: 0 }}>
+            <h1 style={{ fontSize: '36px', fontWeight: '900', color: '#059669', margin: 0, textTransform: 'uppercase', letterSpacing: '-1px' }}>
               {shopName}
             </h1>
-            <p className="text-slate-400 text-[10px] font-bold mt-1 tracking-widest uppercase">Digital Khata Report</p>
-          </div>
-          <div className="text-right">
-            <h2 className="text-xl font-bold text-slate-700 uppercase tracking-tight" style={{ margin: 0 }}>Invoice</h2>
-            <p className="text-slate-500 text-[11px] font-medium uppercase">Date: {new Date().toLocaleDateString('en-GB')}</p>
-          </div>
-        </div>
-
-        {/* 3. BILL TO: Locked in a container to prevent disappearing */}
-        <div className="mt-10 mb-10 block">
-          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 min-w-[280px] inline-block shadow-sm">
-            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5">BILL TO:</p>
-            <p className="text-2xl font-bold text-slate-900 leading-none" style={{ margin: 0 }}>{customerName}</p>
-            <p className="text-slate-600 font-medium text-sm mt-2">{customerPhone}</p>
-          </div>
-        </div>
-
-        {/* 4. TABLE: Height is now auto to prevent 2nd blank page */}
-        <div className="w-full h-auto overflow-visible">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr className="bg-slate-800">
-                <th className="py-3 px-4 text-left text-[10px] font-bold text-white uppercase rounded-tl-lg">Date</th>
-                <th className="py-3 px-4 text-left text-[10px] font-bold text-white uppercase">Description</th>
-                <th className="py-3 px-4 text-right text-[10px] font-bold text-white uppercase rounded-tr-lg">Amount (Rs)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transactions.map((t, index) => (
-                <tr key={t.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/40'} border-b border-slate-100`}>
-                  <td className="py-4 px-4 text-xs font-bold text-slate-500">{t.date}</td>
-                  <td className="py-4 px-4 font-semibold text-sm text-slate-700">
-                    {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
-                  </td>
-                  <td className={`py-4 px-4 text-right font-bold text-sm ${t.type === 'dr' ? 'text-red-600' : 'text-emerald-600'}`}>
-                    {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* 5. SUMMARY BOX */}
-        <div className="mt-12 flex justify-end">
-          <div className="bg-slate-900 text-white p-8 rounded-3xl w-72 shadow-xl">
-            <p className="text-[10px] text-slate-400 uppercase font-bold mb-2 text-center tracking-wider">Total Net Balance</p>
-            <p className="text-3xl font-black text-center border-t border-white/10 pt-4 leading-tight">
-              Rs {totalBalance.toLocaleString()}
+            <p style={{ fontSize: '10px', fontWeight: 'bold', color: '#94a3b8', margin: '5px 0 0 0', letterSpacing: '2px', textTransform: 'uppercase' }}>
+              Digital Khata Report
             </p>
           </div>
+          <div style={{ textAlign: 'right' }}>
+            <h2 style={{ fontSize: '20px', fontWeight: 'bold', color: '#334155', margin: 0, textTransform: 'uppercase' }}>Invoice</h2>
+            <p style={{ fontSize: '11px', color: '#64748b', margin: '5px 0 0 0' }}>Date: {new Date().toLocaleDateString('en-GB')}</p>
+          </div>
         </div>
 
-        {/* 6. FOOTER */}
-        <div className="mt-16 text-center border-t border-dotted border-slate-200 pt-6">
-          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">
+        {/* 2. BILL TO: Using standard CSS background to ensure visibility */}
+        <div style={{ marginTop: '40px', marginBottom: '40px' }}>
+          <div style={{ 
+            backgroundColor: '#f8fafc', 
+            padding: '20px', 
+            borderRadius: '12px', 
+            border: '1px solid #f1f5f9', 
+            display: 'inline-block',
+            minWidth: '280px'
+          }}>
+            <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '900', margin: '0 0 8px 0', letterSpacing: '1px' }}>BILL TO:</p>
+            <p style={{ fontSize: '22px', fontWeight: 'bold', color: '#0f172a', margin: 0 }}>{customerName}</p>
+            <p style={{ fontSize: '14px', color: '#475569', margin: '4px 0 0 0', fontWeight: '500' }}>{customerPhone}</p>
+          </div>
+        </div>
+
+        {/* Table */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+          <thead>
+            <tr style={{ backgroundColor: '#1e293b' }}>
+              <th style={{ color: 'white', padding: '12px 15px', textAlign: 'left', fontSize: '10px', textTransform: 'uppercase', borderRadius: '8px 0 0 0' }}>Date</th>
+              <th style={{ color: 'white', padding: '12px 15px', textAlign: 'left', fontSize: '10px', textTransform: 'uppercase' }}>Description</th>
+              <th style={{ color: 'white', padding: '12px 15px', textAlign: 'right', fontSize: '10px', textTransform: 'uppercase', borderRadius: '0 8px 0 0' }}>Amount (Rs)</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transactions.map((t, index) => (
+              <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9', backgroundColor: index % 2 === 0 ? 'white' : '#f8fafc' }}>
+                <td style={{ padding: '15px', fontSize: '12px', color: '#64748b', fontWeight: 'bold' }}>{t.date}</td>
+                <td style={{ padding: '15px', fontSize: '14px', color: '#334155', fontWeight: '600' }}>
+                  {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
+                </td>
+                <td style={{ 
+                  padding: '15px', 
+                  textAlign: 'right', 
+                  fontSize: '14px', 
+                  fontWeight: 'bold', 
+                  color: t.type === 'dr' ? '#dc2626' : '#059669' 
+                }}>
+                  {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {/* Summary Box */}
+        <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
+          <div style={{ 
+            backgroundColor: '#0f172a', 
+            color: 'white', 
+            padding: '25px', 
+            borderRadius: '20px', 
+            width: '260px', 
+            textAlign: 'center' 
+          }}>
+            <p style={{ fontSize: '10px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: 'bold', margin: '0 0 10px 0' }}>Total Net Balance</p>
+            <div style={{ borderTop: '1px solid rgba(255,255,255,0.1)', paddingTop: '15px', fontSize: '28px', fontWeight: '900' }}>
+              Rs {totalBalance.toLocaleString()}
+            </div>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div style={{ marginTop: '60px', textAlign: 'center', borderTop: '1px dotted #cbd5e1', paddingTop: '20px' }}>
+          <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>
             Generated via {shopName} Digital Khata - 2026
           </p>
         </div>
