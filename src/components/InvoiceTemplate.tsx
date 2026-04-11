@@ -21,7 +21,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   return (
     <div 
       ref={ref} 
-      className="bg-white w-[794px] h-auto text-slate-800 relative flex flex-col"
+      className="bg-white w-[794px] h-auto text-slate-800 relative flex flex-col overflow-hidden"
       style={{ fontFamily: 'sans-serif', margin: 0, padding: 0 }}
     >
       <style>{`
@@ -33,17 +33,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         table { border-collapse: collapse; width: 100%; }
       `}</style>
       
-      {/* 1. TOP BAR FIX: Absolute 0 means it sticks to the very edge */}
+      {/* 1. GREEN BAR: Absolute Top 0 - No margin/padding will push this */}
       <div className="absolute top-0 left-0 w-full h-[8px] bg-emerald-600 z-50"></div>
 
-      {/* 2. CONTENT WRAPPER: Removed 'mt-4' to prevent pushing the bar down */}
-      <div className="px-12 pt-10 pb-10 flex flex-col flex-grow">
+      {/* 2. INNER CONTENT: Yahan se padding shuru hogi */}
+      <div className="px-12 pt-12 pb-10 flex flex-grow flex-col">
         
         {/* Header */}
-        <div className="flex justify-between items-start border-b-2 border-slate-100 pb-6 mt-4">
+        <div className="flex justify-between items-start border-b-2 border-slate-100 pb-8 mt-2">
           <div>
             <h1 className="text-4xl font-black text-emerald-600 uppercase tracking-tighter">{shopName}</h1>
-            <p className="text-slate-400 text-xs font-bold mt-1 tracking-widest uppercase">Digital Khata Report</p>
+            <p className="text-slate-400 text-[10px] font-bold mt-1 tracking-widest uppercase">Digital Khata Report</p>
           </div>
           <div className="text-right">
             <h2 className="text-xl font-bold text-slate-700 uppercase tracking-tight">Invoice</h2>
@@ -51,28 +51,28 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* Customer Info (BILL TO) */}
-        <div className="my-8">
-          <div className="bg-slate-50 p-6 rounded-2xl border border-slate-100 min-w-[300px] inline-block shadow-sm">
-            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1.5">BILL TO:</p>
-            <p className="text-2xl font-bold text-slate-800 leading-none">{customerName}</p>
-            <p className="text-slate-600 font-medium text-sm mt-2">{customerPhone}</p>
+        {/* 3. BILL TO SECTION: Restored exactly like the screenshot */}
+        <div className="my-10">
+          <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 min-w-[280px] inline-block">
+            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">BILL TO:</p>
+            <p className="text-xl font-bold text-slate-900 leading-tight">{customerName}</p>
+            <p className="text-slate-600 font-medium text-sm mt-1">{customerPhone}</p>
           </div>
         </div>
 
-        {/* Table Section */}
+        {/* Table */}
         <div className="flex-grow">
           <table className="w-full">
             <thead>
               <tr className="bg-slate-800">
-                <th className="py-3 px-4 text-left text-[10px] font-bold text-white uppercase rounded-tl-lg tracking-wider">Date</th>
-                <th className="py-3 px-4 text-left text-[10px] font-bold text-white uppercase tracking-wider">Description</th>
-                <th className="py-3 px-4 text-right text-[10px] font-bold text-white uppercase rounded-tr-lg tracking-wider">Amount (Rs)</th>
+                <th className="py-2.5 px-4 text-left text-[10px] font-bold text-white uppercase rounded-tl-lg tracking-wider">Date</th>
+                <th className="py-2.5 px-4 text-left text-[10px] font-bold text-white uppercase tracking-wider">Description</th>
+                <th className="py-2.5 px-4 text-right text-[10px] font-bold text-white uppercase rounded-tr-lg tracking-wider">Amount (Rs)</th>
               </tr>
             </thead>
             <tbody>
-              {transactions.map((t) => (
-                <tr key={t.id} className="border-b border-slate-100/50">
+              {transactions.map((t, index) => (
+                <tr key={t.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/30'} border-b border-slate-100/50`}>
                   <td className="py-4 px-4 text-xs font-bold text-slate-500">{t.date}</td>
                   <td className="py-4 px-4 font-semibold text-sm text-slate-700">
                     {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
@@ -87,17 +87,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </div>
 
         {/* Summary Box */}
-        <div className="mt-10 flex justify-end">
-          <div className="bg-slate-900 text-white p-7 rounded-3xl w-72 shadow-xl">
-            <p className="text-[10px] text-slate-400 uppercase font-bold mb-2 text-center tracking-wider">Total Net Balance</p>
-            <p className="text-3xl font-black text-center border-t border-white/10 pt-4">
+        <div className="mt-12 flex justify-end">
+          <div className="bg-slate-900 text-white p-7 rounded-2xl w-64 shadow-xl">
+            <p className="text-[10px] text-slate-400 uppercase font-bold mb-1.5 text-center tracking-wider text-white">Total Net Balance</p>
+            <p className="text-2xl font-black text-center border-t border-white/10 pt-3 text-white">
               Rs {totalBalance.toLocaleString()}
             </p>
           </div>
         </div>
 
         {/* Footer */}
-        <div className="mt-10 text-center border-t border-dotted border-slate-200 pt-6">
+        <div className="mt-12 text-center border-t border-dotted border-slate-200 pt-6">
           <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.2em]">
             Generated via {shopName} Digital Khata - 2026
           </p>
