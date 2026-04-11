@@ -22,8 +22,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
     <div  
       ref={ref}  
       style={{  
-        width: '794px', // Standard A4 Width
-        minHeight: '100vh', 
+        width: '794px', 
+        // FIX 1: minHeight hata di taake content natural flow kare
         backgroundColor: 'white',  
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
@@ -32,7 +32,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         overflow: 'visible' 
       }}
     >
-      {/* 1. TOP BAR - Changed to Relative/Flow for stability */}
       <div style={{ width: '100%', height: '8px', backgroundColor: '#059669' }}></div>
 
       <div style={{ padding: '40px 50px' }}>
@@ -66,7 +65,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </thead>
           <tbody>
             {transactions.map((t) => (
-              <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
+              <tr key={t.id} style={{ 
+                borderBottom: '1px solid #f1f5f9',
+                // FIX 2: Row ko beech mein se katne se rokna
+                pageBreakInside: 'avoid',
+                breakInside: 'avoid'
+              }}>
                 <td style={{ padding: '12px 8px', fontSize: '12px' }}>{t.date}</td>
                 <td style={{ padding: '12px 8px', fontSize: '13px' }}>
                   <span style={{ color: t.type === 'dr' ? '#ef4444' : '#10b981', fontWeight: 'bold', marginRight: '5px' }}>
@@ -82,34 +86,26 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* 4. TOTAL BOX - Using Margin instead of Absolute Positioning */}
-        {/* 4. TOTAL BOX - Simple & Clean */}
+        {/* 4. TOTAL BOX - FIXED ALIGNMENT */}
         <div style={{ 
           marginTop: '40px', 
-          display: 'flex', 
-          justifyContent: 'flex-end',
-          pageBreakInside: 'avoid'
+          // FIX 3: Flex ki jagah block taake alignment shift na ho
+          display: 'block', 
+          pageBreakInside: 'avoid',
+          breakInside: 'avoid',
+          width: '100%'
         }}>
           <div style={{ 
             borderTop: '2px solid #1e293b', 
             paddingTop: '15px', 
             width: '250px', 
+            marginLeft: 'auto', // Box ko right side par rakhega
             textAlign: 'right' 
           }}>
-            <div style={{ 
-              fontSize: '12px', 
-              fontWeight: '800', 
-              color: '#64748b', 
-              textTransform: 'uppercase', 
-              marginBottom: '5px' 
-            }}>
+            <div style={{ fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '5px' }}>
               Net Balance
             </div>
-            <div style={{ 
-              fontSize: '28px', 
-              fontWeight: '900', 
-              color: '#1e293b' 
-            }}>
+            <div style={{ fontSize: '28px', fontWeight: '900', color: '#1e293b' }}>
               <span style={{ fontSize: '16px', marginRight: '5px' }}>Rs</span>
               {totalBalance.toLocaleString()}
             </div>
@@ -117,7 +113,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: '50px', textAlign: 'center', borderTop: '1px solid #e2e8f0', paddingTop: '20px' }}>
+        <div style={{ 
+          marginTop: '50px', 
+          textAlign: 'center', 
+          borderTop: '1px solid #e2e8f0', 
+          paddingTop: '20px',
+          pageBreakInside: 'avoid'
+        }}>
           <p style={{ fontSize: '10px', color: '#94a3b8' }}>
             Generated via {shopName} Digital Khata - 2026
           </p>
