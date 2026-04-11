@@ -23,31 +23,30 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       ref={ref} 
       style={{ 
         width: '794px', 
-        minHeight: '1000px', 
+        minHeight: '1123px', // Standard A4 Height
         backgroundColor: 'white', 
         position: 'relative', 
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
         padding: '0',
-        display: 'block' // Block ensures it flows naturally
+        display: 'flex',
+        flexDirection: 'column'
       }}
     >
-      {/* GREEN BAR: Absolute positioning to force it to the very top edge */}
+      {/* 1. STICKY TOP GREEN BAR - No white space above */}
       <div style={{ 
-        position: 'absolute', 
-        top: 0, 
-        left: 0, 
         width: '100%', 
         height: '10px', 
         backgroundColor: '#059669',
-        zIndex: 999
+        flexShrink: 0
       }}></div>
 
-      <div style={{ padding: '60px 50px 40px 50px' }}>
+      {/* Main Content Area */}
+      <div style={{ padding: '50px 50px 40px 50px', flexGrow: 1 }}>
         
         {/* Header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '40px', paddingTop: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '40px' }}>
           <div>
             <h1 style={{ fontSize: '34px', fontWeight: '900', color: '#059669', margin: 0, textTransform: 'uppercase', letterSpacing: '-1px' }}>
               {shopName}
@@ -62,7 +61,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* BILL TO: Restored and Fixed */}
+        {/* Bill To Section */}
         <div style={{ marginBottom: '40px' }}>
           <div style={{ 
             backgroundColor: '#f8fafc', 
@@ -108,7 +107,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* Summary Box */}
+        {/* Balance Box */}
         <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
           <div style={{ 
             backgroundColor: '#1e293b', 
@@ -126,10 +125,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </div>
 
         {/* Footer */}
-        <div style={{ marginTop: '60px', textAlign: 'center', borderTop: '1px dotted #cbd5e1', paddingTop: '20px' }}>
-          <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>
-            Generated via {shopName} Digital Khata - 2026
-          </p>
+        <div style={{ marginTop: 'auto', paddingTop: '60px', textAlign: 'center' }}>
+          <div style={{ borderTop: '1px dotted #cbd5e1', paddingTop: '20px' }}>
+            <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold', textTransform: 'uppercase', letterSpacing: '2px' }}>
+              Generated via {shopName} Digital Khata - 2026
+            </p>
+          </div>
         </div>
       </div>
     </div>
