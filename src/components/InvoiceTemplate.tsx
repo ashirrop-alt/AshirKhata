@@ -29,7 +29,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
-        padding: '0'
+        padding: '0',
+        overflow: 'hidden'
       }}
     >
       {/* 1. TOP GREEN BAR */}
@@ -83,13 +84,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* Table Section */}
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px', tableLayout: 'fixed' }}>
+        {/* Table - Alignment Fixed */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
           <thead>
             <tr style={{ backgroundColor: '#1e293b' }}>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '20%' }}>Date</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '50%' }}>Description</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '30%' }}>Amount (Rs)</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Date</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Description</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
@@ -113,8 +114,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   textAlign: 'right', 
                   fontSize: '15px', 
                   fontWeight: '900', 
-                  whiteSpace: 'nowrap',
-                  color: t.type === 'dr' ? '#ef4444' : '#10b981' 
+                  color: t.type === 'dr' ? '#ef4444' : '#10b981',
+                  whiteSpace: 'nowrap' // Prevents half-cut amounts without breaking layout
                 }}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                 </td>
@@ -123,22 +124,15 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* 3. SUMMARY BOX - Added Page Break Prevention */}
-        <div style={{ 
-            marginTop: '50px', 
-            display: 'flex', 
-            justifyContent: 'flex-end',
-            pageBreakInside: 'avoid', // Standard for PDF/Print
-            breakInside: 'avoid'      // Modern alternative
-        }}>
+        {/* 3. SUMMARY BOX */}
+        <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', breakInside: 'avoid' }}>
           <div style={{ 
             backgroundColor: '#1e293b', 
             color: 'white', 
             padding: '25px', 
             borderRadius: '20px', 
             width: '280px', 
-            textAlign: 'center',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            textAlign: 'center' 
           }}>
             <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '900', margin: '0 0 10px 0', letterSpacing: '1px' }}>Total Net Balance</p>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '15px', fontSize: '34px', fontWeight: '900' }}>
