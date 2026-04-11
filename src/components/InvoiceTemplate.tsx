@@ -29,8 +29,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
-        padding: '0',
-        overflow: 'hidden'
+        padding: '0'
       }}
     >
       {/* 1. TOP GREEN BAR */}
@@ -84,7 +83,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* Table - FIXED COLUMN WIDTHS FOR FULL AMOUNTS */}
+        {/* Table Section */}
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ backgroundColor: '#1e293b' }}>
@@ -114,7 +113,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   textAlign: 'right', 
                   fontSize: '15px', 
                   fontWeight: '900', 
-                  whiteSpace: 'nowrap', // Prevents amount from breaking into half
+                  whiteSpace: 'nowrap',
                   color: t.type === 'dr' ? '#ef4444' : '#10b981' 
                 }}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
@@ -124,15 +123,22 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* Summary Box */}
-        <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end' }}>
+        {/* 3. SUMMARY BOX - Added Page Break Prevention */}
+        <div style={{ 
+            marginTop: '50px', 
+            display: 'flex', 
+            justifyContent: 'flex-end',
+            pageBreakInside: 'avoid', // Standard for PDF/Print
+            breakInside: 'avoid'      // Modern alternative
+        }}>
           <div style={{ 
             backgroundColor: '#1e293b', 
             color: 'white', 
             padding: '25px', 
             borderRadius: '20px', 
             width: '280px', 
-            textAlign: 'center' 
+            textAlign: 'center',
+            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
           }}>
             <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '900', margin: '0 0 10px 0', letterSpacing: '1px' }}>Total Net Balance</p>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '15px', fontSize: '34px', fontWeight: '900' }}>
