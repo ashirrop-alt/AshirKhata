@@ -83,50 +83,35 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         </table>
 
         {/* 4. TOTAL BOX - Using Margin instead of Absolute Positioning */}
-        {/* 4. TOTAL BOX - Spacious & Simple Wording */}
+        {/* 4. TOTAL BOX - Simple & Clean */}
         <div style={{ 
-          marginTop: '30px', 
+          marginTop: '40px', 
           display: 'flex', 
-          justifyContent: 'flex-end', 
-          pageBreakInside: 'avoid' 
+          justifyContent: 'flex-end',
+          pageBreakInside: 'avoid'
         }}>
           <div style={{ 
-            width: '300px', 
-            padding: '16px 24px',
-            backgroundColor: '#1e293b', 
-            borderRadius: '12px',
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-            boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
+            borderTop: '2px solid #1e293b', 
+            paddingTop: '15px', 
+            width: '250px', 
+            textAlign: 'right' 
           }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-              <span style={{ fontSize: '11px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                Net Balance
-              </span>
-              <span style={{ 
-                fontSize: '10px', 
-                fontWeight: '900', 
-                color: totalBalance >= 0 ? '#10b981' : '#ef4444',
-                backgroundColor: 'rgba(255,255,255,0.05)',
-                padding: '2px 8px',
-                borderRadius: '4px',
-                display: 'inline-block',
-                width: 'fit-content'
-              }}>
-                {totalBalance >= 0 ? 'PAISA LENA HAI' : 'PAISA DENA HAI'}
-              </span>
+            <div style={{ 
+              fontSize: '12px', 
+              fontWeight: '800', 
+              color: '#64748b', 
+              textTransform: 'uppercase', 
+              marginBottom: '5px' 
+            }}>
+              Net Balance
             </div>
-            
-            <div style={{ textAlign: 'right' }}>
-              <span style={{ 
-                fontSize: '24px', 
-                fontWeight: '900', 
-                color: 'white',
-              }}>
-                <small style={{ fontSize: '14px', marginRight: '4px', color: '#94a3b8' }}>Rs</small>
-                {Math.abs(totalBalance).toLocaleString()}
-              </span>
+            <div style={{ 
+              fontSize: '28px', 
+              fontWeight: '900', 
+              color: '#1e293b' 
+            }}>
+              <span style={{ fontSize: '16px', marginRight: '5px' }}>Rs</span>
+              {totalBalance.toLocaleString()}
             </div>
           </div>
         </div>
