@@ -4,7 +4,7 @@ interface Transaction {
   id: string;
   date: string;
   amount: number;
-  type: 'dr' | 'cr'; // 'dr' for Udhar, 'cr' for Paisa Mila
+  type: 'dr' | 'cr';
 }
 
 interface InvoiceProps {
@@ -19,70 +19,63 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance 
 }, ref) => {
   return (
-    /* 1. MAIN CONTAINER: Padding 0 kardi taake bar top edge par rahe */
     <div 
       ref={ref} 
-      className="bg-white w-[794px] h-auto text-slate-800 relative flex flex-col overflow-hidden"
+      className="bg-white w-[794px] min-h-[1120px] text-slate-800 relative flex flex-col overflow-hidden"
       style={{ fontFamily: 'sans-serif' }}
     >
       <style>{`
         @media print {
-          tr { page-break-inside: avoid !important; }
-          .summary-container { page-break-inside: avoid !important; }
+          body { margin: 0; }
+          .invoice-page { page-break-after: avoid; page-break-inside: avoid; }
         }
-        table { page-break-inside: auto; width: 100%; border-collapse: collapse; }
-        tr { page-break-inside: avoid; page-break-after: auto; }
-        * { font-style: normal !important; } 
+        * { font-style: normal !important; box-sizing: border-box; }
       `}</style>
       
-      {/* 2. GREEN BAR: Absolute top-0 taake bilkul edge par chipak jaye */}
+      {/* Top Green Bar - Border se chipka hua */}
       <div className="absolute top-0 left-0 w-full h-[8px] bg-emerald-600 z-50"></div>
 
-      {/* 3. INNER CONTENT WRAPPER: Saari padding ab yahan handle hogi */}
-      <div className="px-10 pb-10 pt-12 flex flex-col flex-grow">
+      {/* Main Content Wrapper */}
+      <div className="px-12 py-12 flex flex-col h-full flex-grow">
         
         {/* Header */}
-        <div className="flex justify-between border-b-2 border-slate-200 pb-8">
+        <div className="flex justify-between items-start border-b-2 border-slate-100 pb-6">
           <div>
-            <h1 className="text-4xl font-bold text-emerald-600 uppercase tracking-tighter">
-              {shopName}
-            </h1>
-            <p className="text-slate-500 mt-1 font-semibold text-sm">Digital Khata Report</p>
+            <h1 className="text-3xl font-bold text-emerald-600 uppercase tracking-tight">{shopName}</h1>
+            <p className="text-slate-400 text-xs font-bold mt-1 tracking-widest uppercase">Digital Khata Report</p>
           </div>
           <div className="text-right">
-            <p className="font-bold text-lg uppercase tracking-wider text-slate-700">Invoice</p>
-            <p className="text-slate-500 text-xs font-medium">Date: {new Date().toLocaleDateString('en-GB')}</p>
+            <h2 className="text-xl font-black text-slate-700 uppercase tracking-tighter">Invoice</h2>
+            <p className="text-slate-400 text-[10px] font-bold">DATE: {new Date().toLocaleDateString('en-GB')}</p>
           </div>
         </div>
 
         {/* Customer Info */}
-        <div className="my-10">
-          <div className="bg-slate-50 p-5 rounded-xl border border-slate-100 w-1/2 shadow-sm">
-            <p className="text-[10px] text-slate-400 uppercase font-black tracking-widest mb-1">Bill To:</p>
-            <p className="text-xl font-bold text-slate-800 leading-tight">{customerName}</p>
-            <p className="text-slate-600 font-semibold text-sm mt-1">{customerPhone}</p>
+        <div className="mt-8 mb-8">
+          <div className="bg-slate-50 p-4 rounded-xl border border-slate-100 inline-block min-w-[250px]">
+            <p className="text-[9px] text-slate-400 uppercase font-black mb-1">Billing To:</p>
+            <p className="text-lg font-bold text-slate-800">{customerName}</p>
+            <p className="text-slate-500 font-medium text-xs">{customerPhone}</p>
           </div>
         </div>
 
-        {/* Table Section */}
+        {/* Table */}
         <div className="flex-grow">
-          <table className="w-full mt-2">
+          <table className="w-full">
             <thead>
               <tr className="bg-slate-800">
-                <th className="py-3 px-4 text-left rounded-tl-lg font-bold uppercase text-[10px] tracking-widest text-white">Date</th>
-                <th className="py-3 px-4 text-left font-bold uppercase text-[10px] tracking-widest text-white">Description</th>
-                <th className="py-3 px-4 text-right rounded-tr-lg font-bold uppercase text-[10px] tracking-widest text-white">Amount (Rs)</th>
+                <th className="py-2 px-4 text-left text-[10px] font-bold text-white uppercase rounded-tl-lg">Date</th>
+                <th className="py-2 px-4 text-left text-[10px] font-bold text-white uppercase">Description</th>
+                <th className="py-2 px-4 text-right text-[10px] font-bold text-white uppercase rounded-tr-lg">Amount</th>
               </tr>
             </thead>
             <tbody>
               {transactions.map((t, index) => (
-                <tr key={t.id} className={`${index % 2 === 0 ? 'bg-white' : 'bg-slate-50/50'} border-b border-slate-100`}>
-                  <td className="py-4 px-4 text-xs font-bold text-slate-500">{t.date}</td>
-                  <td className="py-4 px-4 font-bold text-sm text-slate-700">
-                    {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
-                  </td>
-                  <td className={`py-4 px-4 text-right font-black text-base ${t.type === 'dr' ? 'text-red-600' : 'text-emerald-600'}`}>
-                    {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
+                <tr key={t.id} className="border-b border-slate-50">
+                  <td className="py-3 px-4 text-xs font-bold text-slate-400">{t.date}</td>
+                  <td className="py-3 px-4 text-sm font-bold text-slate-700">{t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}</td>
+                  <td className={`py-3 px-4 text-right font-bold ${t.type === 'dr' ? 'text-red-500' : 'text-emerald-500'}`}>
+                    {t.type === 'dr' ? `+${t.amount}` : `-${t.amount}`}
                   </td>
                 </tr>
               ))}
@@ -90,23 +83,22 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </table>
         </div>
 
-        {/* Summary Box */}
-        <div className="mt-12 flex justify-end summary-container">
-          <div className="w-72 bg-slate-900 text-white p-8 rounded-3xl shadow-2xl">
-            <p className="text-[10px] opacity-60 uppercase font-black tracking-[0.2em] mb-2 text-center text-white">Total Net Balance</p>
-            <div className="border-t border-white/20 pt-4">
-              <p className="text-3xl font-black text-center tracking-tight text-white">
+        {/* Summary and Footer - Inhe bottom par lock karne ke liye wrapper */}
+        <div className="mt-auto pt-10">
+          <div className="flex justify-end">
+            <div className="bg-slate-900 text-white p-6 rounded-2xl w-64 shadow-xl">
+              <p className="text-[9px] text-slate-400 uppercase font-bold mb-2 text-center">Current Net Balance</p>
+              <p className="text-2xl font-black text-center border-t border-slate-700 pt-3">
                 Rs {totalBalance.toLocaleString()}
               </p>
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div className="mt-20 mb-4 pt-8 border-t border-dotted border-slate-300 text-center">
-          <p className="text-slate-400 text-[10px] font-bold uppercase tracking-[0.3em]">
-            Generated via {shopName} Digital Khata - 2026
-          </p>
+          <div className="mt-12 text-center border-t border-dotted border-slate-200 pt-6">
+            <p className="text-[9px] text-slate-400 font-bold uppercase tracking-[0.2em]">
+              Generated via {shopName} App 2026
+            </p>
+          </div>
         </div>
       </div>
     </div>
