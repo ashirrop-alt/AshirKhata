@@ -53,9 +53,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           <p style={{ fontSize: '14px', color: '#475569', margin: 0 }}>{customerPhone}</p>
         </div>
 
-        {/* TRANSACTIONS SECTION - Table ki jagah DIV use kiya hai alignment ke liye */}
-        <div style={{ width: '100%' }}>
-          {/* Table Header */}
+        {/* TRANSACTIONS SECTION */}
+        <div style={{ width: '100%', marginBottom: '20px' }}>
           <div style={{ 
             display: 'flex', 
             borderBottom: '2px solid #e2e8f0', 
@@ -68,7 +67,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <div style={{ width: '140px', textAlign: 'right' }}>AMOUNT (Rs)</div>
           </div>
 
-          {/* Table Rows */}
           {transactions.map((t) => (
             <div key={t.id} style={{ 
               display: 'flex', 
@@ -81,7 +79,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               <div style={{ width: '120px', color: '#64748b' }}>{t.date}</div>
               <div style={{ flex: 1 }}>
                 <span style={{ color: t.type === 'dr' ? '#ef4444' : '#10b981', fontWeight: 'bold', marginRight: '8px' }}>
-                  {t.type === 'dr' ? '[DEBIT]' : '[CREDIT]'}
+                  {t.type === 'dr' ? '[DR]' : '[CR]'}
                 </span>
                 {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
               </div>
@@ -97,12 +95,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           ))}
         </div>
 
-        {/* TOTAL BOX - Iski width aur alignment ab kabhi nahi hilegi */}
+        {/* PROTECTIVE WRAPPER: Ye Total aur Footer ko sath rakhega */}
         <div style={{ 
-          marginTop: '30px', 
-          width: '100%',
-          pageBreakInside: 'avoid'
+          pageBreakInside: 'avoid', 
+          breakInside: 'avoid', 
+          marginTop: '30px',
+          width: '100%' 
         }}>
+          {/* TOTAL BOX */}
           <div style={{ 
             borderTop: '2px solid #1e293b', 
             paddingTop: '15px', 
@@ -118,19 +118,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               {totalBalance.toLocaleString()}
             </div>
           </div>
-        </div>
 
-        {/* Footer */}
-        <div style={{ 
-          marginTop: '60px', 
-          textAlign: 'center', 
-          borderTop: '1px solid #e2e8f0', 
-          paddingTop: '20px',
-          pageBreakInside: 'avoid'
-        }}>
-          <p style={{ fontSize: '10px', color: '#94a3b8' }}>
-            Generated via {shopName} Digital Khata - 2026
-          </p>
+          {/* Footer */}
+          <div style={{ 
+            marginTop: '60px', 
+            textAlign: 'center', 
+            borderTop: '1px solid #e2e8f0', 
+            paddingTop: '20px' 
+          }}>
+            <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold' }}>
+              GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
+            </p>
+          </div>
         </div>
       </div>
     </div>
