@@ -23,14 +23,15 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       ref={ref} 
       style={{ 
         width: '794px', 
-        minHeight: '1123px', // Standard A4 Height
+        // FIX 1: Auto height taake kam records mein extra page na bane
+        minHeight: 'auto', 
         backgroundColor: 'white', 
         position: 'relative', 
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
-        padding: '0'
-        // REMOVED overflow: 'hidden' to allow page breaking
+        padding: '0',
+        // FIX 2: Overflow hidden hata diya taake records smoothly next page par ja sakein
       }}
     >
       {/* 1. TOP GREEN BAR */}
@@ -64,13 +65,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* 3. TABLE - Alignment Preserved */}
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
+        {/* 3. TABLE - Alignment Preserved with Fixed Column Widths */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ backgroundColor: '#1e293b' }}>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '22%' }}>Date</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '48%' }}>Description</th>
-              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '30%' }}>Amount (Rs)</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '120px' }}>Date</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'left', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase' }}>Description</th>
+              <th style={{ color: 'white', padding: '14px 15px', textAlign: 'right', fontSize: '11px', fontWeight: '800', textTransform: 'uppercase', width: '180px' }}>Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
@@ -91,23 +92,16 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* 4. SUMMARY BOX - Logic to prevent half-cut */}
+        {/* 4. SUMMARY BOX - Alignment Fix */}
         <div style={{ 
             marginTop: '50px', 
-            width: '100%',
-            display: 'block', 
-            breakInside: 'avoid', 
-            pageBreakInside: 'avoid' 
+            display: 'flex', 
+            justifyContent: 'flex-end',
+            // FIX 3: Prevent box from splitting across pages
+            pageBreakInside: 'avoid',
+            breakInside: 'avoid'
         }}>
-          <div style={{ 
-            backgroundColor: '#1e293b', 
-            color: 'white', 
-            padding: '25px', 
-            borderRadius: '20px', 
-            width: '280px', 
-            textAlign: 'center',
-            marginLeft: 'auto' // Pulls box to the right
-          }}>
+          <div style={{ backgroundColor: '#1e293b', color: 'white', padding: '25px', borderRadius: '20px', width: '280px', textAlign: 'center' }}>
             <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '900', margin: '0 0 10px 0', letterSpacing: '1px' }}>Total Net Balance</p>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '15px', fontSize: '34px', fontWeight: '900' }}>
               Rs {totalBalance.toLocaleString()}
