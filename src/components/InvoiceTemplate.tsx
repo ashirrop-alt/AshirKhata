@@ -55,7 +55,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
         {/* TRANSACTIONS SECTION */}
         <div style={{ width: '100%' }}>
-          {/* Table Header */}
           <div style={{ 
             display: 'flex', 
             borderBottom: '2px solid #e2e8f0', 
@@ -68,7 +67,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <div style={{ width: '140px', textAlign: 'right' }}>AMOUNT (Rs)</div>
           </div>
 
-          {/* Table Rows */}
           {transactions.map((t) => (
             <div key={t.id} style={{ 
               display: 'flex', 
@@ -96,19 +94,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           ))}
         </div>
 
-        {/* TOTAL BOX - Fixed with float for mid-level stability */}
-        <div style={{ 
-          marginTop: '30px', 
-          width: '100%',
-          pageBreakInside: 'avoid',
-          display: 'block',
-          clear: 'both' // Taki alignment na hile
-        }}>
+        {/* SAFE ZONE WRAPPER: 
+          Ye Total aur Footer ko ek hi block mein lock kar deta hai.
+        */}
+        <div style={{ pageBreakInside: 'avoid', breakInside: 'avoid', display: 'block', width: '100%' }}>
+          
+          {/* TOTAL BOX */}
           <div style={{ 
+            marginTop: '30px', 
             borderTop: '2px solid #1e293b', 
             paddingTop: '15px', 
             width: '250px', 
-            marginLeft: 'auto', // Right side alignment lock
+            marginLeft: 'auto', // Right alignment stability
             textAlign: 'right' 
           }}>
             <div style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>
@@ -119,20 +116,20 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               {totalBalance.toLocaleString()}
             </div>
           </div>
+
+          {/* Footer */}
+          <div style={{ 
+            marginTop: '60px', 
+            textAlign: 'center', 
+            borderTop: '1px solid #e2e8f0', 
+            paddingTop: '20px' 
+          }}>
+            <p style={{ fontSize: '10px', color: '#94a3b8' }}>
+              Generated via {shopName} Digital Khata - 2026
+            </p>
+          </div>
         </div>
 
-        {/* Footer */}
-        <div style={{ 
-          marginTop: '60px', 
-          textAlign: 'center', 
-          borderTop: '1px solid #e2e8f0', 
-          paddingTop: '20px',
-          pageBreakInside: 'avoid'
-        }}>
-          <p style={{ fontSize: '10px', color: '#94a3b8' }}>
-            Generated via {shopName} Digital Khata - 2026
-          </p>
-        </div>
       </div>
     </div>
   );
