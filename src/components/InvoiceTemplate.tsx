@@ -23,14 +23,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       ref={ref} 
       style={{ 
         width: '794px', 
-        minHeight: '1123px', // Standard A4 Height
+        minHeight: '1000px', 
         backgroundColor: 'white', 
         position: 'relative', 
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
-        padding: '0'
-        // REMOVED overflow: 'hidden' to allow page breaking
+        padding: '0',
+        overflow: 'hidden'
       }}
     >
       {/* 1. TOP GREEN BAR */}
@@ -64,7 +64,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* 3. TABLE - Alignment Preserved */}
+        {/* 3. TABLE - FIXED ALIGNMENT LOGIC */}
         <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
           <thead>
             <tr style={{ backgroundColor: '#1e293b' }}>
@@ -83,6 +83,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   </span>
                   {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                 </td>
+                {/* Fixed Right Alignment for Amount */}
                 <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '15px', fontWeight: '900', color: t.type === 'dr' ? '#ef4444' : '#10b981', whiteSpace: 'nowrap' }}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                 </td>
@@ -91,23 +92,9 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* 4. SUMMARY BOX - Logic to prevent half-cut */}
-        <div style={{ 
-            marginTop: '50px', 
-            width: '100%',
-            display: 'block', 
-            breakInside: 'avoid', 
-            pageBreakInside: 'avoid' 
-        }}>
-          <div style={{ 
-            backgroundColor: '#1e293b', 
-            color: 'white', 
-            padding: '25px', 
-            borderRadius: '20px', 
-            width: '280px', 
-            textAlign: 'center',
-            marginLeft: 'auto' // Pulls box to the right
-          }}>
+        {/* 4. SUMMARY BOX */}
+        <div style={{ marginTop: '50px', display: 'flex', justifyContent: 'flex-end', breakInside: 'avoid' }}>
+          <div style={{ backgroundColor: '#1e293b', color: 'white', padding: '25px', borderRadius: '20px', width: '280px', textAlign: 'center' }}>
             <p style={{ fontSize: '11px', color: '#94a3b8', textTransform: 'uppercase', fontWeight: '900', margin: '0 0 10px 0', letterSpacing: '1px' }}>Total Net Balance</p>
             <div style={{ borderTop: '1px solid rgba(255,255,255,0.2)', paddingTop: '15px', fontSize: '34px', fontWeight: '900' }}>
               Rs {totalBalance.toLocaleString()}
