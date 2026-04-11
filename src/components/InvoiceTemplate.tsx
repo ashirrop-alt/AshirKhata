@@ -1,6 +1,20 @@
 import React from 'react';
 
-// ... (Interfaces same raheingi)
+// IS SECTION KO MISS NAHI KARNA - Yehi error fix karega
+interface Transaction {
+  id: string;
+  date: string;
+  amount: number;
+  type: 'dr' | 'cr';
+}
+
+interface InvoiceProps {
+  customerName: string;
+  customerPhone: string;
+  shopName: string;
+  transactions: Transaction[];
+  totalBalance: number;
+}
 
 const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({ 
   customerName, customerPhone, shopName, transactions, totalBalance 
@@ -10,7 +24,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       ref={ref} 
       style={{ 
         width: '794px', 
-        // FIX 1: 'minHeight' hata kar auto kar diya taake extra page na bane
         height: 'auto',
         backgroundColor: 'white', 
         position: 'relative', 
@@ -18,7 +31,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         color: '#1e293b',
         margin: '0 auto',
         padding: '0',
-        // FIX 2: PDF generation ke liye overflow visible hona chahiye
         overflow: 'visible' 
       }}
     >
@@ -65,7 +77,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 style={{ 
                   borderBottom: '1px solid #f1f5f9', 
                   backgroundColor: index % 2 === 0 ? 'white' : '#fcfdfe',
-                  // FIX 3: Table row ko beech se katne se rokta hai
                   pageBreakInside: 'avoid' 
                 }}
               >
@@ -76,7 +87,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   </span>
                   {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                 </td>
-                <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '15px', fontWeight: '900', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
+                <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '15px', fontWeight: '900', color: t.type === 'dr' ? '#ef4444' : '#10b981', whiteSpace: 'nowrap' }}>
                   {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                 </td>
               </tr>
@@ -89,7 +100,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             marginTop: '40px', 
             display: 'flex', 
             justifyContent: 'flex-end',
-            // FIX 4: Summary box ko hamesha poora aik saath rakhta hai
             pageBreakInside: 'avoid' 
         }}>
           <div style={{ backgroundColor: '#1e293b', color: 'white', padding: '25px', borderRadius: '20px', width: '280px', textAlign: 'center' }}>
