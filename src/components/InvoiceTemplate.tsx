@@ -23,20 +23,20 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       ref={ref}  
       style={{  
         width: '794px', 
-        // FIX 1: minHeight hata di taake content natural flow kare
         backgroundColor: 'white',  
         fontFamily: 'Arial, sans-serif',
         color: '#1e293b',
         margin: '0 auto',
         padding: '0',
-        overflow: 'visible' 
+        overflow: 'visible',
+        display: 'block' // Stability ke liye zaroori hai
       }}
     >
       <div style={{ width: '100%', height: '8px', backgroundColor: '#059669' }}></div>
 
       <div style={{ padding: '40px 50px' }}>
         
-        {/* Header Section */}
+        {/* Header */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#059669', margin: 0 }}>{shopName}</h1>
@@ -47,32 +47,31 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* 2. CUSTOMER INFO */}
+        {/* Customer Info */}
         <div style={{ backgroundColor: '#f8fafc', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
           <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
           <p style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>{customerName}</p>
           <p style={{ fontSize: '14px', color: '#475569', margin: 0 }}>{customerPhone}</p>
         </div>
 
-        {/* 3. TRANSACTIONS TABLE */}
-        <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+        {/* 3. TRANSACTIONS TABLE - Fixed Column Widths */}
+        <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
           <thead>
             <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
-              <th style={{ padding: '12px 8px', fontSize: '12px' }}>Date</th>
+              <th style={{ padding: '12px 8px', fontSize: '12px', width: '100px' }}>Date</th>
               <th style={{ padding: '12px 8px', fontSize: '12px' }}>Description</th>
-              <th style={{ padding: '12px 8px', fontSize: '12px', textAlign: 'right' }}>Amount (Rs)</th>
+              <th style={{ padding: '12px 8px', fontSize: '12px', textAlign: 'right', width: '150px' }}>Amount (Rs)</th>
             </tr>
           </thead>
           <tbody>
             {transactions.map((t) => (
               <tr key={t.id} style={{ 
                 borderBottom: '1px solid #f1f5f9',
-                // FIX 2: Row ko beech mein se katne se rokna
                 pageBreakInside: 'avoid',
                 breakInside: 'avoid'
               }}>
                 <td style={{ padding: '12px 8px', fontSize: '12px' }}>{t.date}</td>
-                <td style={{ padding: '12px 8px', fontSize: '13px' }}>
+                <td style={{ padding: '12px 8px', fontSize: '13px', wordBreak: 'break-word' }}>
                   <span style={{ color: t.type === 'dr' ? '#ef4444' : '#10b981', fontWeight: 'bold', marginRight: '5px' }}>
                     {t.type === 'dr' ? '[DEBIT]' : '[CREDIT]'}
                   </span>
@@ -86,42 +85,42 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* 4. TOTAL BOX - FIXED ALIGNMENT */}
+        {/* 4. TOTAL BOX - Fixed Alignment with width control */}
         <div style={{ 
-          marginTop: '40px', 
-          // FIX 3: Flex ki jagah block taake alignment shift na ho
-          display: 'block', 
-          pageBreakInside: 'avoid',
-          breakInside: 'avoid',
-          width: '100%'
+          marginTop: '30px', 
+          width: '100%',
+          display: 'block',
+          pageBreakInside: 'avoid'
         }}>
+          {/* Ek invisible spacer line jo page break ko handle kare */}
+          <div style={{ borderTop: '1px solid #e2e8f0', marginBottom: '15px' }}></div>
+          
           <div style={{ 
-            borderTop: '2px solid #1e293b', 
-            paddingTop: '15px', 
+            float: 'right', // Printing mein float right zyada stable hai absolute/flex se
             width: '250px', 
-            marginLeft: 'auto', // Box ko right side par rakhega
-            textAlign: 'right' 
+            textAlign: 'right'
           }}>
-            <div style={{ fontSize: '12px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase', marginBottom: '5px' }}>
+            <div style={{ fontSize: '11px', fontWeight: '800', color: '#64748b', textTransform: 'uppercase' }}>
               Net Balance
             </div>
-            <div style={{ fontSize: '28px', fontWeight: '900', color: '#1e293b' }}>
+            <div style={{ fontSize: '26px', fontWeight: '900', color: '#1e293b', marginTop: '5px' }}>
               <span style={{ fontSize: '16px', marginRight: '5px' }}>Rs</span>
               {totalBalance.toLocaleString()}
             </div>
           </div>
+          <div style={{ clear: 'both' }}></div> {/* Float clear karne ke liye */}
         </div>
 
         {/* Footer */}
         <div style={{ 
-          marginTop: '50px', 
+          marginTop: '60px', 
           textAlign: 'center', 
-          borderTop: '1px solid #e2e8f0', 
+          borderTop: '1px dotted #cbd5e1', 
           paddingTop: '20px',
           pageBreakInside: 'avoid'
         }}>
-          <p style={{ fontSize: '10px', color: '#94a3b8' }}>
-            Generated via {shopName} Digital Khata - 2026
+          <p style={{ fontSize: '10px', color: '#94a3b8', letterSpacing: '1px' }}>
+            GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA - 2026
           </p>
         </div>
       </div>
