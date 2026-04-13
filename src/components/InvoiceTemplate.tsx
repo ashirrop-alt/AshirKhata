@@ -15,10 +15,10 @@ interface InvoiceProps {
   totalBalance: number;
 }
 
-const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({  
-  customerName, customerPhone, shopName, transactions, totalBalance  
+const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
+  customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
-  
+
   const itemsPerPage = 11;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
@@ -39,21 +39,21 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       `}</style>
 
       {pages.map((pageEntries, pageIndex) => (
-        <div  
-          key={pageIndex} 
+        <div
+          key={pageIndex}
           className={pageIndex > 0 ? "page-break" : ""}
-          style={{ 
-            padding: '40px 50px', 
+          style={{
+            padding: '40px 50px',
             backgroundColor: 'white',
             minHeight: '1000px',
             position: 'relative',
             boxSizing: 'border-box'
           }}
         >
-          
+
           {pageIndex === 0 && (
             <>
-              <div style={{ width: '100%', height: '8px', backgroundColor: '#059669', position: 'absolute', top: 0, left: 0 }}></div>
+
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
                 <div>
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
@@ -87,13 +87,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                   <td style={{ padding: '12px 10px', fontSize: '12px', color: '#64748b' }}>{t.date}</td>
                   <td style={{ padding: '12px 10px', fontSize: '13px' }}>
-                    <span style={{ 
+                    <span style={{
                       display: 'inline-block',
                       backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
                       color: t.type === 'dr' ? '#ef4444' : '#10b981',
                       border: `1px solid ${t.type === 'dr' ? '#fee2e2' : '#d1fae5'}`,
-                      fontSize: '9px', 
-                      fontWeight: '900', 
+                      fontSize: '9px',
+                      fontWeight: '900',
                       padding: '0 6px',
                       borderRadius: '4px',
                       marginRight: '8px',
@@ -117,11 +117,11 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           {pageIndex === pages.length - 1 && (
             <div style={{ marginTop: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div style={{ 
-                  width: '260px', 
-                  backgroundColor: '#1e293b', 
-                  padding: '18px', 
-                  borderRadius: '10px', 
+                <div style={{
+                  width: '260px',
+                  backgroundColor: '#1e293b',
+                  padding: '18px',
+                  borderRadius: '10px',
                   textAlign: 'right',
                   color: 'white'
                 }}>
