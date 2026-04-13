@@ -138,7 +138,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <div style={{ marginTop: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{
-                  width: '160px',
+                  width: '200px',
                   backgroundColor: '#1e293b',
                   padding: '18px',
                   borderRadius: '10px',
