@@ -19,7 +19,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance  
 }, ref) => {
   
-  // Logic: Transactions ko 11-11 ke groups mein divide karna
+  // Logic: 11 entries per page
   const itemsPerPage = 11;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
@@ -27,16 +27,32 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   }
 
   return (
-    <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
+    <div ref={ref} style={{ width: '794px', margin: '0 auto' }}>
+      {/* CSS for forcing clean breaks in PDF/Print */}
+      <style>{`
+        @media print {
+          .page-break {
+            display: block;
+            page-break-before: always;
+            break-before: always;
+          }
+          body { -webkit-print-color-adjust: exact; }
+        }
+      `}</style>
+
       {pages.map((pageEntries, pageIndex) => (
-        <div key={pageIndex} style={{ 
-          padding: '40px 50px', 
-          backgroundColor: 'white',
-          // Har page ke baad break force karna
-          pageBreakAfter: pageIndex < pages.length - 1 ? 'always' : 'auto' 
-        }}>
+        <div 
+          key={pageIndex} 
+          className={pageIndex > 0 ? "page-break" : ""}
+          style={{ 
+            padding: '40px 50px', 
+            backgroundColor: 'white',
+            minHeight: '1000px', // Page ko poora fill karne ke liye
+            position: 'relative'
+          }}
+        >
           
-          {/* Pehle page par Header aur Green border */}
+          {/* Header & Green Border (Sirf Pehle Page Par) */}
           {pageIndex === 0 && (
             <>
               <div style={{ width: '100%', height: '8px', backgroundColor: '#059669', position: 'absolute', top: 0, left: 0 }}></div>
@@ -58,7 +74,9 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             </>
           )}
 
-          {/* Transactions Table (Page Specific) */}
+          {/* Space maintainer for 2nd page onwards */}
+          {pageIndex > 0 && <div style={{ height: '40px' }}></div>}
+
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #e2e8f0', textAlign: 'left' }}>
@@ -85,7 +103,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             </tbody>
           </table>
 
-          {/* Net Balance & Footer - Sirf Aakhri Page Par */}
+          {/* Total & Footer (Sirf Aakhri Page Par) */}
           {pageIndex === pages.length - 1 && (
             <div style={{ marginTop: '30px' }}>
               <table style={{ width: '100%', borderCollapse: 'collapse' }}>
