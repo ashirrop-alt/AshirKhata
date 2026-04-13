@@ -58,7 +58,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '12px' }}>
+                <div style={{ width: '125px', padding: '12px 10px', fontSize: '12px', color: 'white' , textAlign: 'right'}}>
                   <strong>Date:</strong> {new Date().toLocaleDateString('en-GB')}
                 </div>
               </div>
