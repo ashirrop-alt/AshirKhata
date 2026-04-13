@@ -27,12 +27,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
       margin: '0 auto',
       padding: '0'
     }}>
-      {/* Top Border */}
+      {/* Top Green Border */}
       <div style={{ width: '100%', height: '8px', backgroundColor: '#059669' }}></div>
 
       <div style={{ padding: '40px 50px' }}>
         
-        {/* Header */}
+        {/* Header Section */}
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
           <div>
             <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#059669', margin: 0 }}>{shopName}</h1>
@@ -43,7 +43,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
         </div>
 
-        {/* Info Card */}
+        {/* Customer Info Card */}
         <div style={{ backgroundColor: '#f8fafc', padding: '20px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
           <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
           <p style={{ fontSize: '20px', fontWeight: 'bold', margin: 0 }}>{customerName}</p>
@@ -63,8 +63,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             {transactions.map((t, index) => (
               <tr key={t.id} style={{ 
                 borderBottom: '1px solid #f1f5f9',
-                // Har 10 entries ke baad browser ko hint dena ke yahan break le sakta hai
-                pageBreakAfter: (index + 1) % 10 === 0 ? 'always' : 'auto' 
+                // Logics: 11 entries ke baad force page break
+                pageBreakAfter: (index + 1) % 11 === 0 ? 'always' : 'auto' 
               }}>
                 <td style={{ padding: '14px 8px', fontSize: '13px', color: '#64748b' }}>{t.date}</td>
                 <td style={{ padding: '14px 8px', fontSize: '13px' }}>
@@ -81,7 +81,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </tbody>
         </table>
 
-        {/* Total & Footer Block - Locked together to prevent mid-level break */}
+        {/* Total & Footer Block - Guaranteed Alignment */}
         <div style={{ pageBreakInside: 'avoid', marginTop: '30px' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse' }}>
             <tbody>
