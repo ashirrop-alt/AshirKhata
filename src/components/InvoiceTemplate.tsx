@@ -53,7 +53,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
           {pageIndex === 0 && (
             <>
-
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
                 <div>
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
@@ -77,7 +76,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <thead>
               <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                <th style={{ width: '110px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>DATE</th>
+                {/* Header width thodi set ki hai taake date ko jagah mile */}
+                <th style={{ width: '125px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>DATE</th>
                 <th style={{ padding: '12px 10px', fontSize: '11px', color: 'white' }}>DESCRIPTION</th>
                 <th style={{ width: '140px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'right' }}>AMOUNT (Rs)</th>
               </tr>
@@ -85,7 +85,16 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <tbody>
               {pageEntries.map((t) => (
                 <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 10px', fontSize: '12px', color: '#64748b' }}>{t.date}</td>
+                  {/* DATE FIX: Added letterSpacing and proper font weight */}
+                  <td style={{ 
+                    padding: '12px 10px', 
+                    fontSize: '12px', 
+                    color: '#475569', 
+                    letterSpacing: '0.3px',
+                    fontWeight: '500'
+                  }}>
+                    {t.date}
+                  </td>
                   <td style={{ padding: '12px 10px', fontSize: '13px' }}>
                     <span style={{
                       display: 'inline-block',
@@ -104,7 +113,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                     }}>
                       {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
                     </span>
-                    <span style={{ verticalAlign: 'middle' }}>{t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}</span>
+                    <span style={{ verticalAlign: 'middle', color: '#1e293b' }}>{t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}</span>
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', fontSize: '14px', fontWeight: 'bold', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                     {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
