@@ -54,7 +54,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           {pageIndex === 0 && (
             <>
               <div style={{ width: '100%', height: '8px', backgroundColor: '#059669', position: 'absolute', top: 0, left: 0 }}></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
                 <div>
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
@@ -118,8 +118,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <div style={{ marginTop: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{ 
-                  width: '200px', 
-                  backgroundColor: '#059669', 
+                  width: '260px', 
+                  backgroundColor: '#1e293b', 
                   padding: '18px', 
                   borderRadius: '10px', 
                   textAlign: 'right',
