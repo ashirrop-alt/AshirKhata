@@ -34,6 +34,21 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     window.location.href = '/login';
   };
 
+
+  useEffect(() => {
+    const handleFocus = () => {
+      // Jab aap customer screen se back ayenge, ye page ko refresh kar dega
+      window.location.reload();
+    };
+
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+    };
+  }, []);
+  // 
+
   const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
   if (isLoading) {
