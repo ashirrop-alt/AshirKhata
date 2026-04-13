@@ -25,6 +25,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
     pages.push(transactions.slice(i, i + itemsPerPage));
   }
 
+  // Date formatter for "13/April/2026"
+  const formattedDate = new Date().toLocaleDateString('en-GB', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  }).replace(/ /g, '/');
+
   return (
     <div ref={ref} style={{ width: '794px', margin: '0 auto' }}>
       <style>{`
@@ -58,8 +65,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
                 </div>
-                <div style={{ width: '125px', padding: '12px 10px', fontSize: '12px', color: 'white' , textAlign: 'right'}}>
-                  <strong>Date:</strong> {new Date().toLocaleDateString('en-GB')}
+                {/* Header Date Fixed Here */}
+                <div style={{ 
+                  textAlign: 'right', 
+                  fontSize: '12px', 
+                  color: '#475569',
+                  letterSpacing: '0.5px' 
+                }}>
+                  <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
                 </div>
               </div>
 
@@ -76,7 +89,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <thead>
               <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                {/* Header width thodi set ki hai taake date ko jagah mile */}
                 <th style={{ width: '125px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>DATE</th>
                 <th style={{ padding: '12px 10px', fontSize: '11px', color: 'white' }}>DESCRIPTION</th>
                 <th style={{ width: '140px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'right' }}>AMOUNT (Rs)</th>
@@ -85,7 +97,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <tbody>
               {pageEntries.map((t) => (
                 <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  {/* DATE FIX: Added letterSpacing and proper font weight */}
                   <td style={{ 
                     padding: '12px 10px', 
                     fontSize: '12px', 
