@@ -19,7 +19,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance  
 }, ref) => {
   
-  // Logic: 11 entries per page (No changes here)
   const itemsPerPage = 11;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
@@ -27,7 +26,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   }
 
   return (
-    <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
+    <div ref={ref} style={{ width: '794px', margin: '0 auto' }}>
       <style>{`
         @media print {
           .page-break {
@@ -35,75 +34,71 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             page-break-before: always;
             break-before: always;
           }
-          body { -webkit-print-color-adjust: exact; margin: 0; }
-          @page { size: A4; margin: 0; }
+          body { -webkit-print-color-adjust: exact; }
         }
       `}</style>
 
       {pages.map((pageEntries, pageIndex) => (
-        <div 
+        <div  
           key={pageIndex} 
           className={pageIndex > 0 ? "page-break" : ""}
           style={{ 
             padding: '40px 50px', 
             backgroundColor: 'white',
-            minHeight: '1080px', 
+            minHeight: '1000px',
             position: 'relative',
             boxSizing: 'border-box'
           }}
         >
           
-          {/* Header & Green Strip (Only First Page) */}
           {pageIndex === 0 && (
             <>
               <div style={{ width: '100%', height: '8px', backgroundColor: '#059669', position: 'absolute', top: 0, left: 0 }}></div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '10px', alignItems: 'center' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '10px' }}>
                 <div>
-                  <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
-                  <p style={{ fontSize: '11px', color: '#059669', fontWeight: '800', margin: 0, letterSpacing: '1px', textTransform: 'uppercase' }}>Digital Khata Report</p>
+                  <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
+                  <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '13px', color: '#64748b' }}>
+                <div style={{ textAlign: 'right', fontSize: '12px' }}>
                   <strong>Date:</strong> {new Date().toLocaleDateString('en-GB')}
                 </div>
               </div>
 
-              <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
-                <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
-                <p style={{ fontSize: '20px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{customerName}</p>
-                <p style={{ fontSize: '14px', color: '#475569', margin: 0 }}>{customerPhone}</p>
+              <div style={{ backgroundColor: '#f8fafc', padding: '15px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
+                <p style={{ fontSize: '9px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
+                <p style={{ fontSize: '18px', fontWeight: 'bold', margin: 0, color: '#1e293b' }}>{customerName}</p>
+                <p style={{ fontSize: '13px', color: '#475569', margin: 0 }}>{customerPhone}</p>
               </div>
             </>
           )}
 
-          {/* Space maintainer for 2nd page onwards */}
           {pageIndex > 0 && <div style={{ height: '40px' }}></div>}
 
-          {/* Table with Blue Header Styling */}
           <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
             <thead>
-              <tr style={{ backgroundColor: '#1e293b' }}>
-                <th style={{ width: '120px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'left', fontWeight: '600' }}>DATE</th>
-                <th style={{ padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'left', fontWeight: '600' }}>DESCRIPTION</th>
-                <th style={{ width: '150px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'right', fontWeight: '600' }}>AMOUNT (RS)</th>
+              <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
+                <th style={{ width: '110px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>DATE</th>
+                <th style={{ padding: '12px 10px', fontSize: '11px', color: 'white' }}>DESCRIPTION</th>
+                <th style={{ width: '140px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'right' }}>AMOUNT (Rs)</th>
               </tr>
             </thead>
             <tbody>
               {pageEntries.map((t) => (
                 <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '15px 10px', fontSize: '13px', color: '#64748b' }}>{t.date}</td>
-                  <td style={{ padding: '15px 10px', fontSize: '13px', color: '#1e293b' }}>
+                  <td style={{ padding: '12px 10px', fontSize: '12px', color: '#64748b' }}>{t.date}</td>
+                  <td style={{ padding: '12px 10px', fontSize: '13px' }}>
                     <span style={{ 
                       display: 'inline-block',
                       backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
                       color: t.type === 'dr' ? '#ef4444' : '#10b981',
                       border: `1px solid ${t.type === 'dr' ? '#fee2e2' : '#d1fae5'}`,
-                      fontSize: '10px',
-                      fontWeight: '900',
-                      padding: '0 8px',
+                      fontSize: '9px', 
+                      fontWeight: '900', 
+                      padding: '0 6px',
                       borderRadius: '4px',
-                      marginRight: '12px',
-                      height: '22px',
-                      lineHeight: '22px', 
+                      marginRight: '8px',
+                      height: '20px',
+                      lineHeight: '20px',
                       verticalAlign: 'middle',
                       textAlign: 'center'
                     }}>
@@ -111,7 +106,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                     </span>
                     <span style={{ verticalAlign: 'middle' }}>{t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}</span>
                   </td>
-                  <td style={{ padding: '15px 10px', textAlign: 'right', fontSize: '15px', fontWeight: '700', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
+                  <td style={{ padding: '12px 10px', textAlign: 'right', fontSize: '14px', fontWeight: 'bold', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                     {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                   </td>
                 </tr>
@@ -119,28 +114,27 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             </tbody>
           </table>
 
-          {/* Total & Footer (Only on Last Page) */}
           {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: '40px' }}>
+            <div style={{ marginTop: '30px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
                 <div style={{ 
-                  width: '280px', 
+                  width: '260px', 
                   backgroundColor: '#1e293b', 
-                  padding: '22px', 
-                  borderRadius: '12px', 
-                  color: 'white',
-                  textAlign: 'right'
+                  padding: '18px', 
+                  borderRadius: '10px', 
+                  textAlign: 'right',
+                  color: 'white'
                 }}>
-                  <div style={{ fontSize: '11px', fontWeight: '600', color: '#94a3b8', textTransform: 'uppercase', letterSpacing: '0.5px' }}>Net Balance</div>
-                  <div style={{ fontSize: '30px', fontWeight: '800', marginTop: '5px' }}>
-                    <span style={{ fontSize: '16px', marginRight: '6px', color: '#94a3b8', fontWeight: '400' }}>Rs.</span>
+                  <div style={{ fontSize: '10px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Net Balance</div>
+                  <div style={{ fontSize: '26px', fontWeight: '900', marginTop: '5px' }}>
+                    <span style={{ fontSize: '14px', marginRight: '5px', color: '#94a3b8' }}>Rs</span>
                     {totalBalance.toLocaleString()}
                   </div>
                 </div>
               </div>
 
               <div style={{ marginTop: '60px', textAlign: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
-                <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold', letterSpacing: '1px' }}>
+                <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold' }}>
                   GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
                 </p>
               </div>
