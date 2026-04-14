@@ -3,11 +3,15 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
+// Eye icons import karein
+import { Eye, EyeOff } from 'lucide-react'; 
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  // Password dikhane ke liye state
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -33,7 +37,7 @@ export default function Login() {
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
-          {/* Email Field with Label */}
+          {/* Email Field */}
           <div className="space-y-1.5">
             <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
             <Input
@@ -46,20 +50,37 @@ export default function Login() {
             />
           </div>
 
-          {/* Password Field with Label */}
+          {/* Password Field */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
               <label className="text-sm font-bold text-slate-700">Password</label>
-              <a href="#" className="text-xs font-semibold text-indigo-600 hover:underline">Forgot?</a>
+              <button
+                type="button"
+                onClick={() => alert("Password reset feature jald aa raha hai! Filhal naya account bana lein ya purana password yaad karein. 😊")}
+                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition-all active:scale-95"
+              >
+                Forgot?
+              </button>
             </div>
-            <Input
-              type="password"
-              placeholder="••••••••"
-              className="h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            
+            {/* Input ke sath Eye Icon ki wrapper div */}
+            <div className="relative">
+              <Input
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                className="h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl pr-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
           </div>
 
           <Button

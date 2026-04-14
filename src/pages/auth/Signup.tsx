@@ -53,7 +53,7 @@ export default function Signup() {
             <label className="text-xs font-bold text-slate-700 ml-1">Full Name</label>
             <Input
               type="text"
-              placeholder="e.g. Rahul Sharma"
+              placeholder="Apka Naam"
               className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
