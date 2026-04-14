@@ -21,7 +21,7 @@ export default function Login() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900">
       <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all">
-        
+
         {/* Logo Section */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black tracking-tighter">
@@ -62,9 +62,9 @@ export default function Login() {
             />
           </div>
 
-          <Button 
-            type="submit" 
-            disabled={loading} 
+          <Button
+            type="submit"
+            disabled={loading}
             className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-95"
           >
             {loading ? 'Sabar karein...' : 'Sign In →'}
@@ -78,7 +78,10 @@ export default function Login() {
 
         <p className="text-center text-sm text-slate-600 font-medium">
           No account?{' '}
-          <Link to="/signup" className="text-indigo-600 font-bold hover:underline ml-1">
+          <Link
+            to="/signup"
+            className="text-indigo-600 font-bold hover:underline ml-1 cursor-pointer"
+          >
             Create one free
           </Link>
         </p>
