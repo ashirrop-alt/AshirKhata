@@ -15,10 +15,12 @@ function App() {
 
   useEffect(() => {
     // Current session check karein
+    document.title = "Khatify - Digital Udhar Management";
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
     });
+  
 
     // Login ya Logout hone par status update karein
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
