@@ -3,40 +3,35 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
+// Icons import karein (agar install nahi hai toh text button bhi use kar sakte hain)
+import { Eye, EyeOff } from 'lucide-react'; 
 
 export default function Signup() {
-  const [fullName, setFullName] = useState(''); // Naya state
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState(''); // Naya state
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  
+  // Naya state password dikhane ke liye
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Password match check
     if (password !== confirmPassword) {
       alert("Passwords aapas mein nahi mil rahe!");
       return;
     }
-
     setLoading(true);
-
-    // Supabase mein name save karne ke liye 'options' use karte hain
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: {
-        data: {
-          full_name: fullName,
-        }
-      }
+      options: { data: { full_name: fullName } }
     });
 
-    if (error) {
-      alert("Error: " + error.message);
-    } else {
-      alert("Account ban gaya! Email verify karke login karein.");
+    if (error) alert("Error: " + error.message);
+    else {
+      alert("Account ban gaya!");
       window.location.href = '/login';
     }
     setLoading(false);
@@ -44,9 +39,8 @@ export default function Signup() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900 overflow-y-auto sm:overflow-hidden">
-      {/* Card Container - Adjusted padding and margins for better fit */}
       <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all my-4 sm:my-0">
-
+        
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
             Khati<span className="text-indigo-600">fy</span>
@@ -70,7 +64,7 @@ export default function Signup() {
             />
           </div>
 
-          {/* Email */}
+          {/* Email Address */}
           <div className="space-y-1">
             <label className="text-xs font-bold text-slate-700 ml-1">Email Address</label>
             <Input
@@ -83,35 +77,44 @@ export default function Signup() {
             />
           </div>
 
-          {/* Passwords - Grid layout on PC to save space */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
+          {/* Password with Eye Icon */}
+          <div className="space-y-1 relative">
+            <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
+            <div className="relative">
               <Input
-                type="password"
+                type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
+                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
-            </div>
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 ml-1">Confirm</label>
-              <Input
-                type="password"
-                placeholder="••••••••"
-                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
-          <Button
-            disabled={loading}
-            type="submit"
+          {/* Confirm Password */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-700 ml-1">Confirm Password</label>
+            <Input
+              type={showPassword ? "text" : "password"}
+              placeholder="••••••••"
+              className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <Button 
+            disabled={loading} 
+            type="submit" 
             className="w-full bg-indigo-600 hover:bg-indigo-700 h-10 sm:h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all mt-4 active:scale-95 text-sm sm:text-base"
           >
             {loading ? 'Sabar karein...' : 'Create Free Account →'}
