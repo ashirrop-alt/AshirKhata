@@ -35,19 +35,29 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   };
 
 
+  // --- REALTIME UPDATE CODE ---
   useEffect(() => {
-    const handleFocus = () => {
-      // Jab aap customer screen se back ayenge, ye page ko refresh kar dega
-      window.location.reload();
-    };
+    const channel = supabase
+      .channel('db-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: '*', 
+          schema: 'public',
+          table: 'transactions' // <--- Confirm karlein table ka name yehi hai
+        },
+        () => {
+          // Jaise hi database badlega, page refresh ho jayega
+          window.location.reload();
+        }
+      )
+      .subscribe();
 
-    window.addEventListener('focus', handleFocus);
-    
     return () => {
-      window.removeEventListener('focus', handleFocus);
+      supabase.removeChannel(channel);
     };
   }, []);
-  // 
+  // ----------------------------
 
   const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
 
