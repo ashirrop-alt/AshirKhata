@@ -3,7 +3,6 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
-// Icons import karein (agar install nahi hai toh text button bhi use kar sakte hain)
 import { Eye, EyeOff } from 'lucide-react'; 
 
 export default function Signup() {
@@ -12,8 +11,6 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  // Naya state password dikhane ke liye
   const [showPassword, setShowPassword] = useState(false);
 
   const handleSignup = async (e: React.FormEvent) => {
@@ -31,7 +28,7 @@ export default function Signup() {
 
     if (error) alert("Error: " + error.message);
     else {
-      alert("Account ban gaya!");
+      alert("Account ban gaya! Ab aap login kar sakte hain.");
       window.location.href = '/login';
     }
     setLoading(false);
@@ -77,39 +74,43 @@ export default function Signup() {
             />
           </div>
 
-          {/* Password with Eye Icon */}
-          <div className="space-y-1 relative">
-            <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
-            <div className="relative">
+          {/* Passwords - Grid layout for better use of space */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {/* Password with Single Toggle Eye Icon */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                  title={showPassword ? "Hide password" : "Show password"}
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+            </div>
+
+            {/* Confirm Password - Follows the same showPassword state */}
+            <div className="space-y-1">
+              <label className="text-xs font-bold text-slate-700 ml-1">Confirm</label>
               <Input
                 type={showPassword ? "text" : "password"}
                 placeholder="••••••••"
-                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
                 required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
-              >
-                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-              </button>
             </div>
-          </div>
-
-          {/* Confirm Password */}
-          <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 ml-1">Confirm Password</label>
-            <Input
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
           </div>
 
           <Button 
