@@ -71,7 +71,7 @@ export function useKhata() {
       toast.error("Dukaan ka naam save nahi ho saka");
     } else {
       setData(prev => ({ ...prev, shopName: name }));
-      toast.success("Dukaan ka naam update ho gaya! ✨");
+      toast.success("Dukaan ka naam update ho gaya!");
     }
   };
 
@@ -102,7 +102,7 @@ export function useKhata() {
         ...prev,
         customers: [insertedData, ...prev.customers]
       }));
-      toast.success(`${name} ka khata shuru ho gaya! ✅`);
+      toast.success(`${name} ka khata shuru ho gaya!`);
     }
   };
 

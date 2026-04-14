@@ -21,19 +21,24 @@ export default function Login() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50">
       <div className="w-full max-w-md p-8 bg-white rounded-2xl shadow-lg border border-slate-100">
-        <h2 className="text-2xl font-bold text-center text-indigo-600 mb-6">Ashir Khata Login</h2>
+        <h1 className="text-3xl font-black text-center text-primary tracking-tight">
+          Khatify
+        </h1>
+        <p className="text-center text-muted-foreground mt-1 mb-8">
+          Digital Udhar Management
+        </p>
         <form onSubmit={handleLogin} className="space-y-4">
-          <Input 
-            type="email" 
-            placeholder="Email Address" 
-            value={email} 
-            onChange={(e) => setEmail(e.target.value)} 
+          <Input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
           />
-          <Input 
-            type="password" 
-            placeholder="Password" 
-            value={password} 
-            onChange={(e) => setPassword(e.target.value)} 
+          <Input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
           <Button type="submit" disabled={loading} className="w-full bg-indigo-600 h-12">
             {loading ? 'Sabar karein...' : 'Login Karo'}

@@ -15,7 +15,7 @@ function App() {
 
   useEffect(() => {
     // Current session check karein
-    document.title = "Khatify - Digital Udhar Management";
+    document.title = "Khatify";
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
