@@ -1,12 +1,11 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import InvoiceTemplate from './InvoiceTemplate';
-import { useState } from "react";
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -38,26 +37,45 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
+  
+  // Edit ke liye nayi states
+  const [editingEntry, setEditingEntry] = useState<any>(null);
 
   const total = transactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
   }, 0);
 
-  const handleAddEntry = async (type: "udhar" | "payment", amount: number) => {
+  // Add aur Edit dono ke liye common function
+  const handleSaveEntry = async (type: "udhar" | "payment", amount: number) => {
     setLoading(true);
     try {
-      const newTransaction = {
-        id: crypto.randomUUID(),
-        type: type,
-        amount: Number(amount),
-        date: new Date().toISOString()
-      };
-      const updatedTransactions = [...transactions, newTransaction];
+      let updatedTransactions;
+      
+      if (editingEntry) {
+        // Edit Logic: Purani entry ko update karo
+        updatedTransactions = transactions.map(t => 
+          t.id === editingEntry.id 
+          ? { ...t, type, amount: Number(amount) } 
+          : t
+        );
+      } else {
+        // Add Logic: Nayi entry dalo
+        const newTransaction = {
+          id: crypto.randomUUID(),
+          type: type,
+          amount: Number(amount),
+          date: new Date().toISOString()
+        };
+        updatedTransactions = [...transactions, newTransaction];
+      }
+
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
       if (error) throw error;
+      
       setTransactions(updatedTransactions);
-      toast.success("Hisaab save ho gaya!");
+      toast.success(editingEntry ? "Hisaab update ho gaya!" : "Hisaab save ho gaya!");
       setEntryOpen(false);
+      setEditingEntry(null);
     } catch (error: any) {
       toast.error("Save nahi hua");
     } finally {
@@ -127,43 +145,41 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const downloadInvoice = async () => {
-  const element = invoiceRef.current;
-  if (!element) {
-    toast.error("Template load nahi hua");
-    return;
-  }
+    const element = invoiceRef.current;
+    if (!element) {
+      toast.error("Template load nahi hua");
+      return;
+    }
 
-  const toastId = toast.loading("PDF ban rahi hai...");
+    const toastId = toast.loading("PDF ban rahi hai...");
 
-  try {
-    // Naya jsPDF instance (A4 size)
-    const doc = new jsPDF({
-      orientation: 'p',
-      unit: 'mm',
-      format: 'a4',
-    });
+    try {
+      const doc = new jsPDF({
+        orientation: 'p',
+        unit: 'mm',
+        format: 'a4',
+      });
 
-    // Advanced html method jo auto-paging handle karta hai
-    await doc.html(element, {
-      callback: function (doc) {
-        doc.save(`${customer.name}_Invoice.pdf`);
-        toast.dismiss(toastId);
-        toast.success("PDF Download ho gayi!");
-      },
-      x: 0,
-      y: 0,
-      width: 210, // A4 width in mm
-      windowWidth: 794, // Hamare InvoiceTemplate ki width
-      autoPaging: 'text', // Taake records table ke beech mein se na katain
-      margin: [10, 0, 10, 0] // Thora sa margin top aur bottom par
-    });
+      await doc.html(element, {
+        callback: function (doc) {
+          doc.save(`${customer.name}_Invoice.pdf`);
+          toast.dismiss(toastId);
+          toast.success("PDF Download ho gayi!");
+        },
+        x: 0,
+        y: 0,
+        width: 210,
+        windowWidth: 794,
+        autoPaging: 'text',
+        margin: [10, 0, 10, 0]
+      });
 
-  } catch (error) {
-    console.error("PDF Error:", error);
-    toast.dismiss(toastId);
-    toast.error("PDF banane mein masla aaya");
-  }
-};
+    } catch (error) {
+      console.error("PDF Error:", error);
+      toast.dismiss(toastId);
+      toast.error("PDF banane mein masla aaya");
+    }
+  };
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
@@ -226,23 +242,20 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button
-                onClick={() => { setEntryType("udhar"); setEntryOpen(true); }}
+                onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }}
                 className="h-14 sm:h-16 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 + Udhar Diya
               </Button>
               <Button
-                onClick={() => { setEntryType("payment"); setEntryOpen(true); }}
+                onClick={() => { setEditingEntry(null); setEntryType("payment"); setEntryOpen(true); }}
                 className="h-14 sm:h-16 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-sm font-black text-sm sm:text-lg"
               >
                 - Paisa Mila
               </Button>
             </div>
 
-            {/* Actions Section */}
-            {/* Actions Section */}
             <div className="flex flex-col gap-2 mt-4">
-              {/* Row 1: WhatsApp Reminder (Full Width) */}
               <Button
                 variant="outline"
                 className="w-full py-5 text-sm font-semibold border-green-200 hover:bg-green-50 text-slate-700 transition-all gap-2 rounded-2xl"
@@ -254,7 +267,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 WhatsApp Reminder
               </Button>
 
-              {/* Row 2: Grid for Invoice and History Buttons */}
               <div className="grid grid-cols-2 gap-2">
                 <Button
                   variant="outline"
@@ -302,23 +314,39 @@ export function CustomerDetail({ customer, onBack }: Props) {
                       </p>
                     </div>
                   </div>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
-                        <Trash2 className="w-5 h-5" />
-                      </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="w-[92%] max-w-[380px] rounded-[24px] p-5 sm:p-6 border-none shadow-2xl">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="text-lg font-bold text-slate-900">Delete Entry?</AlertDialogTitle>
-                        <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">Ye wapas nahi ayega.</AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter className="mt-5 flex flex-row gap-3">
-                        <AlertDialogCancel className="flex-1 rounded-xl h-10 font-bold border-slate-100 text-slate-600 mt-0">Nahi</AlertDialogCancel>
-                        <AlertDialogAction onClick={() => handleDeleteEntry(tx.id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl h-10 font-bold shadow-sm">Haan, Delete</AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  
+                  <div className="flex items-center gap-1">
+                    {/* EDIT BUTTON */}
+                    <button 
+                      onClick={() => {
+                        setEditingEntry(tx);
+                        setEntryType(tx.type);
+                        setEntryOpen(true);
+                      }}
+                      className="p-2 text-slate-300 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+
+                    {/* DELETE BUTTON */}
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <button className="p-2 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="w-[92%] max-w-[380px] rounded-[24px] p-5 sm:p-6 border-none shadow-2xl">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-lg font-bold text-slate-900">Delete Entry?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-slate-500 font-medium pt-1 text-sm">Ye wapas nahi ayega.</AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="mt-5 flex flex-row gap-3">
+                          <AlertDialogCancel className="flex-1 rounded-xl h-10 font-bold border-slate-100 text-slate-600 mt-0">Nahi</AlertDialogCancel>
+                          <AlertDialogAction onClick={() => handleDeleteEntry(tx.id)} className="flex-1 bg-red-600 hover:bg-red-700 text-white rounded-xl h-10 font-bold shadow-sm">Haan, Delete</AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
                 </div>
               ))}
             </div>
@@ -326,9 +354,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </div>
       </main>
 
-      <AddEntryDialog open={entryOpen} onClose={() => setEntryOpen(false)} type={entryType} onAdd={handleAddEntry} />
+      <AddEntryDialog 
+        open={entryOpen} 
+        onClose={() => { setEntryOpen(false); setEditingEntry(null); }} 
+        type={entryType} 
+        onAdd={handleSaveEntry}
+        // Agar aapke AddEntryDialog mein initial value ki prop hai toh niche wala line use karein:
+        // initialAmount={editingEntry?.amount} 
+      />
 
-      {/* Invisible Wrapper for PDF Generation */}
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
         <div ref={invoiceRef}>
           <InvoiceTemplate
@@ -345,7 +379,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
           />
         </div>
       </div>
-
     </div>
   );
 }
