@@ -4,17 +4,22 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
 
-export default function Login() {
+export default function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.message);
-    else window.location.href = '/';
+    const { error } = await supabase.auth.signUp({ email, password });
+
+    if (error) {
+      alert("Error: " + error.message);
+    } else {
+      alert("Account ban gaya! Ab aap login kar sakte hain.");
+      window.location.href = '/login';
+    }
     setLoading(false);
   };
 
@@ -22,18 +27,18 @@ export default function Login() {
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900">
       <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all">
         
-        {/* Logo Section */}
+        {/* Logo & Header Section */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-black tracking-tighter">
             Khati<span className="text-indigo-600">fy</span>
           </h1>
           <p className="text-sm text-slate-500 mt-2 font-medium">
-            Welcome back! Sign in to continue.
+            Create your free account in seconds.
           </p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5">
-          {/* Email Field with Label */}
+        <form onSubmit={handleSignup} className="space-y-5">
+          {/* Email Field */}
           <div className="space-y-1.5">
             <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
             <Input
@@ -46,12 +51,9 @@ export default function Login() {
             />
           </div>
 
-          {/* Password Field with Label */}
+          {/* Password Field */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-bold text-slate-700">Password</label>
-              <a href="#" className="text-xs font-semibold text-indigo-600 hover:underline">Forgot?</a>
-            </div>
+            <label className="text-sm font-bold text-slate-700 ml-1">Password (min. 6 chars)</label>
             <Input
               type="password"
               placeholder="••••••••"
@@ -63,23 +65,32 @@ export default function Login() {
           </div>
 
           <Button 
-            type="submit" 
             disabled={loading} 
-            className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-95"
+            type="submit" 
+            className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all mt-2 active:scale-95"
           >
-            {loading ? 'Sabar karein...' : 'Sign In →'}
+            {loading ? 'Account ban raha hai...' : 'Create Free Account →'}
           </Button>
         </form>
 
+        {/* Divider */}
         <div className="relative my-8">
-          <div className="absolute inset-0 flex items-center"><span className="w-full border-t border-slate-100"></span></div>
-          <div className="relative flex justify-center text-xs uppercase"><span className="bg-white px-3 text-slate-400 font-semibold tracking-widest">OR</span></div>
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t border-slate-100"></span>
+          </div>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-white px-3 text-slate-400 font-semibold tracking-widest">OR</span>
+          </div>
         </div>
 
+        {/* Link back to Login */}
         <p className="text-center text-sm text-slate-600 font-medium">
-          No account?{' '}
-          <Link to="/signup" className="text-indigo-600 font-bold hover:underline ml-1">
-            Create one free
+          Already have an account?{' '}
+          <Link 
+            to="/login" 
+            className="text-indigo-600 font-bold hover:underline ml-1 cursor-pointer"
+          >
+            Sign in
           </Link>
         </p>
       </div>
