@@ -27,7 +27,7 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
     if (open) {
       setAmount(initialAmount ? initialAmount.toString() : "");
       setRemarks(initialRemarks || ""); // Remarks load karein
-      
+
       setTimeout(() => {
         if (inputRef.current) {
           inputRef.current.focus();
@@ -41,11 +41,15 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
     e.preventDefault();
     const numAmount = Number(amount);
     if (!amount || isNaN(numAmount) || numAmount <= 0) return;
-    
+
     onAdd(type, numAmount, remarks); // Remarks pass karein
     setAmount("");
     setRemarks("");
   };
+
+  const dynamicPlaceholder = type === "udhar"
+    ? "Detail (e.g. 1 KG Cheeni)"
+    : "Detail (e.g. Cheeni ke paise)";
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
@@ -55,7 +59,7 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
             {type === "udhar" ? "Udhar Diya" : "Paisa Mila"}
           </DialogTitle>
         </DialogHeader>
-        
+
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-3">
             <Input
@@ -66,21 +70,20 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
               onChange={(e) => setAmount(e.target.value)}
               className="h-16 text-2xl font-black text-center rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-indigo-500 transition-all"
             />
-            
+
             {/* Remarks Input Field */}
-            <Input 
-              placeholder="Remarks (e.g. 6 KG Cheeni)"
+            <Input
+              placeholder={dynamicPlaceholder} // <--- Ab ye type ke hisaab se badlega
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
-              className="h-12 text-sm font-bold rounded-xl bg-slate-50 border-slate-100 focus:border-indigo-500"
+              className="..."
             />
           </div>
-          
-          <Button 
+
+          <Button
             type="submit"
-            className={`w-full h-14 rounded-2xl font-black text-lg shadow-lg active:scale-95 transition-transform ${
-              type === "udhar" ? "bg-red-600 hover:bg-red-700" : "bg-emerald-500 hover:bg-emerald-600"
-            }`}
+            className={`w-full h-14 rounded-2xl font-black text-lg shadow-lg active:scale-95 transition-transform ${type === "udhar" ? "bg-red-600 hover:bg-red-700" : "bg-emerald-500 hover:bg-emerald-600"
+              }`}
           >
             {initialAmount ? "Update Karo" : "Save Karo"}
           </Button>
