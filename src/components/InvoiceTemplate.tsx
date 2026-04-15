@@ -36,30 +36,47 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
     <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
       <style>{`
         @media print {
-          @page { margin: 0; size: A4; }
-          body { margin: 0; -webkit-print-color-adjust: exact; }
-          .page-break { display: block; page-break-before: always; }
+          @page { 
+            margin: 0; 
+            size: A4;
+          }
+          html, body {
+            height: 100%;
+            margin: 0 !important; 
+            padding: 0 !important;
+            overflow: hidden !important;
+            -webkit-print-color-adjust: exact;
+          }
+          .page-container {
+            page-break-after: always;
+            break-after: page;
+          }
+          .page-container:last-child {
+            page-break-after: auto;
+            break-after: auto;
+          }
         }
       `}</style>
 
       {pages.map((pageEntries, pageIndex) => (
         <div
           key={pageIndex}
-          className={pageIndex > 0 ? "page-break" : ""}
+          className="page-container"
           style={{
-            padding: '45px 55px', // More breathing space
+            padding: '40px 50px',
             backgroundColor: 'white',
-            width: '100%',
-            height: '290mm', // Strict height to prevent extra blank page
+            width: '210mm',
+            height: '285mm', // Strictly safe height to avoid blank 2nd page
             display: 'flex',
             flexDirection: 'column',
             boxSizing: 'border-box',
+            position: 'relative',
             overflow: 'hidden'
           }}
         >
           {pageIndex === 0 && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '25px' }}>
                 <div>
                   <h1 style={{ fontSize: '28px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '4px 0 0 0' }}>Digital Khata Report</p>
@@ -69,7 +86,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
+              <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '25px', border: '1px solid #e2e8f0' }}>
                 <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 6px 0' }}>Billed To:</p>
                 <p style={{ fontSize: '20px', fontWeight: 'bold', margin: 0, color: '#1e293b' }}>{customerName}</p>
                 <p style={{ fontSize: '14px', color: '#475569', margin: '4px 0 0 0' }}>{customerPhone}</p>
@@ -105,12 +122,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                         }}>
                           {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
                         </span>
-                        <span style={{ fontSize: '12px', color: '#1e293b', fontWeight: '700' }}>
+                        <span style={{ fontSize: '12px', color: '#1e293b', fontWeight: '700', whiteSpace: 'nowrap' }}>
                           {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                         </span>
                       </div>
                     </td>
-                    <td style={{ padding: '15px 10px', fontSize: '12px', color: '#64748b', wordWrap: 'break-word' }}>
+                    <td style={{ padding: '15px 10px', fontSize: '12px', color: '#64748b', wordBreak: 'break-word' }}>
                       {t.remarks || '-'}
                     </td>
                     <td style={{ padding: '15px 10px', textAlign: 'right', fontSize: '14px', fontWeight: 'bold', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
@@ -123,7 +140,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
 
           {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: 'auto', paddingBottom: '20px' }}>
+            <div style={{ marginTop: 'auto', paddingBottom: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '25px' }}>
                 <div style={{
                   width: '200px',
@@ -141,7 +158,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', borderTop: '2px solid #f1f5f9', paddingTop: '20px' }}>
+              <div style={{ textAlign: 'center', borderTop: '2px solid #f1f5f9', paddingTop: '15px' }}>
                 <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 'bold', margin: 0, letterSpacing: '0.5px' }}>
                   GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
                 </p>
