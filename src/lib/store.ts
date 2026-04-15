@@ -5,6 +5,7 @@ export interface Transaction {
   type: "udhar" | "payment";
   amount: number;
   date: string;
+  remarks?: string;
 }
 
 export interface Customer {
