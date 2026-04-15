@@ -5,6 +5,7 @@ interface Transaction {
   date: string;
   amount: number;
   type: 'dr' | 'cr';
+  remarks?: string; // Remarks add kar diya
 }
 
 interface InvoiceProps {
@@ -65,7 +66,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
                 </div>
-                {/* Header Date Fixed Here */}
                 <div style={{ 
                   textAlign: 'right', 
                   fontSize: '12px', 
@@ -107,24 +107,38 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                     {t.date}
                   </td>
                   <td style={{ padding: '12px 10px', fontSize: '13px' }}>
-                    <span style={{
-                      display: 'inline-block',
-                      backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
-                      color: t.type === 'dr' ? '#ef4444' : '#10b981',
-                      border: `1px solid ${t.type === 'dr' ? '#fee2e2' : '#d1fae5'}`,
-                      fontSize: '9px',
-                      fontWeight: '900',
-                      padding: '0 6px',
-                      borderRadius: '4px',
-                      marginRight: '8px',
-                      height: '20px',
-                      lineHeight: '20px',
-                      verticalAlign: 'middle',
-                      textAlign: 'center'
-                    }}>
-                      {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
-                    </span>
-                    <span style={{ verticalAlign: 'middle', color: '#1e293b' }}>{t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}</span>
+                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '2px' }}>
+                      <span style={{
+                        display: 'inline-block',
+                        backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
+                        color: t.type === 'dr' ? '#ef4444' : '#10b981',
+                        border: `1px solid ${t.type === 'dr' ? '#fee2e2' : '#d1fae5'}`,
+                        fontSize: '9px',
+                        fontWeight: '900',
+                        padding: '0 6px',
+                        borderRadius: '4px',
+                        marginRight: '8px',
+                        height: '20px',
+                        lineHeight: '20px',
+                        textAlign: 'center'
+                      }}>
+                        {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
+                      </span>
+                      <span style={{ color: '#1e293b', fontWeight: '600' }}>
+                        {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
+                      </span>
+                    </div>
+                    {/* Yahan Remarks Show Honge */}
+                    {t.remarks && (
+                      <div style={{ 
+                        fontSize: '10px', 
+                        color: '#64748b', 
+                        fontStyle: 'italic',
+                        paddingLeft: '2px'
+                      }}>
+                        Note: {t.remarks}
+                      </div>
+                    )}
                   </td>
                   <td style={{ padding: '12px 10px', textAlign: 'right', fontSize: '14px', fontWeight: 'bold', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                     {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}

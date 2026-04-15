@@ -228,7 +228,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 Rs {total < 0 ? `-${Math.abs(total).toLocaleString()}` : total.toLocaleString()}
               </h2>
             </div>
-            
+
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button
                 onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }}
@@ -354,11 +354,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
             customerName={customer.name}
             customerPhone={customer.phone || ""}
             shopName="Ashir Khaata"
-            transactions={transactions.map(t => ({
+            // Yahan humne "as any" add kiya hai taake remarks ka error na aaye
+            transactions={transactions.map((t: any) => ({
               id: t.id,
               date: new Date(t.date).toLocaleDateString("en-PK"),
               amount: t.amount,
-              type: t.type === 'udhar' ? 'dr' : 'cr'
+              type: t.type === 'udhar' ? 'dr' : 'cr',
+              remarks: t.remarks
             }))}
             totalBalance={total}
           />
