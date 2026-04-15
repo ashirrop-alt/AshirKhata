@@ -20,7 +20,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  const itemsPerPage = 10;
+  // REDUCED TO 9: To ensure footer NEVER jumps to next page
+  const itemsPerPage = 9;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
     pages.push(transactions.slice(i, i + itemsPerPage));
@@ -42,11 +43,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             page-break-before: always;
             break-before: always;
           }
-          body { 
-            -webkit-print-color-adjust: exact; 
-            margin: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-          }
+          body { -webkit-print-color-adjust: exact; margin: 0; font-family: sans-serif; }
         }
       `}</style>
 
@@ -57,7 +54,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           style={{
             padding: '50px 60px',
             backgroundColor: 'white',
-            minHeight: '1080px', 
+            minHeight: '1100px', 
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -90,17 +87,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  <th style={{ width: '130px', padding: '16px 25px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
-                  <th style={{ width: '180px', padding: '16px 25px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
-                  <th style={{ padding: '16px 25px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
+                  {/* EXTRA PADDING (35px) for DATE to fix "chipka hua" look */}
+                  <th style={{ width: '135px', padding: '16px 35px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
+                  <th style={{ width: '180px', padding: '16px 20px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
+                  <th style={{ padding: '16px 20px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
                   <th style={{ width: '140px', padding: '16px 25px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT</th>
                 </tr>
               </thead>
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '18px 25px', fontSize: '12px', color: '#475569', fontWeight: '700' }}>{t.date}</td>
-                    <td style={{ padding: '18px 25px' }}>
+                    <td style={{ padding: '18px 35px', fontSize: '12px', color: '#475569', fontWeight: '700' }}>{t.date}</td>
+                    <td style={{ padding: '18px 20px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{
                           backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
@@ -118,7 +116,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                         </span>
                       </div>
                     </td>
-                    <td style={{ padding: '18px 25px', fontSize: '12px', color: '#64748b', fontWeight: '500', wordWrap: 'break-word' }}>
+                    <td style={{ padding: '18px 20px', fontSize: '12px', color: '#64748b', fontWeight: '500', wordWrap: 'break-word' }}>
                       {t.remarks || '-'}
                     </td>
                     <td style={{ padding: '18px 25px', textAlign: 'right', fontSize: '14px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
@@ -132,7 +130,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
           {pageIndex === pages.length - 1 && (
             <div style={{ marginTop: 'auto', paddingBottom: '30px' }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '35px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '30px' }}>
                 <div style={{
                   width: '220px',
                   backgroundColor: '#1e293b',
@@ -149,7 +147,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', borderTop: '2px solid #f8fafc', paddingTop: '25px' }}>
+              <div style={{ textAlign: 'center', borderTop: '2px solid #f8fafc', paddingTop: '20px' }}>
                 <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '1px' }}>
                   GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
                 </p>
