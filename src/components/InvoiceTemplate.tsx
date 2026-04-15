@@ -54,7 +54,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           style={{
             padding: '45px 55px',
             backgroundColor: 'white',
-            minHeight: '1000px', 
+            minHeight: '1000px',
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -88,6 +88,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
                   <th style={{ width: '135px', padding: '14px 30px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
+                  <th style={{
+                    width: '130px',      // Width thodi badha di
+                    padding: '14px 25px', // Padding badha di taake left se gap rahe
+                    fontSize: '12px',
+                    color: 'white',
+                    fontWeight: '700'
+                  }}>DATE</th>
                   <th style={{ width: '170px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
                   <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
                   <th style={{ width: '130px', padding: '14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
