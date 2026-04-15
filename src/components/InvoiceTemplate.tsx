@@ -20,17 +20,19 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  const itemsPerPage = 11;
+  // LIMIT UPDATED TO 10 TO PREVENT OVERLAP (From Code 1)
+  const itemsPerPage = 10;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
     pages.push(transactions.slice(i, i + itemsPerPage));
   }
 
+  // Date formatter from Code 2 (13April2026 style)
   const formattedDate = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'long',
     year: 'numeric'
-  }).replace(/ /g, '/');
+  }).replace(/ /g, '');
 
   return (
     <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
@@ -42,7 +44,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             page-break-before: always;
             break-before: always;
           }
-          body { -webkit-print-color-adjust: exact; margin: 0; }
+          body { -webkit-print-color-adjust: exact; margin: 0; font-family: sans-serif; }
         }
       `}</style>
 
@@ -51,9 +53,9 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           key={pageIndex}
           className={pageIndex > 0 ? "page-break" : ""}
           style={{
-            padding: '40px 50px',
+            padding: '45px 55px',
             backgroundColor: 'white',
-            minHeight: '1000px', // Using your exact stable height
+            minHeight: '1000px', 
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -64,18 +66,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <>
               <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
                 <div>
-                  <h1 style={{ fontSize: '26px', fontWeight: 'bold', color: '#1e293b', margin: 0 }}>{shopName}</h1>
-                  <p style={{ fontSize: '11px', color: '#64748b', fontWeight: 'bold', margin: 0 }}>Digital Khata Report</p>
+                  <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0 }}>{shopName}</h1>
+                  <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '2px 0 0 0' }}>Digital Khata Report</p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '12px', color: '#475569', letterSpacing: '0.5px' }}>
+                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px' }}>
                   <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
                 </div>
               </div>
 
-              <div style={{ backgroundColor: '#f8fafc', padding: '15px', borderRadius: '8px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
-                <p style={{ fontSize: '9px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
-                <p style={{ fontSize: '18px', fontWeight: 'bold', margin: 0, color: '#1e293b' }}>{customerName}</p>
-                <p style={{ fontSize: '13px', color: '#475569', margin: 0 }}>{customerPhone}</p>
+              <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
+                <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
+                <p style={{ fontSize: '20px', fontWeight: '800', margin: 0, color: '#1e293b' }}>{customerName}</p>
+                <p style={{ fontSize: '14px', color: '#475569', margin: '2px 0 0 0', fontWeight: '500' }}>{customerPhone}</p>
               </div>
             </>
           )}
@@ -86,17 +88,19 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  <th style={{ width: '110px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>DATE</th>
-                  <th style={{ width: '160px', padding: '12px 10px', fontSize: '11px', color: 'white' }}>TYPE</th>
-                  <th style={{ padding: '12px 10px', fontSize: '11px', color: 'white' }}>REMARKS</th>
-                  <th style={{ width: '120px', padding: '12px 10px', fontSize: '11px', color: 'white', textAlign: 'right' }}>AMOUNT (Rs)</th>
+                  {/* Applied 125px width and 10px padding from Code 2 */}
+                  <th style={{ width: '125px', padding: '12px 10px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
+                  <th style={{ width: '170px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
+                  <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
+                  <th style={{ width: '130px', padding: '14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
                 </tr>
               </thead>
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px 10px', fontSize: '11px', color: '#475569', fontWeight: '500' }}>{t.date}</td>
-                    <td style={{ padding: '12px 10px', fontSize: '13px' }}>
+                    {/* Applied Date Cell Styling from Code 2 */}
+                    <td style={{ padding: '12px 10px', fontSize: '12px', color: '#475569', fontWeight: '500', letterSpacing: '0.3px' }}>{t.date}</td>
+                    <td style={{ padding: '16px 15px', fontSize: '13px' }}>
                       <span style={{
                         display: 'inline-block',
                         backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
@@ -104,24 +108,24 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                         border: `1px solid ${t.type === 'dr' ? '#fee2e2' : '#d1fae5'}`,
                         fontSize: '9px',
                         fontWeight: '900',
-                        padding: '0 6px',
+                        padding: '0 7px',
                         borderRadius: '4px',
                         marginRight: '8px',
-                        height: '20px',
-                        lineHeight: '20px',
+                        height: '22px',
+                        lineHeight: '22px',
                         verticalAlign: 'middle',
                         textAlign: 'center'
                       }}>
                         {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
                       </span>
-                      <span style={{ verticalAlign: 'middle', color: '#1e293b', fontWeight: '600', fontSize: '11px' }}>
+                      <span style={{ verticalAlign: 'middle', color: '#1e293b', fontWeight: '700', fontSize: '12px' }}>
                         {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px 10px', fontSize: '11px', color: '#64748b', wordWrap: 'break-word' }}>
+                    <td style={{ padding: '16px 15px', fontSize: '12px', color: '#64748b', wordWrap: 'break-word', fontWeight: '500' }}>
                       {t.remarks || '-'}
                     </td>
-                    <td style={{ padding: '12px 10px', textAlign: 'right', fontSize: '13px', fontWeight: 'bold', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
+                    <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '14px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                       {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                     </td>
                   </tr>
@@ -134,23 +138,23 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <div style={{ marginTop: 'auto', paddingBottom: '20px' }}>
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '25px' }}>
                 <div style={{
-                  width: '200px',
+                  width: '210px',
                   backgroundColor: '#1e293b',
-                  padding: '18px',
-                  borderRadius: '10px',
+                  padding: '20px',
+                  borderRadius: '12px',
                   textAlign: 'right',
                   color: 'white'
                 }}>
-                  <div style={{ fontSize: '10px', fontWeight: '800', color: '#94a3b8', textTransform: 'uppercase' }}>Net Balance</div>
-                  <div style={{ fontSize: '24px', fontWeight: '900', marginTop: '5px' }}>
+                  <div style={{ fontSize: '11px', fontWeight: '700', color: '#94a3b8', textTransform: 'uppercase' }}>Net Balance</div>
+                  <div style={{ fontSize: '26px', fontWeight: '900', marginTop: '5px' }}>
                     <span style={{ fontSize: '14px', marginRight: '5px', color: '#94a3b8' }}>Rs</span>
                     {totalBalance.toLocaleString()}
                   </div>
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '20px' }}>
-                <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: 'bold', margin: 0 }}>
+              <div style={{ textAlign: 'center', borderTop: '2px solid #f8fafc', paddingTop: '20px' }}>
+                <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '0.5px' }}>
                   GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
                 </p>
               </div>
