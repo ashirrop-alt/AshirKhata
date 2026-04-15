@@ -29,10 +29,10 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
   // Date formatter from Code 2 (13April2026 style)
   const formattedDate = new Date().toLocaleDateString('en-GB', {
-  day: '2-digit',
-  month: 'long',
-  year: 'numeric'
-}); // Ab spaces barkaraar rahengi (e.g., 15 April 2026)
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  }); // Ab spaces barkaraar rahengi (e.g., 15 April 2026)
 
   return (
     <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
@@ -135,7 +135,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
 
           {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: 'auto', paddingBottom: '20px' }}>
+            <div style={{ marginTop: '30px', paddingBottom: '20px' }}> {/* Ab ye table ke foran baad ayega */}
               <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '25px' }}>
                 <div style={{
                   width: '210px',
