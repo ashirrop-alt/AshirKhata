@@ -135,13 +135,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
 
           {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: '30px', paddingBottom: '20px' }}> {/* Ab ye table ke foran baad ayega */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '25px' }}>
-                <div style={{
-                  width: '210px',
-                  backgroundColor: '#1e293b',
-                  padding: '20px',
-                  borderRadius: '12px',
+            <div style={{ marginTop: '30px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                <div style={{ 
+                  width: '200px', 
+                  backgroundColor: '#059669', 
+                  padding: '18px', 
+                  borderRadius: '10px', 
                   textAlign: 'right',
                   color: 'white'
                 }}>
