@@ -87,7 +87,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  <th style={{ width: '115px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
+                  <th style={{ width: '135px', padding: '14px 30px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
                   <th style={{ width: '170px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
                   <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
                   <th style={{ width: '130px', padding: '14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
@@ -96,7 +96,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '16px 15px', fontSize: '12px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
+                    <td style={{ padding: '16px 30px', fontSize: '12px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
                     <td style={{ padding: '16px 15px', fontSize: '13px' }}>
                       <span style={{
                         display: 'inline-block',
