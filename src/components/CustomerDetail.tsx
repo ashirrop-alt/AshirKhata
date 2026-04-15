@@ -108,15 +108,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
     let message = `*Hisaab Report - Digital Khata*\n`;
     message += `Customer: ${customer.name}\n`;
     message += `--------------------------\n`;
-    
+
     transactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
       message += `${new Date(t.date).toLocaleDateString()}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar' : 'Mila'}${note}\n`;
     });
-    
+
     message += `--------------------------\n`;
     message += `*Total Baqaya: Rs ${total}*`;
-    
+
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
@@ -217,12 +217,18 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
           <div className="w-full md:w-80 space-y-4">
             <div className={`rounded-3xl p-6 sm:p-8 shadow-md border-b-8 transition-all duration-300 bg-white ${total > 0 ? "border-red-500" : "border-emerald-500"}`}>
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">Baqaya Rakam</p>
+
+              {/* Yahan humne text ko dynamic kar diya */}
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
+                {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
+              </p>
+
               <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter ${total > 0 ? "text-red-600" : "text-emerald-600"}`}>
-                Rs {Math.abs(total).toLocaleString()}
+                {/* Agar total negative hai (dene hain), toh minus sign dikhayega, warna simple amount */}
+                Rs {total < 0 ? `-${Math.abs(total).toLocaleString()}` : total.toLocaleString()}
               </h2>
             </div>
-
+            
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button
                 onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }}
@@ -278,7 +284,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     </div>
                     <div>
                       <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>Rs {tx.amount.toLocaleString()}</p>
-                      
+
                       {/* --- YAHAN REMARKS WALA CODE ADDED HAI --- */}
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
                         {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-PK")}
