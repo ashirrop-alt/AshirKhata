@@ -42,7 +42,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             page-break-before: always;
             break-before: always;
           }
-          body { -webkit-print-color-adjust: exact; margin: 0; font-family: sans-serif; }
+          body { -webkit-print-color-adjust: exact; margin: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         }
       `}</style>
 
@@ -53,7 +53,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           style={{
             padding: '45px 55px',
             backgroundColor: 'white',
-            minHeight: '1000px', 
+            height: '296mm', // Exact A4 height
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -82,21 +82,21 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
           {pageIndex > 0 && <div style={{ height: '40px' }}></div>}
 
-          <div style={{ flex: pageIndex === pages.length - 1 ? 'none' : 1 }}>
+          <div style={{ flex: 1 }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  <th style={{ width: '115px', padding: '14px 12px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
-                  <th style={{ width: '180px', padding: '14px 12px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
-                  <th style={{ padding: '14px 12px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
-                  <th style={{ width: '140px', padding: '14px 12px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
+                  <th style={{ width: '120px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
+                  <th style={{ width: '180px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
+                  <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
+                  <th style={{ width: '140px', padding: '14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
                 </tr>
               </thead>
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '15px 12px', fontSize: '13px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
-                    <td style={{ padding: '15px 12px' }}>
+                    <td style={{ padding: '16px 15px', fontSize: '13px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
+                    <td style={{ padding: '16px 15px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <span style={{
                           backgroundColor: t.type === 'dr' ? '#fef2f2' : '#ecfdf5',
@@ -106,7 +106,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                           fontWeight: '800',
                           padding: '2px 7px',
                           borderRadius: '5px',
-                          textAlign: 'center'
                         }}>
                           {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
                         </span>
@@ -115,21 +114,20 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                         </span>
                       </div>
                     </td>
-                    <td style={{ padding: '15px 12px', fontSize: '13px', color: '#64748b', wordWrap: 'break-word', fontWeight: '500' }}>
+                    <td style={{ padding: '16px 15px', fontSize: '13px', color: '#64748b', wordWrap: 'break-word', fontWeight: '500' }}>
                       {t.remarks || '-'}
                     </td>
-                    <td style={{ padding: '15px 12px', textAlign: 'right', fontSize: '15px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
+                    <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '15px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                       {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
-          </div>
 
-          {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: '30px' }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
+            {/* Total Balance Box - Placed right after table entries */}
+            {pageIndex === pages.length - 1 && (
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px' }}>
                 <div style={{
                   width: '220px',
                   backgroundColor: '#1e293b',
@@ -146,14 +144,23 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   </div>
                 </div>
               </div>
+            )}
+          </div>
 
-              <div style={{ marginTop: 'auto', textAlign: 'center', borderTop: '2px solid #f8fafc', paddingTop: '25px' }}>
-                <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '1px' }}>
-                  GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
-                </p>
-              </div>
-            </div>
-          )}
+          {/* Footer - Fixed at bottom of every page's container to prevent overflow */}
+          <div style={{ 
+            position: 'absolute', 
+            bottom: '40px', 
+            left: '55px', 
+            right: '55px', 
+            textAlign: 'center', 
+            borderTop: '2px solid #f8fafc', 
+            paddingTop: '20px' 
+          }}>
+            <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '1px' }}>
+              GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
+            </p>
+          </div>
         </div>
       ))}
     </div>
