@@ -20,7 +20,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  const itemsPerPage = 11;
+  // LIMIT UPDATED TO 10 TO PREVENT OVERLAP
+  const itemsPerPage = 10;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
     pages.push(transactions.slice(i, i + itemsPerPage));
@@ -51,7 +52,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           key={pageIndex}
           className={pageIndex > 0 ? "page-break" : ""}
           style={{
-            padding: '45px 55px', // Improved outer breathing room
+            padding: '45px 55px',
             backgroundColor: 'white',
             minHeight: '1000px', 
             position: 'relative',
