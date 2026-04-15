@@ -20,7 +20,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  // LIMIT UPDATED TO 10 TO PREVENT OVERLAP
+  // LIMIT SET TO 10 (Footer safe rahega)
   const itemsPerPage = 10;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
@@ -54,7 +54,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           style={{
             padding: '45px 55px',
             backgroundColor: 'white',
-            minHeight: '1000px',
+            minHeight: '1050px', 
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -63,12 +63,12 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         >
           {pageIndex === 0 && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px' }}>
                 <div>
                   <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0 }}>{shopName}</h1>
                   <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '2px 0 0 0' }}>Digital Khata Report</p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px' }}>
+                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569' }}>
                   <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
                 </div>
               </div>
@@ -87,23 +87,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  <th style={{ width: '135px', padding: '14px 30px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
-                  <th style={{
-                    width: '130px',      // Width thodi badha di
-                    padding: '14px 25px', // Padding badha di taake left se gap rahe
-                    fontSize: '12px',
-                    color: 'white',
-                    fontWeight: '700'
-                  }}>DATE</th>
+                  {/* Fixed widths to prevent date column from shrinking */}
+                  <th style={{ width: '120px', padding: '14px 15px 14px 25px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
                   <th style={{ width: '170px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
                   <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
-                  <th style={{ width: '130px', padding: '14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
+                  <th style={{ width: '130px', padding: '14px 25px 14px 15px', fontSize: '12px', color: 'white', textAlign: 'right', fontWeight: '700' }}>AMOUNT (Rs)</th>
                 </tr>
               </thead>
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '16px 30px', fontSize: '12px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
+                    <td style={{ padding: '16px 15px 16px 25px', fontSize: '12px', color: '#475569', fontWeight: '600' }}>{t.date}</td>
                     <td style={{ padding: '16px 15px', fontSize: '13px' }}>
                       <span style={{
                         display: 'inline-block',
@@ -117,19 +111,18 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                         marginRight: '8px',
                         height: '22px',
                         lineHeight: '22px',
-                        verticalAlign: 'middle',
                         textAlign: 'center'
                       }}>
                         {t.type === 'dr' ? 'DEBIT' : 'CREDIT'}
                       </span>
-                      <span style={{ verticalAlign: 'middle', color: '#1e293b', fontWeight: '700', fontSize: '12px' }}>
+                      <span style={{ color: '#1e293b', fontWeight: '700', fontSize: '12px' }}>
                         {t.type === 'dr' ? 'Udhar Diya' : 'Paisa Mila'}
                       </span>
                     </td>
                     <td style={{ padding: '16px 15px', fontSize: '12px', color: '#64748b', wordWrap: 'break-word', fontWeight: '500' }}>
                       {t.remarks || '-'}
                     </td>
-                    <td style={{ padding: '16px 15px', textAlign: 'right', fontSize: '14px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
+                    <td style={{ padding: '16px 25px 16px 15px', textAlign: 'right', fontSize: '14px', fontWeight: '800', color: t.type === 'dr' ? '#ef4444' : '#10b981' }}>
                       {t.type === 'dr' ? `+ ${t.amount.toLocaleString()}` : `- ${t.amount.toLocaleString()}`}
                     </td>
                   </tr>
