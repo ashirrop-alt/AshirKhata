@@ -29,10 +29,10 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
   // Date formatter from Code 2 (13April2026 style)
   const formattedDate = new Date().toLocaleDateString('en-GB', {
-    day: '2-digit',
-    month: 'long',
-    year: 'numeric'
-  }).replace(/ /g, '');
+  day: '2-digit',
+  month: 'long',
+  year: 'numeric'
+}); // Ab spaces barkaraar rahengi (e.g., 15 April 2026)
 
   return (
     <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
@@ -55,7 +55,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           style={{
             padding: '45px 55px',
             backgroundColor: 'white',
-            minHeight: '1000px', 
+            minHeight: '1000px',
             position: 'relative',
             boxSizing: 'border-box',
             display: 'flex',
@@ -167,3 +167,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 });
 
 export default InvoiceTemplate;
+
+
+
+
