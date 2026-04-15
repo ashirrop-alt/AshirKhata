@@ -1,70 +1,80 @@
-import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
+import { useState, useEffect, useRef } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 interface Props {
   open: boolean;
-  type: "udhar" | "payment";
   onClose: () => void;
+  type: "udhar" | "payment";
   onAdd: (type: "udhar" | "payment", amount: number) => void;
+  initialAmount?: number; // Pre-fill ke liye naya prop
 }
 
-export function AddEntryDialog({ open, type, onClose, onAdd }: Props) {
-  const [amount, setAmount] = useState("");
+export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount }: Props) {
+  const [amount, setAmount] = useState<string>("");
+  const inputRef = useRef<HTMLInputElement>(null);
 
-  const handleSubmit = () => {
-    const num = parseFloat(amount);
-    if (!num || num <= 0) return;
-    
-    onAdd(type, num);
-    setAmount("");
-    onClose();
-  };
-
-  // Naya function: Jab kisi bhi key ko press kiya jaye
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      e.preventDefault(); // Default behavior roko
-      handleSubmit();     // Direct function call karo
+  // Jab dialog khule, check karo ke edit ho raha hai ya add
+  useEffect(() => {
+    if (open) {
+      // Agar initialAmount hai (Edit mode), toh usey set karo warna khali (Add mode)
+      setAmount(initialAmount ? initialAmount.toString() : "");
+      
+      // Thora sa delay taake dialog poora load ho jaye phir auto-focus/select kare
+      setTimeout(() => {
+        if (inputRef.current) {
+          inputRef.current.focus();
+          inputRef.current.select(); // Poori amount ko select kar lega
+        }
+      }, 50);
     }
-  };
+  }, [open, initialAmount]);
 
-  const isUdhar = type === "udhar";
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const numAmount = Number(amount);
+    if (!amount || isNaN(numAmount) || numAmount <= 0) return;
+    
+    onAdd(type, numAmount);
+    setAmount("");
+  };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100] transform transition-transform duration-300 ease-in-out sm:mb-0 mb-[10vh]">
+      <DialogContent className="w-[92%] max-w-[400px] rounded-[28px] p-6 border-none shadow-2xl overflow-hidden">
         <DialogHeader>
-          <DialogTitle className={`text-lg font-semibold ${isUdhar ? "text-destructive" : "text-success"}`}>
-            {isUdhar ? "Udhar Diya" : "Paisa Mila"}
+          <DialogTitle className={`text-xl font-black ${type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>
+            {type === "udhar" ? "Udhar Diya" : "Paisa Mila"}
           </DialogTitle>
         </DialogHeader>
-
-        <div className="space-y-4 pt-2">
-          <Input
-            placeholder="Amount (Rs)"
-            value={amount}
-            onChange={e => setAmount(e.target.value)}
-            onKeyDown={handleKeyDown} // Yahan listener add kiya hai
-            type="number"
-            inputMode="numeric"
-            className="h-14 text-xl font-semibold text-center"
-            autoFocus
-          />
-          <Button
-            onClick={handleSubmit} // Click par bhi chale
-            className={`w-full h-12 text-base font-semibold ${
-              isUdhar
-                ? "bg-destructive hover:bg-destructive/90 text-destructive-foreground"
-                : "bg-success hover:bg-success/90 text-success-foreground"
+        
+        <form onSubmit={handleSubmit} className="space-y-4 pt-4">
+          <div className="relative group">
+            <Input
+              ref={inputRef}
+              type="number"
+              placeholder="Amount (Rs)"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="h-16 text-2xl font-black text-center rounded-2xl bg-slate-50 border-2 border-slate-100 focus:border-indigo-500 transition-all"
+            />
+          </div>
+          
+          <Button 
+            type="submit"
+            className={`w-full h-14 rounded-2xl font-black text-lg shadow-lg active:scale-95 transition-transform ${
+              type === "udhar" ? "bg-red-600 hover:bg-red-700" : "bg-emerald-500 hover:bg-emerald-600"
             }`}
-            disabled={!amount || parseFloat(amount) <= 0}
           >
-            Save Karo
+            {initialAmount ? "Update Karo" : "Save Karo"}
           </Button>
-        </div>
+        </form>
       </DialogContent>
     </Dialog>
   );

@@ -37,7 +37,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
-  
+
   // Edit ke liye nayi states
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
@@ -50,13 +50,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
     setLoading(true);
     try {
       let updatedTransactions;
-      
+
       if (editingEntry) {
         // Edit Logic: Purani entry ko update karo
-        updatedTransactions = transactions.map(t => 
-          t.id === editingEntry.id 
-          ? { ...t, type, amount: Number(amount) } 
-          : t
+        updatedTransactions = transactions.map(t =>
+          t.id === editingEntry.id
+            ? { ...t, type, amount: Number(amount) }
+            : t
         );
       } else {
         // Add Logic: Nayi entry dalo
@@ -71,7 +71,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
       if (error) throw error;
-      
+
       setTransactions(updatedTransactions);
       toast.success(editingEntry ? "Hisaab update ho gaya!" : "Hisaab save ho gaya!");
       setEntryOpen(false);
@@ -314,10 +314,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
                       </p>
                     </div>
                   </div>
-                  
+
                   <div className="flex items-center gap-1">
                     {/* EDIT BUTTON */}
-                    <button 
+                    <button
                       onClick={() => {
                         setEditingEntry(tx);
                         setEntryType(tx.type);
@@ -354,13 +354,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </div>
       </main>
 
-      <AddEntryDialog 
-        open={entryOpen} 
-        onClose={() => { setEntryOpen(false); setEditingEntry(null); }} 
-        type={entryType} 
+      <AddEntryDialog
+        open={entryOpen}
+        onClose={() => {
+          setEntryOpen(false);
+          setEditingEntry(null); // Band karte waqt edit state lazmi clear karein
+        }}
+        type={entryType}
         onAdd={handleSaveEntry}
-        // Agar aapke AddEntryDialog mein initial value ki prop hai toh niche wala line use karein:
-        // initialAmount={editingEntry?.amount} 
+        initialAmount={editingEntry?.amount} // Ye line purani amount bhej rahi hai
       />
 
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
