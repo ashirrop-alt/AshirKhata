@@ -41,8 +41,16 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const { data } = useKhata();
   
-  // Maine shop_name hata dia hai, ab error nahi ayega
-  const displayShopName = data?.shopName || "Digital Khata";
+  // 1. Browser ki memory se naam uthao agar database slow ho
+  const savedShopName = localStorage.getItem("my_shop_name");
+  const displayShopName = data?.shopName || savedShopName || "Digital Khata";
+
+  // 2. Jab bhi data load ho, usay memory mein save kar lo agli dafa ke liye
+  useEffect(() => {
+    if (data?.shopName) {
+      localStorage.setItem("my_shop_name", data.shopName);
+    }
+  }, [data]);
 
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
