@@ -41,8 +41,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const { data } = useKhata();
   
-  // useState hata kar ye direct line likhein. Ye "Loading..." ka masla khatam kar degi.
-  const displayShopName = data?.shopName || "Digital Khata";
+  // Is line ko dhyan se paste karein
+  const displayShopName = data?.shopName || data?.shop_name || "Digital Khata";
 
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
