@@ -135,13 +135,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
 
           {pageIndex === pages.length - 1 && (
-            <div style={{ marginTop: '30px' }}>
-              <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-                <div style={{ 
-                  width: '200px', 
-                  backgroundColor: '#059669', 
-                  padding: '18px', 
-                  borderRadius: '10px', 
+            <div style={{ paddingBottom: '20px' }}>
+              {/* NET BALANCE - Now follows the table directly */}
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px', marginBottom: '40px' }}>
+                <div style={{
+                  width: '210px',
+                  backgroundColor: '#1e293b',
+                  padding: '20px',
+                  borderRadius: '12px',
                   textAlign: 'right',
                   color: 'white'
                 }}>
@@ -153,7 +154,16 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              <div style={{ textAlign: 'center', borderTop: '2px solid #f8fafc', paddingTop: '20px' }}>
+              {/* FOOTER LINE - Fixed at the very bottom */}
+              <div style={{
+                position: 'absolute',
+                bottom: '40px',
+                left: '55px',
+                right: '55px',
+                textAlign: 'center',
+                borderTop: '2px solid #f8fafc',
+                paddingTop: '20px'
+              }}>
                 <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '0.5px' }}>
                   GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
                 </p>
