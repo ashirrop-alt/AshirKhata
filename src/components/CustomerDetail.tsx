@@ -39,8 +39,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
   const { data } = useKhata();
-  const shopNameFromStore = data?.shopName || "Digital Khata";
+  console.log("Current Shop Name:", data?.shopName); // Ye debug karne mein madad karega
   const [editingEntry, setEditingEntry] = useState<any>(null);
+  const shopNameFromStore = data?.shopName || "Digital Khata";
 
   const total = transactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
@@ -354,9 +355,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div ref={invoiceRef}>
           <InvoiceTemplate
             customerName={customer.name}
-            customerPhone={customer.phone || ""}
-            // Purana "Ashir Khaata" ya userProfile wala code hata kar ye likhein:
-            shopName={shopNameFromStore}
+            shopName={data?.shopName || "Digital Khata"}
+            shopName={data.shopName}
             transactions={transactions.map((t: any) => ({
               id: t.id,
               date: new Date(t.date).toLocaleDateString("en-PK"),
