@@ -62,13 +62,13 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         >
           {pageIndex === 0 && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '30px', marginTop: '0px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px', marginTop: '0px' }}>
                 <div>
-                  <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0 }}>{shopName}</h1>
-                  <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '2px 0 0 0' }}>Digital Khata Report</p>
+                  <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
+                  <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '4px 0 0 0' }}>Digital Khata Report</p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px' }}>
-                  <strong style={{ color: '#1e293b' }}>Date:</strong> 
+                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px', paddingBottom: '5px' }}>
+                  <strong style={{ color: '#1e293b' }}>Date:</strong>
                   <span style={{ marginLeft: '8px' }}>{formattedDate}</span>
                 </div>
               </div>
