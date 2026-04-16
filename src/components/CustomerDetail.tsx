@@ -40,12 +40,12 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [transactions, setTransactions] = useState(customer.transactions || []);
 
   const { data } = useKhata();
-  const savedShopName = localStorage.getItem("my_shop_name");
-  const displayShopName = data?.shopName || savedShopName || "Digital Khata";
+  const savedShopName = localStorage.getItem("my_shop_name"); // Underscore use karein
+  const displayShopName = data?.shopName || savedShopName || "Khatify User";
 
   useEffect(() => {
     if (data?.shopName) {
-      localStorage.setItem("my_shop_name", data.shopName);
+      localStorage.setItem("my_shop_name", data.shopName); // Underscore use karein
     }
   }, [data]);
 
@@ -116,17 +116,22 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
-    let message = `*Hisaab Report - Digital Khata*\n`;
+    // Persistent Shop Name
+    const savedShopName = localStorage.getItem("my_shop_name");
+    const shopHeader = data?.shopName || savedShopName || "Khatify User";
+
+    let message = `*${shopHeader} - Hisaab Report* 📜\n`;
     message += `Customer: ${customer.name}\n`;
     message += `--------------------------\n`;
 
     transactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
-      message += `${new Date(t.date).toLocaleDateString()}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar' : 'Mila'}${note}\n`;
+      message += `${new Date(t.date).toLocaleDateString("en-PK")}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
     });
 
     message += `--------------------------\n`;
-    message += `*Total Baqaya: Rs ${total}*`;
+    message += `*Total Baqaya: Rs ${total}* 💰\n\n`;
+    message += `_Powered by Khatify_`;
 
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
@@ -134,26 +139,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const sendReminder = async () => {
     if (!customer.phone) return;
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { data: shopData } = await supabase
-        .from('shops')
-        .select('name')
-        .eq('user_id', user.id)
-        .single();
-
-      const currentShopName = shopData?.name || "Dukan";
-      const cleanPhone = customer.phone.replace(/^0/, "92");
-      const message = encodeURIComponent(
-        `Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai. Meharbani kar ke ada kar dein.\n\nShukriya,\n${currentShopName}`
-      );
-      window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${message}`;
-    } catch (error) {
-      const cleanPhone = customer.phone.replace(/^0/, "92");
-      window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(`Assalam o Alaikum! Aapka udhar Rs ${total} baqi hai.\n\nShukriya.`)}`;
-    }
+    
+    // Persistent Shop Name for Reminder
+    const savedShopName = localStorage.getItem("my_shop_name");
+    const currentShopName = data?.shopName || savedShopName || "Khatify User";
+    
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    const message = `*Assalam o Alaikum!* ✨\n\nAapka udhar *Rs ${total.toLocaleString()}* baqi hai. Meharbani kar ke jald ada kar dein.\n\n*Shukriya,*\n*${currentShopName}*\n\n_Sent via Khatify_`;
+    
+    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
   const downloadInvoice = async () => {
