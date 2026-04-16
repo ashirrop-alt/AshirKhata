@@ -40,13 +40,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [transactions, setTransactions] = useState(customer.transactions || []);
 
   const { data } = useKhata();
-  const [displayShopName, setDisplayShopName] = useState<string>("Loading...");
-
-  useEffect(() => {
-    if (data?.shopName) {
-      setDisplayShopName(data.shopName);
-    }
-  }, [data]);
+  
+  // useState hata kar ye direct line likhein. Ye "Loading..." ka masla khatam kar degi.
+  const displayShopName = data?.shopName || "Digital Khata";
 
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
