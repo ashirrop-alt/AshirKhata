@@ -1,5 +1,5 @@
+import { useState, useEffect, useRef } from "react";
 import { useKhata } from "@/hooks/useKhata";
-import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import InvoiceTemplate from './InvoiceTemplate';
@@ -38,10 +38,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
+
   const { data } = useKhata();
-  console.log("Current Shop Name:", data?.shopName); // Ye debug karne mein madad karega
+  const [displayShopName, setDisplayShopName] = useState<string>("Loading...");
+
+  useEffect(() => {
+    if (data?.shopName) {
+      setDisplayShopName(data.shopName);
+    }
+  }, [data]);
+
   const [editingEntry, setEditingEntry] = useState<any>(null);
-  const shopNameFromStore = data?.shopName || "Digital Khata";
 
   const total = transactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
@@ -355,8 +362,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div ref={invoiceRef}>
           <InvoiceTemplate
             customerName={customer.name}
-            shopName={data?.shopName || "Digital Khata"}
-            shopName={data.shopName}
+            customerPhone={customer.phone || ""}
+            shopName={displayShopName}
             transactions={transactions.map((t: any) => ({
               id: t.id,
               date: new Date(t.date).toLocaleDateString("en-PK"),
