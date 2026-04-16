@@ -41,8 +41,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const { data } = useKhata();
   
-  // Is line ko dhyan se paste karein
-  const displayShopName = data?.shopName || data?.shop_name || "Digital Khata";
+  // Maine shop_name hata dia hai, ab error nahi ayega
+  const displayShopName = data?.shopName || "Digital Khata";
 
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
