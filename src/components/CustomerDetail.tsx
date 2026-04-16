@@ -1,3 +1,4 @@
+import { useKhata } from "@/hooks/useKhata";
 import { useRef, useState } from 'react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -37,7 +38,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
-
+  const { data } = useKhata();
+  const shopNameFromStore = data?.shopName || "Digital Khata";
   const [editingEntry, setEditingEntry] = useState<any>(null);
 
   const total = transactions.reduce((acc, tx) => {
@@ -353,8 +355,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
           <InvoiceTemplate
             customerName={customer.name}
             customerPhone={customer.phone || ""}
-            shopName="Ashir Khaata"
-            // Yahan humne "as any" add kiya hai taake remarks ka error na aaye
+            // Purana "Ashir Khaata" ya userProfile wala code hata kar ye likhein:
+            shopName={shopNameFromStore}
             transactions={transactions.map((t: any) => ({
               id: t.id,
               date: new Date(t.date).toLocaleDateString("en-PK"),
