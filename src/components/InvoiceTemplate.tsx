@@ -20,7 +20,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 9;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
     pages.push(transactions.slice(i, i + itemsPerPage));
