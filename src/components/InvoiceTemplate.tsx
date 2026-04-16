@@ -62,17 +62,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         >
           {pageIndex === 0 && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px', marginTop: '0px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px' }}>
                 <div>
                   <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
-                  <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '4px 0 0 0' }}>Digital Khata Report</p>
+                  <p style={{ fontSize: '11px', color: '#6366f1', fontWeight: '800', margin: '6px 0 0 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
+                    Report Powered by Khatify
+                  </p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px', paddingBottom: '5px' }}>
-                  <strong style={{ color: '#1e293b' }}>Date:</strong>
-                  <span style={{ marginLeft: '8px' }}>{formattedDate}</span>
+                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', paddingBottom: '5px' }}>
+                  <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
                 </div>
               </div>
-
               <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
                 <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
                 <p style={{ fontSize: '20px', fontWeight: '800', margin: 0, color: '#1e293b' }}>{customerName}</p>
@@ -158,11 +158,14 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 left: '55px',
                 right: '55px',
                 textAlign: 'center',
-                borderTop: '2px solid #f8fafc',
+                borderTop: '1px solid #f1f5f9',
                 paddingTop: '20px'
               }}>
-                <p style={{ fontSize: '11px', color: '#94a3b8', fontWeight: '800', margin: 0, letterSpacing: '0.5px' }}>
-                  GENERATED VIA {shopName.toUpperCase()} DIGITAL KHATA
+                <p style={{ fontSize: '10px', color: '#94a3b8', fontWeight: '600', margin: 0, letterSpacing: '0.5px' }}>
+                  This is a digitally generated report via <strong style={{ color: '#6366f1' }}>Khatify.app</strong>
+                </p>
+                <p style={{ fontSize: '9px', color: '#cbd5e1', marginTop: '4px' }}>
+                  Secure • Digital • Reliable
                 </p>
               </div>
             </div>
