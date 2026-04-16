@@ -20,19 +20,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
   customerName, customerPhone, shopName, transactions, totalBalance
 }, ref) => {
 
-  // LIMIT UPDATED TO 10 TO PREVENT OVERLAP (From Code 1)
   const itemsPerPage = 10;
   const pages = [];
   for (let i = 0; i < transactions.length; i += itemsPerPage) {
     pages.push(transactions.slice(i, i + itemsPerPage));
   }
 
-  // Date formatter from Code 2 (13April2026 style)
   const formattedDate = new Date().toLocaleDateString('en-GB', {
     day: '2-digit',
     month: 'long',
     year: 'numeric'
-  }); // Ab spaces barkaraar rahengi (e.g., 15 April 2026)
+  });
 
   return (
     <div ref={ref} style={{ width: '794px', margin: '0 auto', backgroundColor: 'white' }}>
@@ -70,7 +68,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   <p style={{ fontSize: '12px', color: '#64748b', fontWeight: 'bold', margin: '2px 0 0 0' }}>Digital Khata Report</p>
                 </div>
                 <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', letterSpacing: '0.5px' }}>
-                  <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
+                  <strong style={{ color: '#1e293b' }}>Date:</strong> 
+                  <span style={{ marginLeft: '8px' }}>{formattedDate}</span>
                 </div>
               </div>
 
@@ -84,11 +83,11 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
           {pageIndex > 0 && <div style={{ height: '40px' }}></div>}
 
-          <div style={{ flex: 1 }}>
+          {/* Fixed: Removed flex: 1 from here to let content stay together */}
+          <div style={{ width: '100%' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
                 <tr style={{ backgroundColor: '#1e293b', textAlign: 'left' }}>
-                  {/* Applied 125px width and 10px padding from Code 2 */}
                   <th style={{ width: '125px', padding: '12px 10px', fontSize: '12px', color: 'white', fontWeight: '700' }}>DATE</th>
                   <th style={{ width: '170px', padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>TYPE</th>
                   <th style={{ padding: '14px 15px', fontSize: '12px', color: 'white', fontWeight: '700' }}>REMARKS</th>
@@ -98,7 +97,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
               <tbody>
                 {pageEntries.map((t) => (
                   <tr key={t.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    {/* Applied Date Cell Styling from Code 2 */}
                     <td style={{ padding: '12px 10px', fontSize: '12px', color: '#475569', fontWeight: '500', letterSpacing: '0.3px' }}>{t.date}</td>
                     <td style={{ padding: '16px 15px', fontSize: '13px' }}>
                       <span style={{
@@ -135,9 +133,8 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           </div>
 
           {pageIndex === pages.length - 1 && (
-            <div style={{ paddingBottom: '20px' }}>
-              {/* NET BALANCE - Now follows the table directly */}
-              <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '30px', marginBottom: '40px' }}>
+            <div style={{ marginTop: '30px' }}>
+              <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '40px' }}>
                 <div style={{
                   width: '210px',
                   backgroundColor: '#1e293b',
@@ -154,7 +151,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              {/* FOOTER LINE - Fixed at the very bottom */}
+              {/* Footer always at the absolute bottom */}
               <div style={{
                 position: 'absolute',
                 bottom: '40px',
@@ -177,7 +174,3 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 });
 
 export default InvoiceTemplate;
-
-
-
-
