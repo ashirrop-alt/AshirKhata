@@ -182,7 +182,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white rounded-2xl p-4 shadow-sm border border-transparent hover:border-primary/20 flex items-center justify-between hover:shadow-md transition-all text-left group active:scale-[0.98]"
+                        className="w-full bg-white dark:bg-slate-900 rounded-2xl p-4 shadow-sm border border-transparent dark:border-slate-800 hover:border-primary/20 flex items-center justify-between hover:shadow-md transition-all text-left group active:scale-[0.98]"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-white text-primary">
@@ -191,7 +191,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             </span>
                           </div>
                           <div>
-                            <p className="font-bold text-foreground text-lg">{c.name}</p>
+                            <p className="font-bold text-foreground dark:text-slate-100 text-lg">{c.name}</p>
                             <p className="text-xs text-muted-foreground">{c.transactions.length} entries</p>
                           </div>
                         </div>
