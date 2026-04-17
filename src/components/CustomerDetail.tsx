@@ -126,7 +126,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
     transactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
-      message += `${new Date(t.date).toLocaleDateString("en-PK")}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
+      message += `${new Date(t.date).toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/')}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
     });
 
     message += `--------------------------\n`;
@@ -292,7 +292,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                       {/* --- YAHAN REMARKS WALA CODE ADDED HAI --- */}
                       <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">
-                        {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-PK")}
+                        {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/')}
                       </p>
                       {tx.remarks && (
                         <p className="text-[11px] text-indigo-600 font-medium italic mt-1 bg-indigo-50/50 px-2 py-0.5 rounded-lg inline-block">
@@ -361,7 +361,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             shopName={displayShopName}
             transactions={transactions.map((t: any) => ({
               id: t.id,
-              date: new Date(t.date).toLocaleDateString("en-PK"),
+              date: new Date(t.date).toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/'),
               amount: t.amount,
               type: t.type === 'udhar' ? 'dr' : 'cr',
               remarks: t.remarks
