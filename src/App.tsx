@@ -1,28 +1,25 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
-import { Toaster } from "sonner"; // Step 1: Import Toaster
+import { Toaster } from "sonner";
+// --- Naya Import: ThemeProvider ---
+import { ThemeProvider } from "./components/theme-provider"; 
 
-// 1. Pages ko mangwana (Imports)
 import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 import Index from './pages/Index';
 
 function App() {
-  // 2. Auth State Check
   const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Current session check karein
     document.title = "Khatify";
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setLoading(false);
     });
-  
 
-    // Login ya Logout hone par status update karein
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
@@ -30,33 +27,27 @@ function App() {
     return () => subscription.unsubscribe();
   }, []);
 
-  // Jab tak check ho raha ho, screen khali rakho
   if (loading) return null;
 
   return (
-    <BrowserRouter>
-      {/* Step 2*/}
-      <Toaster
-        richColors
-        // Ye line check karegi: Agar screen 640px se badi hai (Laptop), 
-        // toh bottom-right dikhao, warna bottom-center.
-        position={window.innerWidth > 640 ? "bottom-right" : "bottom-center"}
-        visibleToasts={1}
-      />
+    // --- Step 3: ThemeProvider se poori app ko wrap kar diya ---
+    <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+      <BrowserRouter>
+        <Toaster
+          richColors
+          position={window.innerWidth > 640 ? "bottom-right" : "bottom-center"}
+          visibleToasts={1}
+        />
 
-      <Routes>
-        <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
-        <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
-
-        {/* Main Home Page */}
-        <Route path="/" element={session ? <Index /> : <Navigate to="/login" />} />
-
-        {/* Naya Dynamic Route */}
-        <Route path="/customer/:id" element={session ? <Index /> : <Navigate to="/login" />} />
-
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
-    </BrowserRouter>
+        <Routes>
+          <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
+          <Route path="/signup" element={!session ? <Signup /> : <Navigate to="/" />} />
+          <Route path="/" element={session ? <Index /> : <Navigate to="/login" />} />
+          <Route path="/customer/:id" element={session ? <Index /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/" />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

@@ -1,3 +1,4 @@
+import { ModeToggle } from "./mode-toggle";
 import { supabase } from "@/lib/supabase";
 import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
@@ -42,7 +43,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       .on(
         'postgres_changes',
         {
-          event: '*', 
+          event: '*',
           schema: 'public',
           table: 'transactions' // <--- Confirm karlein table ka name yehi hai
         },
@@ -71,33 +72,38 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   return (
     <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
-      
+
       {/* --- TOP NAVBAR --- */}
-      <header className="flex-none bg-white border-b px-4 py-3 z-30 shadow-sm">
+      <header className="flex-none bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-4 py-3 z-30 shadow-sm transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <button onClick={() => setEditingShop(true)} className="flex items-center gap-2 group">
             <div className="bg-primary p-2 rounded-lg text-primary-foreground">
               <Store className="w-5 h-5" />
             </div>
-            <h1 className="text-xl font-black tracking-tight group-hover:underline">
+            <h1 className="text-xl font-black tracking-tight group-hover:underline dark:text-white">
               {shopName || "Apni Dukaan"}
             </h1>
           </button>
-          
-          <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground gap-2">
-            <LogOut className="w-4 h-4" />
-            <span className="hidden sm:inline">Logout</span>
-          </Button>
+
+          <div className="flex items-center gap-2">
+            {/* --- Naya Dark Mode Button --- */}
+            <ModeToggle />
+
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground gap-2 dark:hover:text-white">
+              <LogOut className="w-4 h-4" />
+              <span className="hidden sm:inline">Logout</span>
+            </Button>
+          </div>
         </div>
       </header>
 
       {/* --- MAIN CONTENT AREA --- */}
       <main className="flex-1 overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-6 p-4 md:p-6">
-          
+
           {/* LEFT SIDE: Stats & Actions (Laptop pe side pe, Mobile pe top pe) */}
           <div className="flex-none w-full md:w-80 space-y-4">
-            
+
             {/* Shop Name Editor (If active) */}
             {editingShop && (
               <div className="bg-white p-4 rounded-2xl shadow-sm border border-primary/20 animate-in fade-in slide-in-from-top-2">
@@ -132,7 +138,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
             {/* Actions & Search */}
             <div className="space-y-3">
-              <Button 
+              <Button
                 onClick={onAddCustomer}
                 className="w-full h-14 rounded-2xl bg-white border-2 border-primary/10 text-primary hover:bg-primary hover:text-white text-lg font-bold shadow-sm transition-all flex gap-2 items-center justify-center group"
               >
@@ -142,8 +148,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
-                <Input 
-                  placeholder="Customer dhunndien..." 
+                <Input
+                  placeholder="Customer dhunndien..."
                   className="pl-12 h-14 rounded-2xl bg-white border-none shadow-sm focus-visible:ring-2 focus-visible:ring-primary"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -162,7 +168,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 </span>
               </div>
             </div>
-            
+
             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6">
               {filtered.length === 0 ? (
                 <div className="h-full flex flex-col items-center justify-center text-center py-20 bg-white/50 rounded-[2rem] border-2 border-dashed">
