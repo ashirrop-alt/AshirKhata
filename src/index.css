@@ -46,6 +46,28 @@
     --sidebar-border: 220 13% 91%;
     --sidebar-ring: 217.2 91.2% 59.8%;
   }
+
+  .dark {
+    --background: 222 47% 4%;
+    /* Gehra black/blue */
+    --foreground: 210 40% 98%;
+    /* White text */
+    --card: 222 47% 6%;
+    --card-foreground: 210 40% 98%;
+    --popover: 222 47% 6%;
+    --popover-foreground: 210 40% 98%;
+    --primary: 243 75% 59%;
+    /* Primary blue wahi rahega */
+    --primary-foreground: 0 0% 100%;
+    --muted: 222 47% 12%;
+    --muted-foreground: 215 20% 65%;
+    --accent: 222 47% 12%;
+    --accent-foreground: 210 40% 98%;
+    --border: 222 47% 12%;
+    --input: 222 47% 12%;
+    --ring: 243 75% 59%;
+  }
+
 }
 
 @layer base {

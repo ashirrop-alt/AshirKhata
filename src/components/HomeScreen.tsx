@@ -71,8 +71,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    <div className="h-screen flex flex-col bg-[#f8fafc] overflow-hidden">
-
+    /* HomeScreen.tsx line 74 ke aas paas */
+    <div className="h-screen flex flex-col bg-background text-foreground overflow-hidden">
       {/* --- TOP NAVBAR --- */}
       <header className="flex-none bg-white dark:bg-slate-900 border-b dark:border-slate-800 px-4 py-3 z-30 shadow-sm transition-colors">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
