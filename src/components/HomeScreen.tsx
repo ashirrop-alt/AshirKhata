@@ -88,7 +88,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             {/* --- Naya Dark Mode Button --- */}
             <ModeToggle />
 
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-muted-foreground gap-2 dark:hover:text-white">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={handleLogout} // <--- Yahan 'handleLogout' hona chahiye
+              className="flex items-center gap-2 text-muted-foreground hover:text-foreground hover:bg-slate-200/50 dark:hover:bg-slate-800/50 transition-colors"
+            >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Logout</span>
             </Button>
