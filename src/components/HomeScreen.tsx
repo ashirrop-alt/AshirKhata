@@ -149,7 +149,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
                   placeholder="Customer dhunndien..."
-                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-card border-none shadow-sm focus-visible:ring-2 focus-visible:ring-primary/30 dark:text-slate-100 transition-all duration-300"
+                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-card border border-transparent dark:border-white/10 shadow-sm focus-visible:ring-2 focus-visible:ring-primary/30 dark:text-slate-100 transition-all duration-300"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -181,7 +181,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-card rounded-2xl p-4 shadow-sm border border-transparent dark:border-border/50 hover:border-primary/20 flex items-center justify-between hover:shadow-md dark:hover:bg-slate-800/40 transition-all duration-300 text-left group active:scale-[0.97]"
+                        /* Is className ko poora replace karein */
+                        className="w-full bg-white dark:bg-card rounded-2xl p-4 shadow-sm border border-transparent dark:border-white/10 hover:border-primary/20 flex items-center justify-between hover:shadow-md dark:hover:bg-white/[0.02] transition-all duration-300 text-left group active:scale-[0.97]"
                       >
                         <div className="flex items-center gap-4">
                           <div className="w-12 h-12 rounded-xl bg-primary/10 flex items-center justify-center transition-colors group-hover:bg-primary group-hover:text-white text-primary">
