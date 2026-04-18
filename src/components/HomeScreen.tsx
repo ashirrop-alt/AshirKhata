@@ -120,47 +120,27 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
             {/* Total Balance Card */}
             {/* --- PREMIUM TOTAL BALANCE CARD --- */}
-            <div className="relative overflow-hidden group">
-              {/* Background Glow Effect (Dark mode mein bohot pyara lagta hai) */}
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+            {/* --- SIMPLE PREMIUM TOTAL BALANCE CARD --- */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2rem] p-8 text-white shadow-lg relative overflow-hidden">
+              {/* Bohat halka sa design element jo "cheap" na lage */}
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10" />
 
-              <div className="relative bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 rounded-[2.5rem] p-8 shadow-xl backdrop-blur-xl overflow-hidden">
+              <div className="relative z-10">
+                <div className="flex items-center gap-2 mb-2 opacity-80">
+                  <Wallet className="w-4 h-4" />
+                  <p className="text-xs font-bold uppercase tracking-widest">Kul Udhar</p>
+                </div>
 
-                {/* Animated Decorative Circle */}
-                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/20 to-indigo-500/0 rounded-full -mr-16 -mt-16 blur-3xl group-hover:scale-150 transition-transform duration-700" />
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-medium opacity-70">Rs</span>
+                  <h2 className="text-5xl font-black tracking-tight">
+                    {totalUdhar.toLocaleString()}
+                  </h2>
+                </div>
 
-                <div className="relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
-                      <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
-                    </div>
-                    <div>
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-blue-200/60 leading-none">
-                        Total Outstanding
-                      </p>
-                      <div className="h-0.5 w-8 bg-blue-500 mt-1 rounded-full opacity-50" />
-                    </div>
-                  </div>
-
-                  <div className="space-y-1">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-xl font-light text-slate-400 dark:text-blue-300/50">Rs</span>
-                      <h2 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter animate-in slide-in-from-bottom-2 duration-700">
-                        {totalUdhar.toLocaleString()}
-                      </h2>
-                    </div>
-
-                    {/* Progress Bar (Just for Look: Ye ek premium vibe deta hai) */}
-                    <div className="mt-6 w-full h-1.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
-                      <div
-                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
-                        style={{ width: '65%' }}
-                      />
-                    </div>
-                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-2 italic">
-                      * Monthly balance overview
-                    </p>
-                  </div>
+                {/* Ek saaf sutri line jo bata rahi hai k ye balance hai */}
+                <div className="mt-6 h-1 w-full bg-white/20 rounded-full">
+                  <div className="h-full bg-white w-full rounded-full opacity-40" />
                 </div>
               </div>
             </div>
