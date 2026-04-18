@@ -59,7 +59,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
-      
+
       {/* --- TOP NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-900/50 backdrop-blur-md px-4 py-4 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
@@ -93,7 +93,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-80 space-y-6">
-            
+
             {editingShop && (
               <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-4 rounded-3xl backdrop-blur-sm animate-in zoom-in-95 duration-300 shadow-xl">
                 <form onSubmit={(e) => {
@@ -119,17 +119,49 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             )}
 
             {/* Total Balance Card */}
-            <div className="relative overflow-hidden bg-gradient-to-br from-blue-600 to-indigo-700 rounded-[2.5rem] p-8 shadow-2xl shadow-blue-500/30 group">
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl group-hover:bg-white/20 transition-all duration-700" />
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2">
-                   <Wallet className="w-4 h-4 text-blue-100/80" />
-                   <p className="text-[10px] font-black uppercase tracking-[0.2em] text-blue-100/70">Kul Udhar</p>
+            {/* --- PREMIUM TOTAL BALANCE CARD --- */}
+            <div className="relative overflow-hidden group">
+              {/* Background Glow Effect (Dark mode mein bohot pyara lagta hai) */}
+              <div className="absolute -inset-1 bg-gradient-to-r from-blue-600 to-indigo-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000 group-hover:duration-200"></div>
+
+              <div className="relative bg-white dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 rounded-[2.5rem] p-8 shadow-xl backdrop-blur-xl overflow-hidden">
+
+                {/* Animated Decorative Circle */}
+                <div className="absolute top-0 right-0 w-40 h-40 bg-gradient-to-br from-blue-500/20 to-indigo-500/0 rounded-full -mr-16 -mt-16 blur-3xl group-hover:scale-150 transition-transform duration-700" />
+
+                <div className="relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2 bg-blue-500/10 dark:bg-blue-500/20 rounded-lg">
+                      <Wallet className="w-5 h-5 text-blue-600 dark:text-blue-400" />
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-slate-500 dark:text-blue-200/60 leading-none">
+                        Total Outstanding
+                      </p>
+                      <div className="h-0.5 w-8 bg-blue-500 mt-1 rounded-full opacity-50" />
+                    </div>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-xl font-light text-slate-400 dark:text-blue-300/50">Rs</span>
+                      <h2 className="text-5xl font-black text-slate-900 dark:text-white tracking-tighter animate-in slide-in-from-bottom-2 duration-700">
+                        {totalUdhar.toLocaleString()}
+                      </h2>
+                    </div>
+
+                    {/* Progress Bar (Just for Look: Ye ek premium vibe deta hai) */}
+                    <div className="mt-6 w-full h-1.5 bg-slate-100 dark:bg-white/5 rounded-full overflow-hidden">
+                      <div
+                        className="h-full bg-gradient-to-r from-blue-500 to-indigo-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]"
+                        style={{ width: '65%' }}
+                      />
+                    </div>
+                    <p className="text-[10px] text-slate-400 dark:text-slate-500 font-medium mt-2 italic">
+                      * Monthly balance overview
+                    </p>
+                  </div>
                 </div>
-                <h2 className="text-4xl font-black text-white tracking-tight">
-                  <span className="text-2xl font-light opacity-80 mr-1">Rs</span>
-                  {totalUdhar.toLocaleString()}
-                </h2>
               </div>
             </div>
 
@@ -192,7 +224,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             <p className="text-xs text-slate-500 mt-1 font-medium">{c.transactions.length} entries</p>
                           </div>
                         </div>
-                        
+
                         <div className="flex items-center gap-4">
                           <div className="text-right">
                             <p className={`text-xl font-black ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-500"}`}>
@@ -201,7 +233,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             <p className="text-[10px] uppercase font-bold text-slate-400">Balance</p>
                           </div>
                           <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                             <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                            <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
                           </div>
                         </div>
                       </button>
