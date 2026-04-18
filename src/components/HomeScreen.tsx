@@ -80,21 +80,21 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500">
 
-      {/* --- NAVBAR (Slightly taller) --- */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/50 backdrop-blur-md px-5 py-4 z-30 shadow-sm transition-all">
+      {/* --- NAVBAR --- */}
+      <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/50 backdrop-blur-md px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button onClick={() => setEditingShop(true)} className="flex items-center gap-3 group active:scale-95 transition-all text-left">
-            <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-              <Store className="w-5 h-5 text-white" />
+          <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 md:gap-3 group active:scale-95 transition-all text-left">
+            <div className="bg-blue-600 p-2 md:p-2.5 rounded-lg md:rounded-xl shadow-lg shadow-blue-500/20">
+              <Store className="w-4 h-4 md:w-5 md:h-5 text-white" />
             </div>
-            <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
+            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
               {shopName || "Apni Dukaan"}
             </h1>
           </button>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 md:gap-3">
             <ModeToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-rose-500 p-2 h-auto transition-colors">
-              <LogOut className="w-5 h-5" />
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-rose-500 p-1.5 md:p-2 h-auto transition-colors">
+              <LogOut className="w-4 h-4 md:w-5 md:h-5" />
             </Button>
           </div>
         </div>
@@ -102,123 +102,123 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
       {/* --- MAIN --- */}
       <main className="flex-1 overflow-hidden transition-all">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-6 p-5 md:p-8">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-8 p-4 md:p-8">
 
           {/* LEFT SIDE */}
-          <div className="flex-none w-full md:w-80 space-y-6">
+          <div className="flex-none w-full md:w-80 space-y-5 md:space-y-6">
 
             {editingShop && (
-              <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-white/10 shadow-xl animate-in zoom-in-95">
+              <div className="bg-white dark:bg-slate-800 p-4 md:p-5 rounded-2xl border border-slate-200 dark:border-white/10 shadow-xl animate-in zoom-in-95">
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   if (tempName.trim()) {
                     onSetShopName(tempName.trim());
                     setEditingShop(false);
                   }
-                }} className="space-y-4">
-                  <Input value={tempName} onChange={e => setTempName(e.target.value)} placeholder="Dukaan ka naam" className="h-11 rounded-xl" autoFocus />
+                }} className="space-y-3 md:space-y-4">
+                  <Input value={tempName} onChange={e => setTempName(e.target.value)} placeholder="Dukaan ka naam" className="h-10 md:h-11 rounded-xl" autoFocus />
                   <div className="flex gap-2">
-                    <Button type="submit" className="flex-1 bg-blue-600 text-white font-bold rounded-xl">Save</Button>
-                    <Button type="button" variant="ghost" onClick={() => setEditingShop(false)}>Cancel</Button>
+                    <Button type="submit" size="sm" className="flex-1 bg-blue-600 text-white font-bold rounded-xl md:h-11">Save</Button>
+                    <Button type="button" size="sm" variant="ghost" onClick={() => setEditingShop(false)}>Cancel</Button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* TOTAL BOX (Increased Padding & Font) */}
-            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2.5rem] p-7 text-white shadow-xl relative overflow-hidden transition-all hover:shadow-blue-500/10">
-              <div className="absolute -right-4 -top-4 w-24 h-24 bg-white/5 rounded-full blur-2xl" />
-              <div className="relative z-10 space-y-5">
-                <div className="flex items-center gap-2 opacity-80">
-                  <Wallet className="w-4 h-4" />
-                  <p className="text-[11px] font-bold uppercase tracking-[0.15em] leading-none">Kul Udhar</p>
+            {/* TOTAL BOX: Responsive Padding & Fonts */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2rem] md:rounded-[2.5rem] p-5 md:p-8 text-white shadow-xl relative overflow-hidden transition-all hover:shadow-blue-500/10">
+              <div className="absolute -right-4 -top-4 w-20 md:w-28 h-20 md:h-28 bg-white/5 rounded-full blur-2xl" />
+              <div className="relative z-10 space-y-4 md:space-y-6">
+                <div className="flex items-center gap-1.5 md:gap-2 opacity-80">
+                  <Wallet className="w-3.5 h-3.5 md:w-4 md:h-4" />
+                  <p className="text-[10px] md:text-[11px] font-bold uppercase tracking-[0.15em] leading-none">Kul Udhar</p>
                 </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg font-medium opacity-60">Rs</span>
-                  <h2 className="text-4xl font-black tracking-tighter leading-none">{totalUdhar.toLocaleString()}</h2>
+                <div className="flex items-baseline gap-1 md:gap-1.5">
+                  <span className="text-sm md:text-lg font-medium opacity-60">Rs</span>
+                  <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">{totalUdhar.toLocaleString()}</h2>
                 </div>
-                <div className="pt-5 border-t border-white/10 flex items-center justify-between text-center gap-2">
+                <div className="pt-4 md:pt-6 border-t border-white/10 flex items-center justify-between text-center gap-1 md:gap-2">
                   <div className="flex flex-col items-start flex-1">
-                    <span className="text-[8px] uppercase font-bold opacity-60 mb-1">Is Mahine</span>
-                    <span className="text-[13px] font-black leading-none text-blue-100">+ {thisMonthTotal.toLocaleString()}</span>
+                    <span className="text-[7px] md:text-[8px] uppercase font-bold opacity-60 mb-0.5 md:mb-1">Is Mahine</span>
+                    <span className="text-[11px] md:text-[15px] font-black leading-none text-blue-100">+ {thisMonthTotal.toLocaleString()}</span>
                   </div>
-                  <div className="w-px h-6 bg-white/10" />
+                  <div className="w-px h-5 md:h-7 bg-white/10" />
                   <div className="flex flex-col items-center flex-1 px-1">
-                    <span className="text-[8px] uppercase font-bold opacity-60 mb-1">Aaj Ka Din</span>
-                    <span className="text-[13px] font-black leading-none text-blue-100">+ {todayTotal.toLocaleString()}</span>
+                    <span className="text-[7px] md:text-[8px] uppercase font-bold opacity-60 mb-0.5 md:mb-1">Aaj Ka Din</span>
+                    <span className="text-[11px] md:text-[15px] font-black leading-none text-blue-100">+ {todayTotal.toLocaleString()}</span>
                   </div>
-                  <div className="w-px h-6 bg-white/10" />
+                  <div className="w-px h-5 md:h-7 bg-white/10" />
                   <div className="flex flex-col items-end flex-1">
-                    <span className="text-[8px] uppercase font-bold opacity-60 mb-1">Accounts</span>
-                    <span className="text-[13px] font-black leading-none text-blue-100">{customers.length}</span>
+                    <span className="text-[7px] md:text-[8px] uppercase font-bold opacity-60 mb-0.5 md:mb-1">Accounts</span>
+                    <span className="text-[11px] md:text-[15px] font-black leading-none text-blue-100">{customers.length}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3 md:space-y-4">
               <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="absolute left-3.5 md:left-4 top-1/2 -translate-y-1/2 w-4 h-4 md:w-5 md:h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                 <Input
-                  placeholder="Customer dhunndien..."
-                  className="pl-11 h-12 rounded-2xl bg-white dark:bg-slate-900/40 border-slate-200 dark:border-white/5 shadow-sm"
+                  placeholder="Dhunndien..."
+                  className="pl-10 md:pl-11 h-11 md:h-12 rounded-xl md:rounded-2xl bg-white dark:bg-slate-900/40 border-slate-200 dark:border-white/5 shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
               <Button
                 onClick={onAddCustomer}
-                className="w-full h-12 rounded-2xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all"
+                className="w-full h-11 md:h-12 rounded-xl md:rounded-2xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all"
               >
-                <Plus className="w-5 h-5 mr-2" />
+                <Plus className="w-4 h-4 md:w-5 md:h-5 mr-2" />
                 Naya Customer
               </Button>
             </div>
           </div>
 
-          {/* RIGHT SIDE (Cards adjusted) */}
+          {/* RIGHT SIDE: Responsive Cards */}
           <div className="flex-1 flex flex-col min-h-0">
-            <div className="flex items-center gap-2 mb-5 px-1">
-              <Users className="w-5 h-5 text-slate-400" />
-              <span className="text-[11px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
+            <div className="flex items-center gap-2 mb-4 md:mb-5 px-1">
+              <Users className="w-4 h-4 md:w-5 md:h-5 text-slate-400" />
+              <span className="text-[10px] md:text-[11px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-28 md:pb-6 px-1">
+            <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-6 px-1">
               {filtered.length === 0 ? (
-                <div className="h-60 flex items-center justify-center bg-white dark:bg-slate-900/20 rounded-[2rem] border border-dashed border-slate-200 dark:border-white/10">
+                <div className="h-48 md:h-60 flex items-center justify-center bg-white dark:bg-slate-900/20 rounded-[1.5rem] md:rounded-[2rem] border border-dashed border-slate-200 dark:border-white/10">
                   <p className="text-slate-400 text-sm font-medium">Koi customer nahi mila</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 md:gap-4">
                   {filtered.map(c => {
                     const total = getCustomerTotal(c);
                     return (
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-slate-900/40 rounded-2xl p-4 md:p-5 border border-slate-100 dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:bg-slate-800/60 flex items-center justify-between transition-all duration-300 group active:scale-[0.99] shadow-sm hover:shadow-md"
+                        className="w-full bg-white dark:bg-slate-900/40 rounded-xl md:rounded-2xl p-3.5 md:p-6 border border-slate-100 dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:bg-slate-800/60 flex items-center justify-between transition-all duration-300 group active:scale-[0.99] shadow-sm hover:shadow-md"
                       >
-                        <div className="flex items-center gap-4 text-left">
-                          <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
-                            <span className="text-lg font-black text-blue-600 dark:text-white group-hover:text-white transition-colors">
+                        <div className="flex items-center gap-3 md:gap-5 text-left">
+                          <div className="w-10 h-10 md:w-14 md:h-14 rounded-lg md:rounded-xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
+                            <span className="text-base md:text-xl font-black text-blue-600 dark:text-white group-hover:text-white transition-colors">
                               {c.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-bold text-slate-900 dark:text-white text-base leading-tight group-hover:text-blue-600 transition-colors">{c.name}</p>
-                            <p className="text-xs text-slate-500 mt-1 font-medium">{c.transactions.length} transactions</p>
+                            <p className="font-bold text-slate-900 dark:text-white text-sm md:text-lg leading-tight group-hover:text-blue-600 transition-colors">{c.name}</p>
+                            <p className="text-[10px] md:text-xs text-slate-500 mt-0.5 md:mt-1 font-medium">{c.transactions.length} entries</p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-4">
+                        <div className="flex items-center gap-3 md:gap-5">
                           <div className="text-right">
-                            <p className={`text-lg font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
+                            <p className={`text-base md:text-2xl font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
                               {total > 0 ? "+" : ""} {Math.abs(total).toLocaleString()}
                             </p>
-                            <p className="text-[9px] uppercase font-bold text-slate-400 mt-1.5">Balance</p>
+                            <p className="text-[8px] md:text-[10px] uppercase font-bold text-slate-400 mt-1 md:mt-2">Balance</p>
                           </div>
-                          <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                            <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-white" />
+                          <div className="w-7 h-7 md:w-9 md:h-9 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                            <ChevronRight className="w-3.5 h-3.5 md:w-5 md:h-5 text-slate-300 group-hover:text-white" />
                           </div>
                         </div>
                       </button>
@@ -231,11 +231,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         </div>
       </main>
 
+      {/* FAB Mobile */}
       <button
         onClick={onAddCustomer}
-        className="md:hidden fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
       >
-        <Plus className="w-7 h-7" />
+        <Plus className="w-6 h-6" />
       </button>
     </div>
   );
