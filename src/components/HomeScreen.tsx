@@ -21,10 +21,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [search, setSearch] = useState("");
   const totalUdhar = getTotalUdhar(customers);
 
-  // --- DYNAMIC CALCULATIONS ---
   const now = new Date();
 
-  // 1. Is Mahine ka Logic
+  // Logic: Is Mahine Total
   const thisMonthTotal = customers.reduce((acc, customer) => {
     const monthSum = customer.transactions
       .filter(t => {
@@ -35,7 +34,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     return acc + monthSum;
   }, 0);
 
-  // 2. Aaj Ka Din ka Logic
+  // Logic: Aaj Ka Total
   const todayTotal = customers.reduce((acc, customer) => {
     const daySum = customer.transactions
       .filter(t => {
@@ -51,11 +50,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   useEffect(() => {
     setTempName(shopName);
-    if (!isLoading && !shopName) {
-      setEditingShop(true);
-    } else {
-      setEditingShop(false);
-    }
+    if (!isLoading && !shopName) setEditingShop(true);
+    else setEditingShop(false);
   }, [shopName, isLoading]);
 
   const handleLogout = async () => {
@@ -63,6 +59,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     window.location.href = '/login';
   };
 
+  // --- CRITICAL: REAL-TIME SYNC LOGIC (NOT REMOVED) ---
   useEffect(() => {
     const channel = supabase
       .channel('db-changes')
@@ -86,44 +83,37 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500 ease-in-out">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500">
 
-      {/* --- TOP NAVBAR --- */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-900/50 backdrop-blur-md px-4 py-4 z-30 shadow-sm transition-all duration-500">
+      {/* --- NAVBAR --- */}
+      <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-950/50 backdrop-blur-md px-4 py-3 z-30 shadow-sm transition-all duration-500">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button onClick={() => setEditingShop(true)} className="flex items-center gap-3 group transition-transform active:scale-95 text-left">
-            <div className="bg-blue-600 p-2.5 rounded-xl shadow-lg shadow-blue-500/20">
-              <Store className="w-5 h-5 text-white" />
+          <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
+            <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20">
+              <Store className="w-4 h-4 text-white" />
             </div>
-            <h1 className="text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+            <h1 className="text-lg font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
               {shopName || "Apni Dukaan"}
             </h1>
           </button>
-
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <ModeToggle />
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleLogout}
-              className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
-            >
+            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-rose-500 p-1.5 h-auto transition-colors">
               <LogOut className="w-4 h-4" />
-              <span className="hidden sm:inline">Logout</span>
             </Button>
           </div>
         </div>
       </header>
 
-      {/* --- MAIN CONTENT AREA --- */}
+      {/* --- MAIN --- */}
       <main className="flex-1 overflow-hidden transition-all duration-500">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-6 p-4 md:p-8">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 p-4 md:p-8">
 
-          {/* LEFT SIDE */}
-          <div className="flex-none w-full md:w-80 space-y-6">
+          {/* LEFT SIDE: Side Panel */}
+          <div className="flex-none w-full md:w-72 space-y-5">
 
             {editingShop && (
-              <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-4 rounded-3xl backdrop-blur-sm animate-in zoom-in-95 duration-300 shadow-xl transition-all">
+              <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl border border-slate-200 dark:border-white/10 shadow-xl animate-in zoom-in-95 duration-200">
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   if (tempName.trim()) {
@@ -135,128 +125,112 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     value={tempName}
                     onChange={e => setTempName(e.target.value)}
                     placeholder="Dukaan ka naam"
-                    className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="h-10 rounded-xl"
                     autoFocus
                   />
                   <div className="flex gap-2">
-                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Save</Button>
-                    <Button type="button" variant="ghost" onClick={() => setEditingShop(false)} className="rounded-xl">Cancel</Button>
+                    <Button type="submit" size="sm" className="flex-1 bg-blue-600 text-white font-bold rounded-lg">Save</Button>
+                    <Button type="button" size="sm" variant="ghost" onClick={() => setEditingShop(false)}>Cancel</Button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* --- CLEAN PROFESSIONAL TOTAL CARD --- */}
-            <div className="bg-blue-600 dark:bg-blue-700 rounded-[1.5rem] p-6 text-white shadow-lg relative overflow-hidden transition-all duration-500">
-              <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-xl" />
-
-              <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-1 opacity-70">
+            {/* TOTAL BOX: Compact 2rem Radius */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2rem] p-5 text-white shadow-lg relative overflow-hidden transition-all duration-500">
+              <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/5 rounded-full blur-2xl" />
+              <div className="relative z-10 space-y-4">
+                <div className="flex items-center gap-1.5 opacity-70">
                   <Wallet className="w-3.5 h-3.5" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest">Kul Udhar</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest leading-none">Kul Udhar</p>
                 </div>
-
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-lg font-medium opacity-60">Rs</span>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">
-                    {totalUdhar.toLocaleString()}
-                  </h2>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-sm font-medium opacity-60">Rs</span>
+                  <h2 className="text-3xl font-black tracking-tight leading-none">{totalUdhar.toLocaleString()}</h2>
                 </div>
-
-                <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between gap-1">
-                  <div className="flex flex-col">
-                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Is Mahine</span>
-                    <span className="text-xs font-black whitespace-nowrap">+ Rs {thisMonthTotal.toLocaleString()}</span>
+                <div className="pt-4 border-t border-white/10 flex items-center justify-between text-center gap-1">
+                  <div className="flex flex-col items-start flex-1">
+                    <span className="text-[7px] uppercase font-bold opacity-60 mb-0.5">Is Mahine</span>
+                    <span className="text-[11px] font-black leading-none">+ Rs {thisMonthTotal.toLocaleString()}</span>
                   </div>
-
-                  <div className="w-px h-6 bg-white/10" />
-
-                  <div className="flex flex-col px-1">
-                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Aaj Ka Din</span>
-                    <span className="text-xs font-black whitespace-nowrap">+ Rs {todayTotal.toLocaleString()}</span>
+                  <div className="w-px h-5 bg-white/10" />
+                  <div className="flex flex-col items-center flex-1 px-1">
+                    <span className="text-[7px] uppercase font-bold opacity-60 mb-0.5">Aaj Ka Din</span>
+                    <span className="text-[11px] font-black leading-none">+ Rs {todayTotal.toLocaleString()}</span>
                   </div>
-
-                  <div className="w-px h-6 bg-white/10" />
-
-                  <div className="flex flex-col text-right">
-                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Accounts</span>
-                    <span className="text-xs font-black">{customers.length} Active</span>
+                  <div className="w-px h-5 bg-white/10" />
+                  <div className="flex flex-col items-end flex-1">
+                    <span className="text-[7px] uppercase font-bold opacity-60 mb-0.5">Accounts</span>
+                    <span className="text-[11px] font-black leading-none">{customers.length}</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Actions & Search */}
-            <div className="space-y-4 transition-all duration-500">
+            {/* Search & Action */}
+            <div className="space-y-3 transition-all">
               <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                 <Input
-                  placeholder="Customer dhunndien..."
-                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-slate-800/30 border-slate-200 dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-blue-500/50 transition-all shadow-sm"
+                  placeholder="Dhunndien..."
+                  className="pl-10 h-11 rounded-xl bg-white dark:bg-slate-900/40 border-slate-200 dark:border-white/5 shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
-
-              {/* CHANGE 1: Naya Customer Button is now Solid Blue in Light Mode */}
               <Button
                 onClick={onAddCustomer}
-                className="w-full h-14 rounded-2xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 hover:bg-blue-700 dark:hover:bg-blue-50 text-lg font-bold shadow-xl shadow-blue-500/20 active:scale-[0.98] transition-all flex gap-3 items-center justify-center group border-none"
+                className="w-full h-11 rounded-xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-md shadow-blue-500/10 active:scale-[0.98] transition-all"
               >
-                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                <Plus className="w-4 h-4 mr-2" />
                 Naya Customer
               </Button>
             </div>
           </div>
 
-          {/* RIGHT SIDE: List */}
-          <div className="flex-1 flex flex-col min-h-0 transition-all duration-500 ease-in-out">
-            <div className="flex items-center justify-between mb-6 px-2">
-              <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
-                <Users className="w-5 h-5" />
-                <span className="text-xs font-black uppercase tracking-widest">
-                  Customers ({filtered.length})
-                </span>
-              </div>
+          {/* RIGHT SIDE: Compact List */}
+          <div className="flex-1 flex flex-col min-h-0 transition-all duration-500">
+            <div className="flex items-center gap-2 mb-4 px-2 md:px-0">
+              <Users className="w-4 h-4 text-slate-400" />
+              <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Customers ({filtered.length})</span>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6 transition-all duration-500">
+            <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 px-2 md:px-0">
               {filtered.length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center text-center bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 shadow-sm">
-                  <p className="text-slate-400 font-medium">Koi customer nahi mila</p>
+                <div className="h-48 flex items-center justify-center bg-white dark:bg-slate-900/20 rounded-2xl border border-dashed border-slate-200 dark:border-white/10 shadow-sm animate-in fade-in duration-500">
+                  <p className="text-slate-400 text-sm font-medium">Koi customer nahi mila</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 transition-all duration-500">
                   {filtered.map(c => {
                     const total = getCustomerTotal(c);
                     return (
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-slate-800/30 rounded-[2rem] p-5 border border-slate-100 dark:border-white/5 hover:border-blue-500/30 dark:hover:bg-slate-800/50 flex items-center justify-between transition-all duration-300 group active:scale-[0.98] shadow-sm hover:shadow-md"
+                        className="w-full bg-white dark:bg-slate-900/40 rounded-xl p-3.5 border border-slate-100 dark:border-white/[0.05] hover:border-blue-500/30 dark:hover:bg-slate-800/50 flex items-center justify-between transition-all duration-300 group active:scale-[0.98] shadow-sm hover:shadow-md"
                       >
-                        <div className="flex items-center gap-4 text-left">
-                          {/* CHANGE 2: Initial color is now Blue shade in Light Mode */}
-                          <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-gradient-to-br dark:from-slate-700 dark:to-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
-                            <span className="text-xl font-black text-blue-600 dark:text-white group-hover:text-white">
+                        <div className="flex items-center gap-3 text-left">
+                          <div className="w-10 h-10 rounded-lg bg-blue-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
+                            <span className="text-base font-black text-blue-600 dark:text-white group-hover:text-white transition-colors">
                               {c.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-bold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{c.name}</p>
-                            <p className="text-xs text-slate-500 mt-1 font-medium">{c.transactions.length} entries</p>
+                            <p className="font-bold text-slate-900 dark:text-white text-sm leading-tight group-hover:text-blue-600 transition-colors">{c.name}</p>
+                            <p className="text-[10px] text-slate-500 mt-0.5 font-medium leading-none">{c.transactions.length} entries</p>
                           </div>
                         </div>
-                        
-                        <div className="flex items-center gap-4">
+
+                        <div className="flex items-center gap-3">
                           <div className="text-right">
-                            <p className={`text-xl font-black ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-500"}`}>
+                            <p className={`text-base font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-500"}`}>
                               {total > 0 ? "+" : ""} {Math.abs(total).toLocaleString()}
                             </p>
-                            <p className="text-[10px] uppercase font-bold text-slate-400">Balance</p>
+                            <p className="text-[8px] uppercase font-bold text-slate-400 mt-1">Balance</p>
                           </div>
-                          <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                             <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                          <div className="w-6 h-6 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                            <ChevronRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-white transition-colors" />
                           </div>
                         </div>
                       </button>
@@ -266,16 +240,15 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               )}
             </div>
           </div>
-
         </div>
       </main>
 
-      {/* Mobile Floating Button */}
+      {/* FAB Mobile */}
       <button
         onClick={onAddCustomer}
-        className="md:hidden fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
       >
-        <Plus className="w-8 h-8" />
+        <Plus className="w-6 h-6" />
       </button>
     </div>
   );
