@@ -86,7 +86,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500 ease-in-out">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500 ease-in-out">
 
       {/* --- TOP NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-900/50 backdrop-blur-md px-4 py-4 z-30 shadow-sm transition-all duration-500">
@@ -106,7 +106,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               variant="ghost"
               size="sm"
               onClick={handleLogout}
-              className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition-all"
+              className="flex items-center gap-2 text-slate-500 dark:text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all"
             >
               <LogOut className="w-4 h-4" />
               <span className="hidden sm:inline">Logout</span>
@@ -139,26 +139,26 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     autoFocus
                   />
                   <div className="flex gap-2">
-                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Save</Button>
+                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold transition-all">Save</Button>
                     <Button type="button" variant="ghost" onClick={() => setEditingShop(false)} className="rounded-xl">Cancel</Button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* --- CLEAN PROFESSIONAL TOTAL CARD --- */}
-            <div className="bg-blue-600 dark:bg-blue-700 rounded-[1.5rem] p-6 text-white shadow-lg relative overflow-hidden transition-all duration-500">
+            {/* --- TOTAL CARD --- */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2rem] p-6 text-white shadow-xl relative overflow-hidden transition-all duration-500">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-xl" />
 
               <div className="relative z-10">
                 <div className="flex items-center gap-2 mb-1 opacity-70">
                   <Wallet className="w-3.5 h-3.5" />
-                  <p className="text-[10px] font-bold uppercase tracking-widest">Kul Udhar</p>
+                  <p className="text-[10px] font-bold uppercase tracking-widest leading-none">Kul Udhar</p>
                 </div>
 
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-lg font-medium opacity-60">Rs</span>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tight leading-none">
                     {totalUdhar.toLocaleString()}
                   </h2>
                 </div>
@@ -172,15 +172,15 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   <div className="w-px h-6 bg-white/10" />
 
                   <div className="flex flex-col px-1">
-                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Aaj Ka Din</span>
+                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Aaj</span>
                     <span className="text-xs font-black whitespace-nowrap">+ Rs {todayTotal.toLocaleString()}</span>
                   </div>
 
                   <div className="w-px h-6 bg-white/10" />
 
                   <div className="flex flex-col text-right">
-                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Accounts</span>
-                    <span className="text-xs font-black">{customers.length} Active</span>
+                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1 leading-none">Active</span>
+                    <span className="text-xs font-black">{customers.length} Accounts</span>
                   </div>
                 </div>
               </div>
@@ -191,17 +191,16 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="relative group">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
                 <Input
-                  placeholder="Customer dhunndien..."
-                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-slate-800/30 border-slate-200 dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-blue-500/50 transition-all shadow-sm"
+                  placeholder="Dhunndien..."
+                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-slate-900/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-blue-500/50 transition-all shadow-sm"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
               </div>
 
-              {/* CHANGE 1: Naya Customer Button is now Solid Blue in Light Mode */}
               <Button
                 onClick={onAddCustomer}
-                className="w-full h-14 rounded-2xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 hover:bg-blue-700 dark:hover:bg-blue-50 text-lg font-bold shadow-xl shadow-blue-500/20 active:scale-[0.98] transition-all flex gap-3 items-center justify-center group border-none"
+                className="w-full h-14 rounded-2xl bg-blue-600 dark:bg-white text-white dark:text-slate-950 hover:bg-blue-700 dark:hover:bg-slate-50 text-lg font-bold shadow-lg shadow-blue-500/20 dark:shadow-none active:scale-[0.98] transition-all flex gap-3 items-center justify-center group border-none"
               >
                 <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
                 Naya Customer
@@ -210,8 +209,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           </div>
 
           {/* RIGHT SIDE: List */}
-          <div className="flex-1 flex flex-col min-h-0 transition-all duration-500 ease-in-out">
-            <div className="flex items-center justify-between mb-6 px-2">
+          <div className="flex-1 flex flex-col min-h-0 transition-all duration-500">
+            <div className="flex items-center justify-between mb-6 px-4 md:px-2">
               <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                 <Users className="w-5 h-5" />
                 <span className="text-xs font-black uppercase tracking-widest">
@@ -220,24 +219,24 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6 transition-all duration-500">
+            <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6">
               {filtered.length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center text-center bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 shadow-sm">
+                <div className="mx-4 h-64 flex flex-col items-center justify-center text-center bg-white dark:bg-slate-900/20 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 shadow-sm">
                   <p className="text-slate-400 font-medium">Koi customer nahi mila</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                /* Grid with Mobile Padding Fix */
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 px-4 md:px-0">
                   {filtered.map(c => {
                     const total = getCustomerTotal(c);
                     return (
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-slate-800/30 rounded-[2rem] p-5 border border-slate-100 dark:border-white/5 hover:border-blue-500/30 dark:hover:bg-slate-800/50 flex items-center justify-between transition-all duration-300 group active:scale-[0.98] shadow-sm hover:shadow-md"
+                        className="w-full bg-white dark:bg-slate-900/40 rounded-[1.5rem] p-5 border border-slate-100 dark:border-white/[0.08] hover:border-blue-500/30 dark:hover:border-blue-500/20 backdrop-blur-sm flex items-center justify-between transition-all duration-300 group active:scale-[0.98] shadow-sm hover:shadow-md"
                       >
                         <div className="flex items-center gap-4 text-left">
-                          {/* CHANGE 2: Initial color is now Blue shade in Light Mode */}
-                          <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-gradient-to-br dark:from-slate-700 dark:to-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                          <div className="w-14 h-14 rounded-2xl bg-blue-50 dark:bg-slate-800 flex items-center justify-center border border-slate-100 dark:border-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
                             <span className="text-xl font-black text-blue-600 dark:text-white group-hover:text-white">
                               {c.name.charAt(0).toUpperCase()}
                             </span>
@@ -256,7 +255,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             <p className="text-[10px] uppercase font-bold text-slate-400">Balance</p>
                           </div>
                           <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                             <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
+                             <ChevronRight className="w-5 h-5 text-slate-300 dark:text-slate-600 group-hover:text-white" />
                           </div>
                         </div>
                       </button>
