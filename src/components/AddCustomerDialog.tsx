@@ -47,21 +47,22 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
           {/* --- Customer Naam Input --- */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 ml-2 uppercase tracking-[0.15em]">
+            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-300 ml-2 uppercase tracking-[0.15em] transition-colors">
               Customer ka Naam
             </p>
             <Input
               placeholder="Naam likhien..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 focus-visible:ring-2 focus-visible:ring-primary/30 dark:text-slate-200 rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-600"
+              /* Yahan dark:text-white aur placeholder color update kiya hai */
+              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/20 focus-visible:ring-2 focus-visible:ring-primary/30 text-slate-900 dark:text-white rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-500"
               required
             />
           </div>
 
           {/* --- Phone Number Input --- */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 ml-2 uppercase tracking-[0.15em]">
+            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-300 ml-2 uppercase tracking-[0.15em] transition-colors">
               Phone Number
             </p>
             <Input
@@ -69,7 +70,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
-              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/10 focus-visible:ring-2 focus-visible:ring-primary/30 dark:text-slate-200 rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-600"
+              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/20 focus-visible:ring-2 focus-visible:ring-primary/30 text-slate-900 dark:text-white rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-500"
               required
             />
           </div>
