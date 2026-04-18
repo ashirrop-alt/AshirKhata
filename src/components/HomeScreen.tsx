@@ -21,6 +21,36 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [search, setSearch] = useState("");
   const totalUdhar = getTotalUdhar(customers);
 
+  // --- DYNAMIC CALCULATIONS ---
+  const now = new Date();
+
+  // 1. Is Mahine ka Logic (Matching your store types)
+  const thisMonthTotal = customers.reduce((acc, customer) => {
+    const monthSum = customer.transactions
+      .filter(t => {
+        const d = new Date(t.date);
+        return d.getMonth() === now.getMonth() && 
+               d.getFullYear() === now.getFullYear() && 
+               (t.type as string) === 'udhar'; // Adjusted for your store type
+      })
+      .reduce((sum, t) => sum + t.amount, 0);
+    return acc + monthSum;
+  }, 0);
+
+  // 2. Aaj Ka Din ka Logic
+  const todayTotal = customers.reduce((acc, customer) => {
+    const daySum = customer.transactions
+      .filter(t => {
+        const d = new Date(t.date);
+        return d.getDate() === now.getDate() && 
+               d.getMonth() === now.getMonth() && 
+               d.getFullYear() === now.getFullYear() && 
+               (t.type as string) === 'udhar'; // Adjusted for your store type
+      })
+      .reduce((sum, t) => sum + t.amount, 0);
+    return acc + daySum;
+  }, 0);
+
   useEffect(() => {
     setTempName(shopName);
     if (!isLoading && !shopName) {
@@ -58,7 +88,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-300">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#0f172a] text-slate-900 dark:text-slate-100 overflow-hidden transition-all duration-500">
 
       {/* --- TOP NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/5 bg-white/80 dark:bg-slate-900/50 backdrop-blur-md px-4 py-4 z-30 shadow-sm">
@@ -95,7 +125,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           <div className="flex-none w-full md:w-80 space-y-6">
 
             {editingShop && (
-              <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-4 rounded-3xl backdrop-blur-sm animate-in zoom-in-95 duration-300 shadow-xl">
+              <div className="bg-white dark:bg-slate-800/50 border border-slate-200 dark:border-white/10 p-4 rounded-3xl shadow-xl">
                 <form onSubmit={(e) => {
                   e.preventDefault();
                   if (tempName.trim()) {
@@ -107,20 +137,19 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     value={tempName}
                     onChange={e => setTempName(e.target.value)}
                     placeholder="Dukaan ka naam"
-                    className="h-11 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500"
+                    className="h-11 bg-slate-50 dark:bg-slate-900/50 rounded-xl"
                     autoFocus
                   />
                   <div className="flex gap-2">
-                    <Button type="submit" className="flex-1 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold">Save</Button>
+                    <Button type="submit" className="flex-1 bg-blue-600 text-white rounded-xl font-bold">Save</Button>
                     <Button type="button" variant="ghost" onClick={() => setEditingShop(false)} className="rounded-xl">Cancel</Button>
                   </div>
                 </form>
               </div>
             )}
 
-            {/* --- COMPACT PROFESSIONAL TOTAL CARD --- */}
-            <div className="bg-blue-600 dark:bg-blue-700 rounded-[1.5rem] p-5 md:p-6 text-white shadow-lg relative overflow-hidden transition-all">
-              {/* Subtle Design Element */}
+            {/* --- UPDATED TOTAL CARD WITH 3 METRICS --- */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[1.5rem] p-6 text-white shadow-lg relative overflow-hidden transition-all duration-500">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-xl" />
 
               <div className="relative z-10">
@@ -136,39 +165,36 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   </h2>
                 </div>
 
-                {/* Quick Insights Row (Professional Software Style) */}
-                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                <div className="mt-6 pt-5 border-t border-white/10 flex items-center justify-between gap-1">
                   <div className="flex flex-col">
-                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Is Mahine</span>
-                    <span className="text-xs font-bold">+ Rs 12,500</span>
+                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1">Is Mahine</span>
+                    <span className="text-xs font-black">+ Rs {thisMonthTotal.toLocaleString()}</span>
                   </div>
 
-                  <div className="w-px h-6 bg-white/10" /> {/* Divider */}
+                  <div className="w-px h-6 bg-white/10" />
 
-                  <div className="flex flex-col">
-                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Active Customers</span>
-                    <span className="text-xs font-bold">{customers.length} Accounts</span>
+                  <div className="flex flex-col px-1">
+                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1">Aaj Ka Din</span>
+                    <span className="text-xs font-black">+ Rs {todayTotal.toLocaleString()}</span>
                   </div>
 
-                  <div className="w-px h-6 bg-white/10" /> {/* Divider */}
+                  <div className="w-px h-6 bg-white/10" />
 
                   <div className="flex flex-col text-right">
-                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Status</span>
-                    <span className="text-[10px] bg-emerald-400/20 text-emerald-100 px-2 py-0.5 rounded-full font-bold">
-                      Healthy
-                    </span>
+                    <span className="text-[8px] uppercase font-bold opacity-60 tracking-wider mb-1">Accounts</span>
+                    <span className="text-xs font-black">{customers.length} Active</span>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Actions & Search */}
+            {/* Search & Actions */}
             <div className="space-y-4">
-              <div className="relative group">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-blue-500 transition-colors" />
+              <div className="relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400" />
                 <Input
                   placeholder="Customer dhunndien..."
-                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-slate-800/30 border-slate-200 dark:border-white/5 text-slate-900 dark:text-white placeholder:text-slate-400 focus-visible:ring-blue-500/50 transition-all shadow-sm"
+                  className="pl-12 h-14 rounded-2xl bg-white dark:bg-slate-800/30 border-slate-200 dark:border-white/5"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
                 />
@@ -176,9 +202,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
               <Button
                 onClick={onAddCustomer}
-                className="w-full h-14 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 hover:bg-slate-800 dark:hover:bg-blue-50 text-lg font-bold shadow-xl active:scale-[0.98] transition-all flex gap-3 items-center justify-center group"
+                className="w-full h-14 rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-950 text-lg font-bold shadow-xl flex gap-3 items-center justify-center group"
               >
-                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform duration-300" />
+                <Plus className="w-6 h-6 group-hover:rotate-90 transition-transform" />
                 Naya Customer
               </Button>
             </div>
@@ -197,7 +223,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
             <div className="flex-1 overflow-y-auto pr-2 custom-scrollbar pb-24 md:pb-6">
               {filtered.length === 0 ? (
-                <div className="h-64 flex flex-col items-center justify-center text-center bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10 shadow-sm">
+                <div className="h-64 flex flex-col items-center justify-center text-center bg-white dark:bg-white/5 rounded-[3rem] border border-dashed border-slate-200 dark:border-white/10">
                   <p className="text-slate-400 font-medium">Koi customer nahi mila</p>
                 </div>
               ) : (
@@ -208,16 +234,16 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-slate-800/30 rounded-[2rem] p-5 border border-slate-100 dark:border-white/5 hover:border-blue-500/30 dark:hover:bg-slate-800/50 flex items-center justify-between transition-all duration-300 group active:scale-[0.98] shadow-sm hover:shadow-md"
+                        className="w-full bg-white dark:bg-slate-800/30 rounded-[2rem] p-5 border border-slate-100 dark:border-white/5 hover:border-blue-500/30 flex items-center justify-between transition-all group shadow-sm"
                       >
                         <div className="flex items-center gap-4 text-left">
-                          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-gradient-to-br dark:from-slate-700 dark:to-slate-800 flex items-center justify-center border border-slate-200 dark:border-white/10 group-hover:bg-blue-600 group-hover:text-white transition-all shadow-sm">
+                          <div className="w-14 h-14 rounded-2xl bg-slate-100 dark:bg-slate-700 flex items-center justify-center group-hover:bg-blue-600 transition-all">
                             <span className="text-xl font-black text-slate-700 dark:text-white group-hover:text-white">
                               {c.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
-                            <p className="font-bold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{c.name}</p>
+                            <p className="font-bold text-slate-900 dark:text-white text-lg leading-tight group-hover:text-blue-600 transition-colors">{c.name}</p>
                             <p className="text-xs text-slate-500 mt-1 font-medium">{c.transactions.length} entries</p>
                           </div>
                         </div>
@@ -229,9 +255,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             </p>
                             <p className="text-[10px] uppercase font-bold text-slate-400">Balance</p>
                           </div>
-                          <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                            <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-white" />
-                          </div>
+                          <ChevronRight className="w-5 h-5 text-slate-400 group-hover:text-blue-600" />
                         </div>
                       </button>
                     );
@@ -240,14 +264,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               )}
             </div>
           </div>
-
         </div>
       </main>
 
-      {/* Mobile Floating Button */}
       <button
         onClick={onAddCustomer}
-        className="md:hidden fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
+        className="md:hidden fixed bottom-8 right-8 w-16 h-16 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center z-50 border border-white/20"
       >
         <Plus className="w-8 h-8" />
       </button>
