@@ -53,7 +53,7 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[92%] max-w-[400px] rounded-[28px] p-6 border-none shadow-2xl overflow-hidden">
+      <DialogContent className="sm:max-w-[425px] bg-white dark:bg-card border-none dark:border dark:border-white/10 shadow-2xl rounded-3xl transition-all duration-500">
         <DialogHeader>
           <DialogTitle className={`text-xl font-black ${type === "udhar" ? "text-red-600" : "text-emerald-600"}`}>
             {type === "udhar" ? "Udhar Diya" : "Paisa Mila"}

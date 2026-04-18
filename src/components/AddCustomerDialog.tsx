@@ -22,12 +22,12 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
     try {
       // Saara insertion ka kaam onAdd (useKhata) handle karega
       await onAdd(name.trim(), phone.trim());
-      
+
       // Form reset aur dialog close
       setName("");
       setPhone("");
       onClose();
-      
+
       // window.location.reload() nikal diya hai taake refresh aur double record na ho
     } catch (error: any) {
       console.error("System Error:", error);
@@ -38,29 +38,30 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="fixed top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] sm:max-w-[425px] w-[90%] sm:w-full rounded-2xl p-6 bg-white outline-none z-[100]">
+      <DialogContent className="sm:max-w-[425px] bg-white dark:bg-card border-none dark:border dark:border-white/10 shadow-2xl rounded-3xl transition-all duration-500">
         <DialogHeader>
           <DialogTitle className="text-lg font-semibold text-center text-gray-900">Naya Customer</DialogTitle>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 pt-4">
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-700">Customer ka Naam</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-slate-400 ml-1">Customer ka Naam</p>
             <Input
-              placeholder=""
+              placeholder="Naam likhien..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="h-12 text-base border-gray-300 focus:ring-2 focus:ring-indigo-500"
+              className="h-12 text-base bg-slate-50 dark:bg-slate-950/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-slate-100 rounded-xl transition-all"
               required
             />
           </div>
+
           <div className="space-y-1">
-            <p className="text-sm font-medium text-gray-700">Phone Number</p>
+            <p className="text-sm font-medium text-gray-700 dark:text-slate-400 ml-1">Phone Number</p>
             <Input
-              placeholder=""
+              placeholder="03xx-xxxxxxx"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
-              className="h-12 text-base border-gray-300 focus:ring-2 focus:ring-indigo-500"
+              className="h-12 text-base bg-slate-50 dark:bg-slate-950/50 border-none focus-visible:ring-2 focus-visible:ring-primary/20 dark:text-slate-100 rounded-xl transition-all"
               required
             />
           </div>
