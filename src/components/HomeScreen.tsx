@@ -118,29 +118,46 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               </div>
             )}
 
-            {/* Total Balance Card */}
-            {/* --- PREMIUM TOTAL BALANCE CARD --- */}
-            {/* --- SIMPLE PREMIUM TOTAL BALANCE CARD --- */}
-            <div className="bg-blue-600 dark:bg-blue-700 rounded-[2rem] p-8 text-white shadow-lg relative overflow-hidden">
-              {/* Bohat halka sa design element jo "cheap" na lage */}
-              <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-10 -mt-10" />
+            {/* --- COMPACT PROFESSIONAL TOTAL CARD --- */}
+            <div className="bg-blue-600 dark:bg-blue-700 rounded-[1.5rem] p-5 md:p-6 text-white shadow-lg relative overflow-hidden transition-all">
+              {/* Subtle Design Element */}
+              <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-xl" />
 
               <div className="relative z-10">
-                <div className="flex items-center gap-2 mb-2 opacity-80">
-                  <Wallet className="w-4 h-4" />
-                  <p className="text-xs font-bold uppercase tracking-widest">Kul Udhar</p>
+                <div className="flex items-center gap-2 mb-1 opacity-70">
+                  <Wallet className="w-3.5 h-3.5" />
+                  <p className="text-[10px] font-bold uppercase tracking-widest">Kul Udhar</p>
                 </div>
 
-                <div className="flex items-baseline gap-2">
-                  <span className="text-2xl font-medium opacity-70">Rs</span>
-                  <h2 className="text-5xl font-black tracking-tight">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-lg font-medium opacity-60">Rs</span>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tight">
                     {totalUdhar.toLocaleString()}
                   </h2>
                 </div>
 
-                {/* Ek saaf sutri line jo bata rahi hai k ye balance hai */}
-                <div className="mt-6 h-1 w-full bg-white/20 rounded-full">
-                  <div className="h-full bg-white w-full rounded-full opacity-40" />
+                {/* Quick Insights Row (Professional Software Style) */}
+                <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-between gap-2">
+                  <div className="flex flex-col">
+                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Is Mahine</span>
+                    <span className="text-xs font-bold">+ Rs 12,500</span>
+                  </div>
+
+                  <div className="w-px h-6 bg-white/10" /> {/* Divider */}
+
+                  <div className="flex flex-col">
+                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Active Customers</span>
+                    <span className="text-xs font-bold">{customers.length} Accounts</span>
+                  </div>
+
+                  <div className="w-px h-6 bg-white/10" /> {/* Divider */}
+
+                  <div className="flex flex-col text-right">
+                    <span className="text-[9px] uppercase font-bold opacity-60 tracking-wider">Status</span>
+                    <span className="text-[10px] bg-emerald-400/20 text-emerald-100 px-2 py-0.5 rounded-full font-bold">
+                      Healthy
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
