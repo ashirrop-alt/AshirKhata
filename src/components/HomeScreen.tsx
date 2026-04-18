@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X } from "lucide-react";
 
 interface Props {
   shopName: string;
@@ -48,13 +48,19 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   useEffect(() => {
     setTempName(shopName);
-    if (!isLoading && !shopName) setEditingShop(true);
-    else setEditingShop(false);
-  }, [shopName, isLoading]);
+  }, [shopName]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.href = '/login';
+  };
+
+  const handleSaveShopName = (e?: React.FormEvent) => {
+    e?.preventDefault();
+    if (tempName.trim()) {
+      onSetShopName(tempName.trim());
+      setEditingShop(false);
+    }
   };
 
   useEffect(() => {
@@ -78,17 +84,36 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
-      {/* --- NAVBAR: Higher Contrast in Dark Mode --- */}
+      {/* --- NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl px-4 md:px-6 py-3 md:py-3.5 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
-            <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
-              <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
-            </div>
-            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">
-              {shopName || "Apni Dukaan"}
-            </h1>
-          </button>
+          
+          {editingShop ? (
+            <form onSubmit={handleSaveShopName} className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-300">
+              <Input 
+                value={tempName} 
+                onChange={e => setTempName(e.target.value)}
+                className="h-9 w-40 md:w-60 bg-white dark:bg-slate-800 border-blue-500/50"
+                autoFocus
+              />
+              <Button type="submit" size="sm" className="h-9 w-9 p-0 bg-emerald-600 hover:bg-emerald-700">
+                <Check className="w-4 h-4" />
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => {setEditingShop(false); setTempName(shopName);}} className="h-9 w-9 p-0">
+                <X className="w-4 h-4" />
+              </Button>
+            </form>
+          ) : (
+            <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
+              <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
+                <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
+              </div>
+              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-blue-500 transition-colors">
+                {shopName || "Apni Dukaan"}
+              </h1>
+            </button>
+          )}
+
           <div className="flex items-center gap-2 md:gap-3">
             <ModeToggle />
             <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 p-1.5 h-auto">
@@ -105,8 +130,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4 md:space-y-5">
             
-            {/* TOTAL BOX: Enhanced Glow */}
-            <div className="bg-blue-600 dark:bg-blue-600 rounded-[2rem] p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden transition-all">
+            <div className="bg-blue-600 dark:bg-blue-600 rounded-[2rem] p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
@@ -136,7 +160,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               </div>
             </div>
 
-            {/* SEARCH BOX: Lightened Background for Dark Mode */}
             <div className="space-y-3">
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors z-10" />
@@ -157,7 +180,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </div>
           </div>
 
-          {/* RIGHT SIDE: List with Higher Contrast Cards */}
+          {/* RIGHT SIDE */}
           <div className="flex-1 flex flex-col min-h-0">
             <div className="flex items-center gap-2 mb-4 px-1">
               <Users className="w-4 h-4 text-slate-400" />
