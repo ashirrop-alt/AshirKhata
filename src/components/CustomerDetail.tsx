@@ -8,6 +8,7 @@ import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil } from "lucide-react";
 import { supabase } from "@/lib/supabase";
+import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -308,46 +309,50 @@ export function CustomerDetail({ customer, onBack }: Props) {
                       <Pencil className="w-5 h-5" />
                     </button>
 
-                    {/* onOpenChange add karne se bahar click karne par band ho jayega */}
-                    <AlertDialog onOpenChange={(open) => !open && (/* yahan logic auto-handle ho jayegi */ null)}>
-                      <AlertDialogTrigger asChild>
+                    {/* Hum ne AlertDialog ko Dialog se badal diya taake click-outside kaam kare */}
+                    <Dialog>
+                      <DialogTrigger asChild>
                         <button className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 transition-all">
                           <Trash2 className="w-5 h-5" />
                         </button>
-                      </AlertDialogTrigger>
+                      </DialogTrigger>
 
-                      {/* Size mazeed kam kar diya mobile ke liye (max-w-[340px]) */}
-                      <AlertDialogContent className="w-[88%] max-w-[340px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none">
-                        <AlertDialogHeader className="space-y-3">
+                      <DialogContent className="w-[88%] max-w-[340px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none">
+                        <div className="space-y-3">
+                          {/* Icon Section */}
                           <div className="mx-auto bg-red-100 dark:bg-red-500/10 p-3 rounded-full w-fit">
                             <Trash2 className="w-6 h-6 text-red-600 dark:text-red-500" />
                           </div>
 
-                          <AlertDialogTitle className="text-xl font-black text-center text-slate-900 dark:text-white">
-                            Delete Entry?
-                          </AlertDialogTitle>
+                          {/* Header Section */}
+                          <div className="text-center space-y-1">
+                            <h2 className="text-xl font-black text-slate-900 dark:text-white">
+                              Delete Entry?
+                            </h2>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                              Ye record hamesha ke liye khatam ho jayega.
+                            </p>
+                          </div>
 
-                          {/* Text ko short aur point-to-point kar diya */}
-                          <AlertDialogDescription className="text-center text-slate-500 dark:text-slate-400 text-sm font-medium">
-                            Ye record hamesha ke liye khatam ho jayega.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
+                          {/* Buttons Section */}
+                          <div className="flex gap-3 mt-6">
+                            {/* Close button automatically handles click-outside logic */}
+                            <DialogClose asChild>
+                              <Button className="flex-1 h-12 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700">
+                                Nahi
+                              </Button>
+                            </DialogClose>
 
-                        <div className="flex gap-3 mt-6">
-                          {/* Bahar click wala kaam is Cancel button se bhi handle hota hai */}
-                          <AlertDialogCancel className="flex-1 h-12 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold">
-                            Nahi
-                          </AlertDialogCancel>
-
-                          <AlertDialogAction
-                            onClick={() => handleDeleteEntry(tx.id)}
-                            className="flex-1 h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
-                          >
-                            Haan
-                          </AlertDialogAction>
+                            <Button
+                              onClick={() => handleDeleteEntry(tx.id)}
+                              className="flex-1 h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
+                            >
+                              Haan
+                            </Button>
+                          </div>
                         </div>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               ))}
