@@ -11,6 +11,17 @@ import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -49,9 +60,12 @@ export function CustomerDetail({ customer, onBack }: Props) {
     setLoading(true);
     try {
       let updatedTransactions;
+
       if (editingEntry) {
         updatedTransactions = transactions.map(t =>
-          t.id === editingEntry.id ? { ...t, type, amount: Number(amount), remarks: remarks } : t
+          t.id === editingEntry.id
+            ? { ...t, type, amount: Number(amount), remarks: remarks }
+            : t
         );
       } else {
         const newTransaction = {
@@ -63,8 +77,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
         };
         updatedTransactions = [...transactions, newTransaction];
       }
+
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
       if (error) throw error;
+
       setTransactions(updatedTransactions);
       toast.success(editingEntry ? "Hisaab update ho gaya!" : "Hisaab save ho gaya!");
       setEntryOpen(false);
@@ -91,6 +107,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const makeCall = (type: 'phone' | 'whatsapp') => {
     if (!customer.phone) return;
     const cleanPhone = customer.phone.replace(/^0/, "92");
+
     if (type === 'phone') {
       window.open(`tel:${customer.phone}`, "_self");
     } else {
@@ -102,27 +119,39 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const shareFullHistory = () => {
     const savedShopName = localStorage.getItem("my_shop_name");
     const shopHeader = data?.shopName || savedShopName || "Khatify User";
+
     let message = `*${shopHeader} - Hisaab Report* 📜\n`;
-    message += `Customer: ${customer.name}\n--------------------------\n`;
+    message += `Customer: ${customer.name}\n`;
+    message += `--------------------------\n`;
+
     transactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
-      message += `${new Date(t.date).toLocaleDateString("en-GB")}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
+      message += `${new Date(t.date).toLocaleDateString("en-GB", { day: '2-digit', month: 'short', year: 'numeric' }).replace(/ /g, '/')}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
     });
-    message += `--------------------------\n*Total Baqaya: Rs ${total}* 💰\n\n_Powered by Khatify_`;
+
+    message += `--------------------------\n`;
+    message += `*Total Baqaya: Rs ${total}* 💰\n\n`;
+    message += `_Powered by Khatify_`;
+
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
   const sendReminder = async () => {
     if (!customer.phone) return;
+    const savedShopName = localStorage.getItem("my_shop_name");
+    const currentShopName = data?.shopName || savedShopName || "Khatify User";
     const cleanPhone = customer.phone.replace(/^0/, "92");
-    const message = `*Assalam o Alaikum!* ✨\n\nAapka udhar *Rs ${total.toLocaleString()}* baqi hai. Meharbani kar ke jald ada kar dein.\n\n*Shukriya,*\n*${displayShopName}*\n\n_Sent via Khatify_`;
+    const message = `*Assalam o Alaikum!* ✨\n\nAapka udhar *Rs ${total.toLocaleString()}* baqi hai. Meharbani kar ke jald ada kar dein.\n\n*Shukriya,*\n*${currentShopName}*\n\n_Sent via Khatify_`;
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
   const downloadInvoice = async () => {
     const element = invoiceRef.current;
-    if (!element) { toast.error("Template load nahi hua"); return; }
+    if (!element) {
+      toast.error("Template load nahi hua");
+      return;
+    }
     const toastId = toast.loading("PDF ban rahi hai...");
     try {
       const doc = new jsPDF({ orientation: 'p', unit: 'mm', format: 'a4' });
@@ -141,19 +170,20 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
+    // Color Match Fix: bg-[#f8fafc] dark:bg-[#0b1224] for main screen background
+    <div className="h-screen flex flex-col bg-[#f8fafc] dark:bg-[#0b1224] overflow-hidden transition-colors duration-500">
       
-      {/* Header - Transparent & Blurred (Industry Standard) */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl px-4 py-3 z-40 shadow-sm">
+      {/* Header Match: Dark mode color updated to match Home Screen card style */}
+      <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 py-3 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <button onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-90">
+            <button onClick={onBack} className="p-2 -ml-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-all active:scale-90">
               <ArrowLeft className="w-6 h-6 text-slate-600 dark:text-slate-400" />
             </button>
             <div className="flex flex-col">
-              <h1 className="text-lg font-black text-slate-900 dark:text-white leading-none mb-1">{customer.name}</h1>
+              <h1 className="text-lg sm:text-xl font-black text-slate-800 dark:text-slate-100 leading-none mb-1">{customer.name}</h1>
               {customer.phone && (
-                <span className="text-[11px] font-bold text-slate-400 dark:text-slate-500 tracking-tight">{customer.phone}</span>
+                <span className="text-[11px] sm:text-xs font-bold text-slate-400 dark:text-slate-500 tracking-tight">{customer.phone}</span>
               )}
             </div>
           </div>
@@ -162,111 +192,196 @@ export function CustomerDetail({ customer, onBack }: Props) {
             {customer.phone && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="rounded-xl w-10 h-10 bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-600 dark:text-slate-400 transition-colors">
+                  <Button variant="ghost" size="icon" className="rounded-full w-10 h-10 bg-slate-50 dark:bg-white/[0.05] hover:bg-slate-100 dark:hover:bg-white/[0.1] text-slate-600 dark:text-slate-400 transition-colors">
                     <PhoneCall className="w-5 h-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100 dark:border-white/10 dark:bg-slate-900">
-                  <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold">
+                <DropdownMenuContent align="end" className="w-48 rounded-2xl p-2 shadow-xl border-slate-100 dark:border-white/[0.1] dark:bg-[#1e293b]">
+                  <DropdownMenuItem onClick={() => makeCall('phone')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700 dark:text-slate-200">
                     <Phone className="w-4 h-4 text-blue-500" /> Phone Call
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold">
-                    <div className="w-4 h-4 text-[#25D366]"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z"/></svg></div> WhatsApp Call
+                  <DropdownMenuItem onClick={() => makeCall('whatsapp')} className="rounded-xl py-3 cursor-pointer gap-3 font-bold text-slate-700 dark:text-slate-200">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
+                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                    </svg>
+                    WhatsApp Call
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             )}
-            <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/20">
-              <WalletCards className="w-4 h-4 text-white" />
+
+            <div className="hidden sm:flex bg-slate-100 dark:bg-white/[0.05] px-3 py-1.5 rounded-full text-[10px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400 items-center gap-1">
+              <WalletCards className="w-3.5 h-3.5" /> Profile
             </div>
           </div>
         </div>
       </header>
 
-      {/* Main Body - Consistent with HomeScreen Layout */}
-      <main className="flex-1 overflow-hidden">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+      <main className="flex-1 overflow-y-auto sm:overflow-hidden">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
 
-          {/* Sidebar Stats */}
-          <div className="flex-none w-full md:w-72 space-y-4 md:space-y-5">
-            <div className={`relative rounded-[2rem] p-6 shadow-xl overflow-hidden transition-all duration-300 ${total > 0 ? "bg-rose-600" : "bg-emerald-600"} text-white`}>
-              <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-              <div className="relative z-10 space-y-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.15em] opacity-90">
-                  {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
-                </p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-sm font-medium opacity-70">Rs</span>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">
-                    {Math.abs(total).toLocaleString()}
-                  </h2>
-                </div>
-              </div>
+          <div className="w-full md:w-80 space-y-4">
+            {/* Total Card Match: Using dark:bg-[#0f172a] to match Home screen cards */}
+            <div className={`relative rounded-3xl p-6 sm:p-8 shadow-lg transition-all duration-300 bg-white dark:bg-[#0f172a] border border-transparent dark:border-white/[0.05] overflow-hidden`}>
+              <div className={`absolute bottom-0 left-0 right-0 h-2 ${total > 0 ? "bg-red-500 shadow-[0_-4px_10px_rgba(239,68,68,0.3)]" : "bg-emerald-500 shadow-[0_-4px_10px_rgba(16,185,129,0.3)]"}`} />
+
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
+                {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
+              </p>
+
+              <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter ${total > 0 ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                Rs {total < 0 ? `-${Math.abs(total).toLocaleString()}` : total.toLocaleString()}
+              </h2>
             </div>
 
-            {/* Transaction Actions */}
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
-              <Button onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }} className="h-14 bg-rose-600 hover:bg-rose-700 text-white rounded-2xl shadow-lg shadow-rose-500/20 font-black text-sm">
+              <Button
+                onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }}
+                className="h-14 sm:h-16 bg-red-600 hover:bg-red-700 dark:bg-red-500 dark:hover:bg-red-600 text-white rounded-2xl shadow-lg shadow-red-500/20 font-black text-sm"
+              >
                 + Udhar Diya
               </Button>
-              <Button onClick={() => { setEditingEntry(null); setEntryType("payment"); setEntryOpen(true); }} className="h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg shadow-emerald-500/20 font-black text-sm">
+              <Button
+                onClick={() => { setEditingEntry(null); setEntryType("payment"); setEntryOpen(true); }}
+                className="h-14 sm:h-16 bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-600 text-white rounded-2xl shadow-lg shadow-emerald-500/20 font-black text-sm"
+              >
                 - Paisa Mila
               </Button>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <Button variant="outline" className="w-full h-11 border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800 rounded-xl font-bold gap-2" onClick={sendReminder}>
-                 Reminder
+            <div className="flex flex-col gap-2 mt-4">
+              <Button
+                variant="outline"
+                className="w-full py-5 text-sm font-semibold border-slate-200 dark:border-white/[0.1] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-700 dark:text-slate-300 transition-all gap-2 rounded-2xl"
+                onClick={sendReminder}
+              >
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
+                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                </svg>
+                WhatsApp Reminder
               </Button>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={downloadInvoice} className="h-11 border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800 rounded-xl font-bold gap-1.5 text-xs">
-                  <History className="w-3.5 h-3.5 text-blue-500" /> PDF
+                <Button variant="outline" onClick={downloadInvoice} className="w-full py-4 text-[13px] font-semibold border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-700 dark:text-slate-300 rounded-2xl gap-1.5">
+                  <History className="w-4 h-4 text-blue-500" /> PDF
                 </Button>
-                <Button variant="outline" onClick={shareFullHistory} className="h-11 border-slate-200 dark:border-white/10 bg-white dark:bg-slate-800 rounded-xl font-bold gap-1.5 text-xs">
-                   Share
+                <Button variant="outline" onClick={shareFullHistory} className="w-full py-4 text-[13px] font-semibold border-slate-200 dark:border-white/[0.08] bg-white dark:bg-white/[0.03] hover:bg-slate-50 dark:hover:bg-white/[0.06] text-slate-700 dark:text-slate-300 rounded-2xl gap-1.5">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="#25D366">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                  </svg>
+                  History
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* Transactions List Container - Elevated Style */}
-          <div className="flex-1 flex flex-col min-h-0 bg-slate-200/40 dark:bg-slate-900/50 rounded-[2rem] p-4 md:p-6 shadow-inner relative border border-slate-200 dark:border-white/5">
-            <div className="relative z-10 flex flex-col h-full">
-              <div className="flex items-center gap-2 mb-4 px-1">
-                <History className="w-4 h-4 text-slate-400" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-slate-400">Transactions History ({transactions.length})</span>
+          {/* Transactions List Match: Using dark:bg-[#0f172a] for the main container */}
+          <div className="flex-1 bg-white dark:bg-[#0f172a] rounded-3xl border border-slate-200 dark:border-white/[0.05] shadow-sm overflow-hidden flex flex-col min-h-[400px]">
+            <div className="px-6 py-5 border-b dark:border-white/[0.05] flex items-center justify-between bg-slate-50/50 dark:bg-white/[0.02]">
+              <div className="flex items-center gap-2">
+                <History className="w-5 h-5 text-slate-400 dark:text-slate-500" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">Transactions ({transactions.length})</h2>
               </div>
+            </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar px-1 space-y-3">
-                {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-200/60 dark:border-white/5 hover:border-blue-500/50 transition-all flex items-center justify-between group">
-                    <div className="flex items-center gap-4">
-                      <div className={`w-10 h-10 rounded-xl flex items-center justify-center font-black ${tx.type === "udhar" ? "bg-rose-50 dark:bg-rose-500/10 text-rose-500" : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500"}`}>
-                        {tx.type === "udhar" ? "U" : "M"}
-                      </div>
-                      <div>
-                        <p className={`font-black text-lg ${tx.type === "udhar" ? "text-rose-600 dark:text-rose-400" : "text-emerald-600 dark:text-emerald-400"}`}>Rs {tx.amount.toLocaleString()}</p>
-                        <p className="text-[9px] font-bold text-slate-400 uppercase tracking-tight">{new Date(tx.date).toLocaleDateString("en-GB")}</p>
-                        {tx.remarks && <p className="text-[10px] text-blue-500 font-medium italic mt-0.5">Note: {tx.remarks}</p>}
-                      </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {[...transactions].reverse().map(tx => (
+                <div key={tx.id} className="bg-slate-50/50 dark:bg-white/[0.02] rounded-2xl p-4 border border-transparent dark:border-white/[0.03] hover:dark:border-white/[0.1] transition-all flex items-center justify-between group">
+                  <div className="flex items-center gap-4">
+                    <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10 text-red-500" : "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500"}`}>
+                      {tx.type === "udhar" ? "+" : "-"}
                     </div>
-                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-colors"><Pencil className="w-4 h-4" /></button>
-                      <button onClick={() => handleDeleteEntry(tx.id)} className="p-2 text-slate-400 hover:text-rose-500 transition-colors"><Trash2 className="w-4 h-4" /></button>
+                    <div>
+                      <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>Rs {tx.amount.toLocaleString()}</p>
+                      <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">
+                        {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-GB")}
+                      </p>
+                      {tx.remarks && (
+                        <p className="text-[11px] text-indigo-600 dark:text-indigo-400 font-medium italic mt-1 bg-indigo-50/50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-lg inline-block">
+                          Note: {tx.remarks}
+                        </p>
+                      )}
                     </div>
                   </div>
-                ))}
-              </div>
+
+                  <div className="flex items-center gap-1">
+                    <button
+                      onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }}
+                      className="p-2 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                    >
+                      <Pencil className="w-5 h-5" />
+                    </button>
+
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <button className="p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-all">
+                          <Trash2 className="w-5 h-5" />
+                        </button>
+                      </DialogTrigger>
+
+                      <DialogContent className="w-[88%] max-w-[340px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none">
+                        <div className="space-y-3">
+                          <div className="mx-auto bg-red-100 dark:bg-red-500/10 p-3 rounded-full w-fit">
+                            <Trash2 className="w-6 h-6 text-red-600 dark:text-red-500" />
+                          </div>
+
+                          <div className="text-center space-y-1">
+                            <h2 className="text-xl font-black text-slate-900 dark:text-white">
+                              Delete Entry?
+                            </h2>
+                            <p className="text-slate-500 dark:text-slate-400 text-sm font-medium">
+                              Ye record hamesha ke liye khatam ho jayega.
+                            </p>
+                          </div>
+
+                          <div className="flex gap-3 mt-6">
+                            <DialogClose asChild>
+                              <Button className="flex-1 h-12 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700">
+                                Nahi
+                              </Button>
+                            </DialogClose>
+
+                            <Button
+                              onClick={() => handleDeleteEntry(tx.id)}
+                              className="flex-1 h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
+                            >
+                              Haan
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </main>
 
-      {/* Dialogs & Template (Untouched Logic) */}
-      <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
+      <AddEntryDialog
+        open={entryOpen}
+        onClose={() => { setEntryOpen(false); setEditingEntry(null); }}
+        type={entryType}
+        onAdd={handleSaveEntry}
+        initialAmount={editingEntry?.amount}
+        initialRemarks={editingEntry?.remarks}
+      />
+
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
         <div ref={invoiceRef}>
-          <InvoiceTemplate customerName={customer.name} customerPhone={customer.phone || ""} shopName={displayShopName} transactions={transactions.map((t: any) => ({ id: t.id, date: new Date(t.date).toLocaleDateString("en-GB"), amount: t.amount, type: t.type === 'udhar' ? 'dr' : 'cr', remarks: t.remarks }))} totalBalance={total} />
+          <InvoiceTemplate
+            customerName={customer.name}
+            customerPhone={customer.phone || ""}
+            shopName={displayShopName}
+            transactions={transactions.map((t: any) => ({
+              id: t.id,
+              date: new Date(t.date).toLocaleDateString("en-GB"),
+              amount: t.amount,
+              type: t.type === 'udhar' ? 'dr' : 'cr',
+              remarks: t.remarks
+            }))}
+            totalBalance={total}
+          />
         </div>
       </div>
     </div>
