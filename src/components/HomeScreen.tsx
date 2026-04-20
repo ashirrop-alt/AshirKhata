@@ -89,21 +89,38 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto flex items-center justify-between">
 
           {editingShop ? (
-            <form onSubmit={handleSaveShopName} className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-300">
-              <Input
+            <form
+              onSubmit={handleSaveShopName}
+              className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-blue-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300"
+            >
+              <input
                 value={tempName}
                 onChange={e => setTempName(e.target.value)}
-                className="h-9 w-40 md:w-60 bg-white dark:bg-slate-800 border-blue-500/50 dark:text-white"
+                className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white"
                 autoFocus
               />
-              <Button type="submit" size="sm" className="h-9 px-3 bg-blue-600 hover:bg-blue-700 text-white">
-                <Check className="w-4 h-4 mr-1" /> Save Karein
-              </Button>
-              <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingShop(false); setTempName(shopName); }} className="h-9 px-3 dark:text-slate-400">
-                Cancel
-              </Button>
+
+              <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-700 pl-1">
+                {/* Tik wala chota button (Save) */}
+                <button
+                  type="submit"
+                  className="p-1.5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-600 rounded-lg transition-colors"
+                >
+                  <Check className="w-4 h-4" />
+                </button>
+
+                {/* X wala chota button (Cancel) */}
+                <button
+                  type="button"
+                  onClick={() => { setEditingShop(false); setTempName(shopName); }}
+                  className="p-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 rounded-lg transition-colors"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
             </form>
           ) : (
+            /* --- Jab edit nahi ho raha (Pehle wala design) --- */
             <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
               <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />

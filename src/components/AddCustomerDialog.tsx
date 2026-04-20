@@ -34,52 +34,51 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {/* 1. Mobile Width aur Dark Mode Background yahan fix kiya hai */}
-      <DialogContent className="w-[92%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
-        
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* --- Modal Header --- */}
-          <h2 className="text-xl font-black text-slate-900 dark:text-white text-center tracking-tight">
-            Naya Customer
-          </h2>
+      <DialogContent className="
+  /* Mobile par niche se chipka hua (Bottom Sheet) */
+  sm:max-w-[425px] w-full 
+  fixed bottom-0 sm:bottom-[unset] sm:top-[50%] 
+  translate-y-0 sm:-translate-y-[50%]
+  rounded-t-[2.5rem] sm:rounded-[2.5rem] 
+  bg-white dark:bg-[#0f172a] 
+  p-8 pb-10 sm:pb-8
+  border-none shadow-[0_-10px_40px_rgba(0,0,0,0.1)] dark:shadow-[0_-10px_40px_rgba(0,0,0,0.5)]
+  transition-transform duration-500 ease-out
+">
+        {/* Handlebar for Mobile (Standard UI) */}
+        <div className="w-12 h-1.5 bg-slate-200 dark:bg-slate-800 rounded-full mx-auto mb-6 sm:hidden" />
 
-          {/* --- Customer Naam Input --- */}
-          <div className="space-y-2">
-            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
-              Customer ka Naam
-            </p>
-            <Input
-              placeholder="Naam likhien..."
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              // 2. Input ka look professional aur dark mode friendly kiya hai
-              className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
-              required
-            />
+        <form onSubmit={handleSubmit} className="space-y-7">
+          <div className="text-center">
+            <h2 className="text-2xl font-black text-slate-900 dark:text-white tracking-tight">
+              Naya Customer
+            </h2>
           </div>
 
-          {/* --- Phone Number Input --- */}
-          <div className="space-y-2">
-            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
-              Phone Number
-            </p>
-            <Input
-              placeholder="03xx-xxxxxxx"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              type="tel"
-              className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
-              required
-            />
-          </div>
+          <div className="space-y-5">
+            {/* Input Group */}
+            <div className="space-y-2">
+              <label className="text-[10px] font-black text-blue-600 dark:text-blue-400 ml-2 uppercase tracking-[0.2em]">
+                Naam
+              </label>
+              <Input
+                placeholder="Customer ka naam..."
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                className="h-15 bg-slate-50 dark:bg-slate-900/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-4 focus:ring-blue-500/10 transition-all text-base"
+                required
+              />
+            </div>
 
-          {/* --- Save Button --- */}
-          <Button
-            type="submit"
-            className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all"
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save Karein"}
-          </Button>
+            {/* Button - Floating & Premium */}
+            <Button
+              type="submit"
+              className="w-full h-15 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold text-lg shadow-xl shadow-blue-500/25 active:scale-[0.98] transition-all"
+              disabled={loading}
+            >
+              {loading ? "Saving..." : "Save Karein"}
+            </Button>
+          </div>
         </form>
       </DialogContent>
     </Dialog>
