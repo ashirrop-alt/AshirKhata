@@ -89,36 +89,21 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto flex items-center justify-between">
 
           {editingShop ? (
-            /* --- NAYA PROFESSIONAL MODAL --- */
-            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
-              <div className="w-full max-w-[90%] md:max-w-md bg-white dark:bg-slate-900/95 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-white/10 animate-in zoom-in-95 duration-200">
-                <h3 className="text-xl font-black mb-5 text-slate-900 dark:text-white">Dukaan ka Naam Badlein</h3>
-                <form onSubmit={handleSaveShopName} className="space-y-4">
-                  <Input
-                    value={tempName}
-                    onChange={e => setTempName(e.target.value)}
-                    className="h-12 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white"
-                    autoFocus
-                    placeholder="Naam likhien..."
-                  />
-                  <div className="flex gap-3">
-                    <Button type="submit" className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20">
-                      <Check className="w-4 h-4 mr-2" /> Save Karein
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      onClick={() => { setEditingShop(false); setTempName(shopName); }}
-                      className="h-12 px-5 dark:text-slate-400 dark:hover:bg-slate-800 rounded-xl font-bold"
-                    >
-                      Cancel
-                    </Button>
-                  </div>
-                </form>
-              </div>
-            </div>
+            <form onSubmit={handleSaveShopName} className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-300">
+              <Input
+                value={tempName}
+                onChange={e => setTempName(e.target.value)}
+                className="h-9 w-40 md:w-60 bg-white dark:bg-slate-800 border-blue-500/50 dark:text-white"
+                autoFocus
+              />
+              <Button type="submit" size="sm" className="h-9 px-3 bg-blue-600 hover:bg-blue-700 text-white">
+                <Check className="w-4 h-4 mr-1" /> Save Karein
+              </Button>
+              <Button type="button" variant="ghost" size="sm" onClick={() => { setEditingShop(false); setTempName(shopName); }} className="h-9 px-3 dark:text-slate-400">
+                Cancel
+              </Button>
+            </form>
           ) : (
-            /* --- DUKAAN KA NAAM (Jo pehle se tha) --- */
             <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
               <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />

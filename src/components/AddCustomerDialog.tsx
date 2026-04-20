@@ -1,12 +1,12 @@
 import { useState } from "react";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent } from "@/components/ui/dialog"; // DialogHeader/Title nikal diye kyunki hum custom h2 use kar rahe hain
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
 interface Props {
   open: boolean;
   onClose: () => void;
-  onAdd: (name: string, phone: string) => Promise<void>; // useKhata ka function async hai
+  onAdd: (name: string, phone: string) => Promise<void>;
 }
 
 export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
@@ -20,15 +20,10 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
     setLoading(true);
     try {
-      // Saara insertion ka kaam onAdd (useKhata) handle karega
       await onAdd(name.trim(), phone.trim());
-
-      // Form reset aur dialog close
       setName("");
       setPhone("");
       onClose();
-
-      // window.location.reload() nikal diya hai taake refresh aur double record na ho
     } catch (error: any) {
       console.error("System Error:", error);
     } finally {
@@ -38,31 +33,33 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px] bg-white/90 dark:bg-slate-900/95 backdrop-blur-xl border border-white/20 dark:border-white/10 shadow-2xl rounded-[2rem] transition-all duration-500">
-        <form onSubmit={handleSubmit} className="space-y-6 py-2">
+      {/* 1. Mobile Width aur Dark Mode Background yahan fix kiya hai */}
+      <DialogContent className="w-[92%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
+        
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* --- Modal Header --- */}
-          <h2 className="text-xl font-bold text-slate-800 dark:text-slate-100 text-center tracking-tight">
+          <h2 className="text-xl font-black text-slate-900 dark:text-white text-center tracking-tight">
             Naya Customer
           </h2>
 
           {/* --- Customer Naam Input --- */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-300 ml-2 uppercase tracking-[0.15em] transition-colors">
+            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
               Customer ka Naam
             </p>
             <Input
               placeholder="Naam likhien..."
               value={name}
               onChange={(e) => setName(e.target.value)}
-              /* Yahan dark:text-white aur placeholder color update kiya hai */
-              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/20 focus-visible:ring-2 focus-visible:ring-primary/30 text-slate-900 dark:text-white rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              // 2. Input ka look professional aur dark mode friendly kiya hai
+              className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               required
             />
           </div>
 
           {/* --- Phone Number Input --- */}
           <div className="space-y-2">
-            <p className="text-[10px] font-bold text-slate-500 dark:text-slate-300 ml-2 uppercase tracking-[0.15em] transition-colors">
+            <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
               Phone Number
             </p>
             <Input
@@ -70,7 +67,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               type="tel"
-              className="h-14 text-base bg-slate-100/50 dark:bg-slate-900/60 border border-slate-200 dark:border-white/20 focus-visible:ring-2 focus-visible:ring-primary/30 text-slate-900 dark:text-white rounded-2xl transition-all shadow-inner placeholder:text-slate-400 dark:placeholder:text-slate-500"
+              className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
               required
             />
           </div>
@@ -78,16 +75,10 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           {/* --- Save Button --- */}
           <Button
             type="submit"
-            className="w-full h-14 bg-primary hover:bg-primary/90 text-white rounded-2xl font-bold shadow-lg shadow-primary/20 active:scale-[0.98] transition-all duration-300 mt-2 flex items-center justify-center"
+            className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all"
             disabled={loading}
           >
-            {loading ? (
-              <div className="flex items-center gap-2">
-                <span className="animate-pulse">Saving...</span>
-              </div>
-            ) : (
-              "Save Karein"
-            )}
+            {loading ? "Saving..." : "Save Karein"}
           </Button>
         </form>
       </DialogContent>
