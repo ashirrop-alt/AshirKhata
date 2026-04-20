@@ -6,7 +6,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, Share2 } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -142,10 +142,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   return (
-    // FIX 1: Pure Deep Background match with Home Screen
     <div className="h-screen flex flex-col bg-[#020617] overflow-hidden">
       
-      {/* FIX 2: Header should be a slightly lighter container shade, not transparent white */}
+      {/* Header */}
       <header className="flex-none bg-[#0f172a] border-b border-white/[0.05] px-4 py-3 z-40">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -190,9 +189,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
           
           <div className="w-full md:w-80 space-y-4">
-            {/* FIX 3: Balance Card background should match Sidebar containers */}
-            <div className={`relative rounded-3xl p-6 sm:p-8 shadow-lg bg-[#0f172a] border border-white/[0.05] overflow-hidden`}>
-              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500" : "bg-emerald-500"}`} />
+            {/* Amount Card with Neon Glow */}
+            <div className={`relative rounded-3xl p-6 sm:p-8 shadow-2xl bg-[#0f172a] border border-white/[0.05] overflow-hidden`}>
+              {/* This is the Glow/Shadow Line */}
+              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
+              
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-500 mb-2">
                 {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
               </p>
@@ -211,21 +212,22 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
 
             <div className="flex flex-col gap-2 mt-4">
-              <Button variant="outline" className="w-full py-5 text-sm font-semibold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 gap-2 rounded-2xl" onClick={sendReminder}>
+              <Button variant="outline" className="w-full py-5 text-sm font-bold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 gap-3 rounded-2xl" onClick={sendReminder}>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" /></svg>
                 WhatsApp Reminder
               </Button>
               <div className="grid grid-cols-2 gap-2">
-                <Button variant="outline" onClick={downloadInvoice} className="w-full py-4 text-[13px] font-semibold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 rounded-2xl gap-1.5">
+                <Button variant="outline" onClick={downloadInvoice} className="w-full py-4 text-[13px] font-bold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 rounded-2xl gap-2">
                   <History className="w-4 h-4 text-blue-500" /> PDF
                 </Button>
-                <Button variant="outline" onClick={shareFullHistory} className="w-full py-4 text-[13px] font-semibold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 rounded-2xl gap-1.5">
-                   History
+                <Button variant="outline" onClick={shareFullHistory} className="w-full py-4 text-[13px] font-bold border-white/[0.05] bg-[#0f172a] hover:bg-[#1e293b] text-slate-300 rounded-2xl gap-2">
+                  <svg viewBox="0 0 24 24" width="16" height="16" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" /></svg> History
                 </Button>
               </div>
             </div>
           </div>
 
-          {/* FIX 4: Transaction Container background matches Home List container */}
+          {/* Transaction List Container */}
           <div className="flex-1 bg-[#0f172a] rounded-3xl border border-white/[0.05] shadow-sm overflow-hidden flex flex-col min-h-[400px]">
             <div className="px-6 py-5 border-b border-white/[0.05] flex items-center justify-between bg-white/[0.02]">
               <div className="flex items-center gap-2">
@@ -256,8 +258,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                   <div className="flex items-center gap-1">
                     <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-500 hover:text-indigo-400 transition-all"><Pencil className="w-5 h-5" /></button>
-                    
-                    {/* Simplified Delete Action */}
                     <button onClick={() => {if(confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id)}} className="p-2 text-slate-500 hover:text-red-400 transition-all">
                         <Trash2 className="w-5 h-5" />
                     </button>
