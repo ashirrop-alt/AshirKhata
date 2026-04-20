@@ -301,18 +301,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-1">
+                    {/* Pencil (Edit) Icon - Ab hamesha nazar ayega */}
                     <button
                       onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }}
-                      className="p-2 text-slate-300 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                      className="p-2 text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
                     >
                       <Pencil className="w-5 h-5" />
                     </button>
 
-                    {/* Hum ne AlertDialog ko Dialog se badal diya taake click-outside kaam kare */}
                     <Dialog>
                       <DialogTrigger asChild>
-                        <button className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 transition-all">
+                        {/* Trash (Delete) Icon - Ab hamesha nazar ayega */}
+                        <button className="p-2 text-slate-500 dark:text-slate-400 hover:text-red-500 dark:hover:text-red-400 transition-all">
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </DialogTrigger>
@@ -336,7 +337,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                           {/* Buttons Section */}
                           <div className="flex gap-3 mt-6">
-                            {/* Close button automatically handles click-outside logic */}
                             <DialogClose asChild>
                               <Button className="flex-1 h-12 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700">
                                 Nahi
