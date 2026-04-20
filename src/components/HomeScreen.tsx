@@ -87,7 +87,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       {/* --- NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl px-4 md:px-6 py-3 md:py-3.5 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-
           {editingShop ? (
             <form
               onSubmit={handleSaveShopName}
@@ -99,28 +98,16 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white"
                 autoFocus
               />
-
               <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-700 pl-1">
-                {/* Tik wala chota button (Save) */}
-                <button
-                  type="submit"
-                  className="p-1.5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-600 rounded-lg transition-colors"
-                >
+                <button type="submit" className="p-1.5 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-emerald-600 rounded-lg transition-colors">
                   <Check className="w-4 h-4" />
                 </button>
-
-                {/* X wala chota button (Cancel) */}
-                <button
-                  type="button"
-                  onClick={() => { setEditingShop(false); setTempName(shopName); }}
-                  className="p-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 rounded-lg transition-colors"
-                >
+                <button type="button" onClick={() => { setEditingShop(false); setTempName(shopName); }} className="p-1.5 hover:bg-rose-50 dark:hover:bg-rose-500/10 text-rose-500 rounded-lg transition-colors">
                   <X className="w-4 h-4" />
                 </button>
               </div>
             </form>
           ) : (
-            /* --- Jab edit nahi ho raha (Pehle wala design) --- */
             <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
               <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
@@ -142,11 +129,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
       {/* --- MAIN --- */}
       <main className="flex-1 overflow-hidden">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-0 p-0 md:p-6">
 
-          {/* LEFT SIDE */}
-          <div className="flex-none w-full md:w-72 space-y-4 md:space-y-5">
-
+          {/* LEFT SIDE (Mobile: p-4, Laptop: p-0) */}
+          <div className="flex-none w-full md:w-80 space-y-4 md:space-y-6 p-4 md:p-0 md:pr-8">
             <div className="bg-blue-600 dark:bg-blue-600 rounded-[2rem] p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10 space-y-4 md:space-y-5">
@@ -181,7 +167,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-blue-500 transition-colors z-10" />
                 <Input
-                  placeholder="Customer dhunndien..."
+                  placeholder="Customer dhoondien..."
                   className="pl-10 h-11 rounded-xl bg-white dark:bg-slate-800 border-slate-200 dark:border-white/10 shadow-sm focus:ring-2 focus:ring-blue-500 transition-all dark:text-white"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -197,49 +183,55 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </div>
           </div>
 
-          {/* RIGHT SIDE */}
-          <div className="flex-1 flex flex-col min-h-0">
-            <div className="flex items-center gap-2 mb-4 px-1">
-              <Users className="w-4 h-4 text-slate-400" />
-              <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
+          {/* RIGHT SIDE (Aapka Idea: The Container Slab) */}
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-slate-900/40 md:rounded-t-[3rem] md:border-l border-t border-slate-200 dark:border-white/5 shadow-2xl shadow-slate-200/50 dark:shadow-none">
+            <div className="flex items-center justify-between mb-4 p-6 pb-2">
+              <div className="flex items-center gap-2">
+                <div className="p-1.5 bg-slate-100 dark:bg-slate-800 rounded-lg">
+                  <Users className="w-4 h-4 text-blue-600" />
+                </div>
+                <span className="text-xs md:text-sm font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+                  Customer List ({filtered.length})
+                </span>
+              </div>
             </div>
 
-            <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 px-1">
+            <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-8 px-6">
               {filtered.length === 0 ? (
-                <div className="h-48 flex items-center justify-center bg-white dark:bg-slate-900/40 rounded-[1.5rem] border border-dashed border-slate-200 dark:border-white/10">
-                  <p className="text-slate-400 text-sm font-medium">Koi customer nahi mila</p>
+                <div className="h-48 flex flex-col items-center justify-center bg-slate-50/50 dark:bg-slate-800/20 rounded-[2rem] border border-dashed border-slate-200 dark:border-white/10">
+                  <p className="text-slate-400 text-sm font-medium italic">Koi customer nahi mila</p>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                   {filtered.map(c => {
                     const total = getCustomerTotal(c);
                     return (
                       <button
                         key={c.id}
                         onClick={() => onSelectCustomer(c.id)}
-                        className="w-full bg-white dark:bg-slate-800/60 rounded-xl md:rounded-2xl p-3.5 md:p-4 border border-slate-100 dark:border-white/10 hover:border-blue-500/50 dark:hover:bg-slate-800 hover:shadow-md transition-all duration-300 group active:scale-[0.99] flex items-center justify-between"
+                        className="w-full bg-white dark:bg-slate-800 rounded-2xl p-4 border border-slate-100 dark:border-white/5 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/5 transition-all duration-300 group active:scale-[0.98] flex items-center justify-between"
                       >
-                        <div className="flex items-center gap-3 md:gap-4 text-left">
-                          <div className="w-10 h-10 md:w-11 md:h-11 rounded-lg md:rounded-xl bg-blue-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
-                            <span className="text-base md:text-lg font-black text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors">
+                        <div className="flex items-center gap-4 text-left">
+                          <div className="w-12 h-12 rounded-xl bg-blue-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-50 dark:border-white/5 group-hover:bg-blue-600 transition-all">
+                            <span className="text-lg font-black text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors">
                               {c.name.charAt(0).toUpperCase()}
                             </span>
                           </div>
                           <div>
                             <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover:text-blue-500 transition-colors">{c.name}</p>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{c.transactions.length} entries</p>
+                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-1 font-medium bg-slate-100 dark:bg-slate-900 w-fit px-2 py-0.5 rounded-full">{c.transactions.length} entries</p>
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-3 md:gap-4">
+                        <div className="flex items-center gap-4">
                           <div className="text-right">
                             <p className={`text-base md:text-xl font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
                               {total > 0 ? "+" : ""} {Math.abs(total).toLocaleString()}
                             </p>
-                            <p className="text-[8px] md:text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 mt-1">Balance</p>
+                            <p className="text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 mt-1">Balance</p>
                           </div>
-                          <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
-                            <ChevronRight className="w-3.5 h-3.5 text-slate-300 dark:text-slate-600 group-hover:text-white" />
+                          <div className="w-8 h-8 rounded-full bg-slate-50 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors shadow-sm">
+                            <ChevronRight className="w-4 h-4 text-slate-300 dark:text-slate-600 group-hover:text-white" />
                           </div>
                         </div>
                       </button>
@@ -255,9 +247,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       {/* FAB Mobile */}
       <button
         onClick={onAddCustomer}
-        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
+        className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-2xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20"
       >
-        <Plus className="w-6 h-6" />
+        <Plus className="w-7 h-7" />
       </button>
     </div>
   );
