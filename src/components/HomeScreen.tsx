@@ -167,8 +167,16 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
               <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 px-1">
                 {filtered.length === 0 ? (
-                  <div className="h-48 flex items-center justify-center bg-white/50 dark:bg-slate-900/40 rounded-[1.5rem] border border-dashed border-slate-200 dark:border-white/10">
-                    <p className="text-slate-400 text-sm font-medium">Koi customer nahi mila</p>
+                  <div className="h-64 flex flex-col items-center justify-center bg-white/30 dark:bg-slate-900/40 rounded-[2rem] border-2 border-dashed border-slate-200/60 dark:border-white/5 animate-in fade-in duration-500">
+                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 shadow-inner">
+                      <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                    </div>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold italic tracking-wide">
+                      Koi customer nahi mila
+                    </p>
+                    <p className="text-slate-400 dark:text-slate-500 text-[11px] mt-1">
+                      Search filter check karein ya naya customer add karein
+                    </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
