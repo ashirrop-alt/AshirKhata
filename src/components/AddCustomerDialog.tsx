@@ -34,7 +34,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {/* 1. Mobile Width aur Dark Mode Background yahan fix kiya hai */}
-      <DialogContent className="w-[92%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
+      <DialogContent className="w-[85%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* --- Header --- */}
