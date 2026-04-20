@@ -23,7 +23,7 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
   const [remarks, setRemarks] = useState<string>(""); // New State
   const inputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
-  
+
   useEffect(() => {
     if (open) {
       setAmount(initialAmount ? initialAmount.toString() : "");
@@ -55,7 +55,7 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
   return (
     <Dialog open={open} onOpenChange={onClose}>
       {/* 1. Mobile width fix aur professional dark mode background */}
-      <DialogContent className="w-[92%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
+      <DialogContent className="w-[82%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
         <DialogHeader>
           <DialogTitle className={`text-xl font-black text-center ${type === "udhar" ? "text-red-600 dark:text-red-500" : "text-emerald-600 dark:text-emerald-500"}`}>
             {type === "udhar" ? "Udhar Diya" : "Paisa Mila"}
