@@ -37,10 +37,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     const daySum = customer.transactions
       .filter(t => {
         const d = new Date(t.date);
-        return d.getDate() === now.getDate() && 
-               d.getMonth() === now.getMonth() && 
-               d.getFullYear() === now.getFullYear() && 
-               (t.type as string) === 'udhar';
+        return d.getDate() === now.getDate() &&
+          d.getMonth() === now.getMonth() &&
+          d.getFullYear() === now.getFullYear() &&
+          (t.type as string) === 'udhar';
       })
       .reduce((sum, t) => sum + t.amount, 0);
     return acc + daySum;
@@ -87,23 +87,38 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       {/* --- NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/10 bg-white/90 dark:bg-slate-900/80 backdrop-blur-xl px-4 md:px-6 py-3 md:py-3.5 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          
+
           {editingShop ? (
-            <form onSubmit={handleSaveShopName} className="flex items-center gap-2 animate-in slide-in-from-left-2 duration-300">
-              <Input 
-                value={tempName} 
-                onChange={e => setTempName(e.target.value)}
-                className="h-9 w-40 md:w-60 bg-white dark:bg-slate-800 border-blue-500/50"
-                autoFocus
-              />
-              <Button type="submit" size="sm" className="h-9 w-9 p-0 bg-emerald-600 hover:bg-emerald-700">
-                <Check className="w-4 h-4" />
-              </Button>
-              <Button type="button" variant="ghost" size="sm" onClick={() => {setEditingShop(false); setTempName(shopName);}} className="h-9 w-9 p-0">
-                <X className="w-4 h-4" />
-              </Button>
-            </form>
+            /* --- NAYA PROFESSIONAL MODAL --- */
+            <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-sm">
+              <div className="w-full max-w-[90%] md:max-w-md bg-white dark:bg-slate-900/95 backdrop-blur-xl rounded-[2rem] p-6 shadow-2xl border border-slate-200 dark:border-white/10 animate-in zoom-in-95 duration-200">
+                <h3 className="text-xl font-black mb-5 text-slate-900 dark:text-white">Dukaan ka Naam Badlein</h3>
+                <form onSubmit={handleSaveShopName} className="space-y-4">
+                  <Input
+                    value={tempName}
+                    onChange={e => setTempName(e.target.value)}
+                    className="h-12 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 rounded-xl focus:ring-2 focus:ring-blue-500 dark:text-white"
+                    autoFocus
+                    placeholder="Naam likhien..."
+                  />
+                  <div className="flex gap-3">
+                    <Button type="submit" className="flex-1 h-12 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold shadow-lg shadow-blue-500/20">
+                      <Check className="w-4 h-4 mr-2" /> Save Karein
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      onClick={() => { setEditingShop(false); setTempName(shopName); }}
+                      className="h-12 px-5 dark:text-slate-400 dark:hover:bg-slate-800 rounded-xl font-bold"
+                    >
+                      Cancel
+                    </Button>
+                  </div>
+                </form>
+              </div>
+            </div>
           ) : (
+            /* --- DUKAAN KA NAAM (Jo pehle se tha) --- */
             <button onClick={() => setEditingShop(true)} className="flex items-center gap-2.5 group active:scale-95 transition-all text-left">
               <div className="bg-blue-600 p-2 rounded-lg shadow-lg shadow-blue-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
@@ -129,7 +144,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4 md:space-y-5">
-            
+
             <div className="bg-blue-600 dark:bg-blue-600 rounded-[2rem] p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10 space-y-4 md:space-y-5">
