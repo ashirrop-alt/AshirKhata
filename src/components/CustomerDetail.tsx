@@ -40,7 +40,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [transactions, setTransactions] = useState(customer.transactions || []);
 
   const { data } = useKhata();
-  const savedShopName = localStorage.getItem("my_shop_name"); 
+  const savedShopName = localStorage.getItem("my_shop_name");
   const displayShopName = data?.shopName || savedShopName || "Khatify User";
 
   useEffect(() => {
@@ -301,24 +301,51 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   </div>
 
                   <div className="flex items-center gap-1 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-300 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all">
+                    <button
+                      onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }}
+                      className="p-2 text-slate-300 dark:text-slate-600 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all"
+                    >
                       <Pencil className="w-5 h-5" />
                     </button>
+
                     <AlertDialog>
                       <AlertDialogTrigger asChild>
                         <button className="p-2 text-slate-300 dark:text-slate-600 hover:text-red-500 transition-all">
                           <Trash2 className="w-5 h-5" />
                         </button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="rounded-[24px] dark:bg-[#1a2333] dark:border-white/[0.1] dark:text-slate-100">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Delete Entry?</AlertDialogTitle>
-                          <AlertDialogDescription className="dark:text-slate-400 text-sm">Ye wapas nahi ayega.</AlertDialogDescription>
+
+                      {/* --- Naya Professional Design aur Click-Outside fix --- */}
+                      <AlertDialogContent className="w-[92%] max-w-[380px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
+                        <AlertDialogHeader className="space-y-3">
+                          {/* Trash Icon for Visual Alert */}
+                          <div className="mx-auto bg-red-100 dark:bg-red-500/10 p-3 rounded-full w-fit">
+                            <Trash2 className="w-6 h-6 text-red-600 dark:text-red-500" />
+                          </div>
+
+                          <AlertDialogTitle className="text-xl font-black text-center text-slate-900 dark:text-white">
+                            Entry Khatam Karein?
+                          </AlertDialogTitle>
+
+                          <AlertDialogDescription className="text-center text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
+                            Kya aap waqai is entry ko delete karna chahte hain? Ye hamesha ke liye khatam ho jayegi.
+                          </AlertDialogDescription>
                         </AlertDialogHeader>
-                        <AlertDialogFooter className="mt-4 flex gap-3">
-                          <AlertDialogCancel className="rounded-xl flex-1 dark:bg-transparent dark:border-white/[0.1] dark:text-slate-400">Nahi</AlertDialogCancel>
-                          <AlertDialogAction onClick={() => handleDeleteEntry(tx.id)} className="rounded-xl flex-1 bg-red-600">Haan, Delete</AlertDialogAction>
-                        </AlertDialogFooter>
+
+                        <div className="flex gap-3 mt-6">
+                          {/* Cancel Button */}
+                          <AlertDialogCancel className="flex-1 h-12 rounded-xl border-none bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors">
+                            Nahi
+                          </AlertDialogCancel>
+
+                          {/* Delete Action Button */}
+                          <AlertDialogAction
+                            onClick={() => handleDeleteEntry(tx.id)}
+                            className="flex-1 h-12 rounded-xl bg-red-600 hover:bg-red-700 text-white font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
+                          >
+                            Haan, Delete
+                          </AlertDialogAction>
+                        </div>
                       </AlertDialogContent>
                     </AlertDialog>
                   </div>
