@@ -6,9 +6,8 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
-import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -150,8 +149,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden">
 
-      {/* --- HEADER (Synced with Home Navbar) --- */}
-      <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 md:px-6 py-3 md:py-4 z-40 shadow-sm transition-all">
+      {/* --- HEADER --- */}
+      <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 md:px-6 py-3 md:py-4 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all group active:scale-90">
@@ -194,7 +193,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <main className="flex-1 overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
-          {/* LEFT SIDE (Summary & Controls) */}
+          {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.3)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.3)]"}`} />
@@ -210,10 +209,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
-              <Button onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }} className="h-12 md:h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-lg shadow-red-500/10 font-bold text-sm active:scale-95 transition-all">
+              <Button onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }} className="h-12 md:h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-lg font-bold text-sm active:scale-95 transition-all">
                 + Udhar Diya
               </Button>
-              <Button onClick={() => { setEditingEntry(null); setEntryType("payment"); setEntryOpen(true); }} className="h-12 md:h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg shadow-emerald-500/10 font-bold text-sm active:scale-95 transition-all">
+              <Button onClick={() => { setEditingEntry(null); setEntryType("payment"); setEntryOpen(true); }} className="h-12 md:h-14 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl shadow-lg font-bold text-sm active:scale-95 transition-all">
                 - Paisa Mila
               </Button>
             </div>
@@ -234,44 +233,45 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
           </div>
 
-          {/* RIGHT SIDE (Transaction List Container) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative transition-all">
-            <div className="relative z-10 flex flex-col h-full">
+          {/* RIGHT SIDE (Transaction List) */}
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
+            <div className="flex flex-col h-full">
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <History className="w-4 h-4 text-slate-400" />
                 <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Transactions ({transactions.length})</span>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
+              <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all group flex items-center justify-between">
+                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex items-center justify-between">
                     <div className="flex items-center gap-3 md:gap-4 text-left">
                       <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
                         {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
                       </div>
                       <div>
-                        <div className={`flex items-baseline gap-0.5 font-bold leading-tight ${tx.type === "udhar" ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
+                        {/* WAZIH AMOUNTS */}
+                        <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-600 dark:text-red-500" : "text-emerald-700 dark:text-emerald-400"}`}>
                           <span className="text-[10px] md:text-xs">Rs</span>
-                          <p className="text-sm md:text-base">{tx.amount.toLocaleString()}</p>
+                          <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
                         </div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium uppercase tracking-tight">
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
                           {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
                         </p>
+                        
+                        {/* REMARKS MOVED BELOW */}
+                        {tx.remarks && (
+                          <div className="mt-2 inline-block px-2 py-1 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
+                            Note: {tx.remarks}
+                          </div>
+                        )}
                       </div>
                     </div>
                     
-                    <div className="flex items-center gap-2">
-                      {tx.remarks && (
-                        <div className="hidden sm:block px-2 py-1 rounded-lg bg-blue-500/10 text-blue-500 text-[10px] font-bold max-w-[120px] truncate">
-                          {tx.remarks}
-                        </div>
-                      )}
-                      <div className="flex items-center gap-1">
-                        <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
-                        <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
                     </div>
                   </div>
                 ))}
