@@ -150,7 +150,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden">
 
       {/* --- HEADER --- */}
-      <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 md:px-6 py-3 md:py-4 z-40 shadow-sm">
+      <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 md:px-6 py-3 md:py-4 z-40 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all group active:scale-90">
@@ -196,7 +196,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
-              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-50 shadow-[0_-4px_15px_rgba(239,68,68,0.3)]" : "bg-emerald-50 shadow-[0_-4px_15px_rgba(16,185,129,0.3)]"}`} />
+              {/* FIXED BOTTOM LINE COLOR STYLE TO MATCH IMAGE */}
+              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
                 {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
               </p>
@@ -233,7 +234,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
           </div>
 
-          {/* RIGHT SIDE (Transaction List) */}
+          {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
@@ -243,37 +244,36 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex flex-col gap-2">
-                    <div className="flex items-center justify-between w-full">
-                        <div className="flex items-center gap-3 md:gap-4 text-left">
-                        <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
-                            {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
-                        </div>
-                        <div>
-                            <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-600 dark:text-red-500" : "text-emerald-700 dark:text-emerald-400"}`}>
-                            <span className="text-[10px] md:text-xs">Rs</span>
-                            <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
-                            </div>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
-                            {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
-                            </p>
-                        </div>
-                        </div>
-                        
-                        <div className="flex items-center gap-1">
-                        <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
-                        <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                        </div>
-                    </div>
-
-                    {/* REMARKS MOVED BELOW WITH BETTER STYLING */}
-                    {tx.remarks && (
-                      <div className="mt-1 px-3 py-2 rounded-xl bg-blue-500/5 dark:bg-blue-500/10 border border-blue-500/10 dark:border-blue-500/20 text-blue-600 dark:text-blue-400 text-[11px] font-bold">
-                        <span className="opacity-60 mr-1">Note:</span> {tx.remarks}
+                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex items-center justify-between">
+                    <div className="flex items-center gap-3 md:gap-4 text-left">
+                      <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
+                        {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
                       </div>
-                    )}
+                      <div>
+                        {/* WAZIH AMOUNTS - FIX STYLING TO MATCH IMAGE EXACTLY */}
+                        <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                          <span className="text-[10px] md:text-xs">Rs</span>
+                          <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
+                        </div>
+                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
+                          {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
+                        </p>
+                        
+                        {/* REMARKS MOVED BELOW IN EXACT BLUE STYLING BAR LIKE IMAGE */}
+                        {tx.remarks && (
+                          <div className="mt-2 inline-block px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
+                            Note: {tx.remarks}
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-1">
+                      <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
+                      <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
                   </div>
                 ))}
               </div>
