@@ -172,7 +172,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
     </div>
 
-    {/* Right Side: Clean Icon Only (No Box) */}
+    {/* Right Side: Enhanced Prominent Icon */}
     <div className="flex items-center">
       {customer.phone && (
         <DropdownMenu>
@@ -180,9 +180,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
             <Button 
               variant="ghost" 
               size="icon" 
-              className="bg-transparent hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all active:scale-90 border-none outline-none focus-visible:ring-0"
+              className="bg-transparent hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-90 border-none outline-none focus-visible:ring-0"
             >
-              <PhoneCall className="w-[20px] h-[20px] md:w-[22px] md:h-[22px] stroke-[1.5]" />
+              <PhoneCall className="w-[22px] h-[22px] stroke-[2.2] drop-shadow-sm" />
             </Button>
           </DropdownMenuTrigger>
           
