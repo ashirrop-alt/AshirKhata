@@ -152,13 +152,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* --- HEADER --- */}
       <header className="flex-none bg-white dark:bg-[#0f172a] border-b border-slate-200 dark:border-white/[0.05] px-4 md:px-6 py-3 md:py-4 z-40 shadow-sm transition-all">
   <div className="max-w-7xl mx-auto flex items-center justify-between">
-    {/* Left Side: Refined Back Button + Info */}
+    {/* Left Side: Back Button + Info */}
     <div className="flex items-center gap-2 md:gap-3">
       <button 
         onClick={onBack} 
-        className="p-2 -ml-2 rounded-xl bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 transition-all group active:scale-90 border border-transparent hover:border-slate-200 dark:hover:border-white/10"
+        className="p-2 -ml-2 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all group active:scale-90"
       >
-        <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-300 group-hover:text-blue-500" />
+        <ArrowLeft className="w-5 h-5 text-slate-500 dark:text-slate-400 group-hover:text-blue-500" />
       </button>
       <div className="flex flex-col text-left leading-none">
         <h1 className="text-[17px] md:text-xl font-black text-slate-900 dark:text-white tracking-tight">
@@ -172,23 +172,23 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
     </div>
 
-    {/* Right Side: Compact Dropdown */}
-    <div className="flex items-center gap-2">
+    {/* Right Side: Clean Icon Only (No Box) */}
+    <div className="flex items-center">
       {customer.phone && (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button 
               variant="ghost" 
               size="icon" 
-              className="rounded-xl w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-white/5 hover:bg-slate-100 dark:hover:bg-white/10 text-slate-500 transition-all active:scale-95 border border-slate-100 dark:border-white/5"
+              className="bg-transparent hover:bg-slate-100 dark:hover:bg-white/5 text-slate-400 dark:text-slate-500 hover:text-blue-500 dark:hover:text-blue-400 transition-all active:scale-90 border-none outline-none focus-visible:ring-0"
             >
-              <PhoneCall className="w-4 h-4 md:w-5 md:h-5" />
+              <PhoneCall className="w-[20px] h-[20px] md:w-[22px] md:h-[22px] stroke-[1.5]" />
             </Button>
           </DropdownMenuTrigger>
           
           <DropdownMenuContent 
             align="end" 
-            sideOffset={8}
+            sideOffset={10}
             className="w-44 rounded-2xl p-1 shadow-2xl border-slate-200/60 dark:border-white/10 bg-white dark:bg-[#0f172a] overflow-hidden"
           >
             <DropdownMenuItem 
