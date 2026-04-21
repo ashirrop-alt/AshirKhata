@@ -196,7 +196,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
-              {/* FIXED BOTTOM LINE COLOR STYLE TO MATCH IMAGE */}
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
                 {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
@@ -250,7 +249,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
                         {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
                       </div>
                       <div>
-                        {/* WAZIH AMOUNTS - FIX STYLING TO MATCH IMAGE EXACTLY */}
                         <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
                           <span className="text-[10px] md:text-xs">Rs</span>
                           <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
@@ -259,9 +257,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
                           {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
                         </p>
                         
-                        {/* REMARKS MOVED BELOW IN EXACT BLUE STYLING BAR LIKE IMAGE */}
+                        {/* COMPACT NOTE SECTION - REDUCED PADDING & MARGIN */}
                         {tx.remarks && (
-                          <div className="mt-2 inline-block px-3 py-1.5 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
+                          <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
                             Note: {tx.remarks}
                           </div>
                         )}
