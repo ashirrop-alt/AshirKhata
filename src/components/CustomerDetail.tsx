@@ -6,7 +6,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, Share2 } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { Dialog, DialogContent, DialogTrigger, DialogClose } from "@/components/ui/dialog";
 import { toast } from "sonner";
@@ -44,6 +44,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const total = transactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
   }, 0);
+
+  // Date formatter function for 20/Apr/2026 style
+  const formatDate = (dateStr: string) => {
+    const d = new Date(dateStr);
+    const day = d.getDate();
+    const month = d.toLocaleString('en-GB', { month: 'short' });
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
+  };
 
   const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remarks: string) => {
     setLoading(true);
@@ -102,12 +111,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
-    const savedShopName = localStorage.getItem("my_shop_name");
-    const shopHeader = data?.shopName || savedShopName || "Khatify User";
-    let message = `*${shopHeader} - Hisaab Report* 📜\nCustomer: ${customer.name}\n--------------------------\n`;
+    let message = `*${displayShopName} - Hisaab Report* 📜\nCustomer: ${customer.name}\n--------------------------\n`;
     transactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
-      message += `${new Date(t.date).toLocaleDateString("en-GB")}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
+      message += `${formatDate(t.date)}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
     });
     message += `--------------------------\n*Total Baqaya: Rs ${total}* 💰\n\n_Powered by Khatify_`;
     const cleanPhone = customer.phone.replace(/^0/, "92");
@@ -140,8 +147,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
       toast.error("PDF banane mein masla aaya");
     }
   };
-
-  // Is code ko replace kar dein, ye Light aur Dark dono ko support karega
 
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-300 overflow-hidden">
@@ -191,16 +196,18 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 sm:gap-6 p-4 sm:p-6">
 
           <div className="w-full md:w-80 space-y-4">
-            {/* Amount Card with conditional Light/Dark classes */}
             <div className="relative rounded-3xl p-6 sm:p-8 shadow-xl bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden">
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
 
               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
                 {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
               </p>
-              <h2 className={`text-4xl sm:text-5xl font-black tracking-tighter ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                Rs {total < 0 ? `-${Math.abs(total).toLocaleString()}` : total.toLocaleString()}
-              </h2>
+              <div className={`flex items-baseline gap-1 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                <span className="text-lg font-bold">Rs</span>
+                <h2 className="text-4xl sm:text-5xl font-black tracking-tighter">
+                  {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
+                </h2>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
@@ -242,12 +249,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 <div key={tx.id} className="bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex items-center justify-between group">
                   <div className="flex items-center gap-4">
                     <div className={`w-12 h-12 rounded-xl flex items-center justify-center font-black text-xl ${tx.type === "udhar" ? "bg-red-500/10 text-red-500 dark:text-red-400" : "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"}`}>
-                      {tx.type === "udhar" ? "+" : "-"}
+                      {tx.type === "udhar" ? <ArrowUpRight className="w-6 h-6" /> : <ArrowDownLeft className="w-6 h-6" />}
                     </div>
                     <div>
-                      <p className={`font-black text-xl ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>Rs {tx.amount.toLocaleString()}</p>
+                      <div className={`flex items-baseline gap-0.5 font-black ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                        <span className="text-xs">Rs</span>
+                        <p className="text-xl">{tx.amount.toLocaleString()}</p>
+                      </div>
                       <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-tight">
-                        {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {new Date(tx.date).toLocaleDateString("en-GB")}
+                        {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
                       </p>
                       {tx.remarks && (
                         <p className="text-[11px] text-indigo-500 dark:text-indigo-400 font-medium italic mt-1 bg-indigo-500/10 px-2 py-0.5 rounded-lg inline-block">
@@ -277,7 +287,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             customerName={customer.name}
             customerPhone={customer.phone || ""}
             shopName={displayShopName}
-            transactions={transactions.map((t: any) => ({ id: t.id, date: new Date(t.date).toLocaleDateString("en-GB"), amount: t.amount, type: t.type === 'udhar' ? 'dr' : 'cr', remarks: t.remarks }))}
+            transactions={transactions.map((t: any) => ({ id: t.id, date: formatDate(t.date), amount: t.amount, type: t.type === 'udhar' ? 'dr' : 'cr', remarks: t.remarks }))}
             totalBalance={total}
           />
         </div>
