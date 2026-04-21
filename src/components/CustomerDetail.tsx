@@ -166,41 +166,46 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
           <div className="flex items-center gap-2">
             {customer.phone && (
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-xl w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-500 hover:text-blue-600 transition-all border border-transparent hover:border-blue-200 dark:hover:border-blue-500/30"
-                  >
-                    <PhoneCall className="w-4 h-4 md:w-5 md:h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
+  <DropdownMenu>
+    <DropdownMenuTrigger asChild>
+      <Button 
+        variant="ghost" 
+        size="icon" 
+        className="rounded-xl w-9 h-9 md:w-10 md:h-10 bg-slate-50 dark:bg-white/5 hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-500 hover:text-blue-600 transition-all duration-300 border border-transparent hover:border-blue-100 dark:hover:border-blue-500/20"
+      >
+        <PhoneCall className="w-4 h-4 md:w-5 md:h-5" />
+      </Button>
+    </DropdownMenuTrigger>
+    
+    <DropdownMenuContent 
+      align="end" 
+      sideOffset={8}
+      className="w-48 rounded-[22px] p-2 shadow-[0_10px_40px_-10px_rgba(0,0,0,0.1)] dark:shadow-[0_10px_40px_-10px_rgba(0,0,0,0.5)] border-slate-200/60 dark:border-white/10 bg-white/80 dark:bg-[#0f172a]/90 backdrop-blur-xl animate-in fade-in zoom-in-95 duration-200"
+    >
+      <DropdownMenuItem 
+        onClick={() => makeCall('phone')} 
+        className="rounded-[14px] py-3 px-3 cursor-pointer flex items-center gap-3 font-bold text-[13px] text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-500/20 transition-all group"
+      >
+        <div className="w-8 h-8 rounded-lg bg-blue-100/50 dark:bg-blue-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <Phone className="w-4 h-4 text-blue-600" />
+        </div>
+        Phone Call
+      </DropdownMenuItem>
 
-                <DropdownMenuContent
-                  align="end"
-                  className="w-44 rounded-2xl p-1.5 shadow-xl border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a]"
-                >
-                  <DropdownMenuItem
-                    onClick={() => makeCall('phone')}
-                    className="rounded-xl py-2.5 px-3 cursor-pointer flex items-center gap-3 font-bold text-sm text-slate-700 dark:text-slate-200 hover:bg-blue-50 dark:hover:bg-blue-500/10 transition-colors"
-                  >
-                    <Phone className="w-4 h-4 text-blue-500" />
-                    Phone Call
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem
-                    onClick={() => makeCall('whatsapp')}
-                    className="rounded-xl py-2.5 px-3 cursor-pointer flex items-center gap-3 font-bold text-sm text-slate-700 dark:text-slate-200 hover:bg-emerald-50 dark:hover:bg-emerald-500/10 transition-colors"
-                  >
-                    <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
-                      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
-                    </svg>
-                    WhatsApp Call
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            )}
+      <DropdownMenuItem 
+        onClick={() => makeCall('whatsapp')} 
+        className="rounded-[14px] py-3 px-3 cursor-pointer flex items-center gap-3 font-bold text-[13px] text-slate-700 dark:text-slate-200 mt-1 hover:bg-emerald-50 dark:hover:bg-emerald-500/20 transition-all group"
+      >
+        <div className="w-8 h-8 rounded-lg bg-emerald-100/50 dark:bg-emerald-500/20 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366">
+            <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+          </svg>
+        </div>
+        WhatsApp Call
+      </DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+)}
             <div className="bg-slate-100 dark:bg-white/5 p-2 rounded-xl text-slate-400">
               <WalletCards className="w-4 h-4 md:w-5 md:h-5" />
             </div>
@@ -275,7 +280,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                         <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
                           {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
                         </p>
-
+                        
                         {/* COMPACT NOTE SECTION - REDUCED PADDING & MARGIN */}
                         {tx.remarks && (
                           <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
@@ -284,7 +289,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                         )}
                       </div>
                     </div>
-
+                    
                     <div className="flex items-center gap-1">
                       <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
                       <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
