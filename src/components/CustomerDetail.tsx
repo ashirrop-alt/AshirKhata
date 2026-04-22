@@ -221,23 +221,24 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
-            <div className="relative rounded-3xl p-5 md:p-8 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[120px] md:min-h-[160px] flex flex-col justify-center">
+            {/* Amount Card - Laptop view remains same, Mobile view enhanced */}
+            <div className="relative rounded-3xl p-5 md:p-8 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[135px] md:min-h-[160px] flex flex-col justify-center">
               {/* Bottom Accent Line */}
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
 
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-1.5 md:mb-3">
+              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 md:mb-3">
                 {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
               </p>
 
               <div className={`flex items-baseline gap-1.5 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
                 <span className="text-sm md:text-xl font-bold leading-none">Rs</span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-none">
                   {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
                 </h2>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
+            <div className="-mt-4 md:mt-0">
               <Button onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }} className="h-12 md:h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-lg font-bold text-sm active:scale-95 transition-all">
                 + Udhar Diya
               </Button>
