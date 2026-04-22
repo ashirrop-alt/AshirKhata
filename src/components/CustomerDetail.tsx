@@ -220,19 +220,23 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           {/* LEFT SIDE */}
-          <div className="flex-none w-full md:w-72 space-y-4">
-            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
-              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
-              <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2">
-                {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
-              </p>
-              <div className={`flex items-baseline gap-1 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                <span className="text-sm md:text-base font-bold">Rs</span>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">
-                  {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
-                </h2>
-              </div>
-            </div>
+          {/* LEFT SIDE - Amount Card Section */}
+<div className="flex-none w-full md:w-72 space-y-4">
+  <div className="relative rounded-3xl p-6 md:p-7 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[135px] flex flex-col justify-center">
+    {/* Bottom Accent Line */}
+    <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_15px_rgba(239,68,68,0.5)]" : "bg-emerald-500 shadow-[0_-4px_15px_rgba(16,185,129,0.5)]"}`} />
+    
+    <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-3">
+      {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
+    </p>
+    
+    <div className={`flex items-baseline gap-1.5 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+      <span className="text-sm md:text-lg font-bold leading-none">Rs</span>
+      <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-none">
+        {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
+      </h2>
+    </div>
+  </div>
 
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3">
               <Button onClick={() => { setEditingEntry(null); setEntryType("udhar"); setEntryOpen(true); }} className="h-12 md:h-14 bg-red-600 hover:bg-red-700 text-white rounded-2xl shadow-lg font-bold text-sm active:scale-95 transition-all">
