@@ -114,8 +114,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           {/* LEFT SIDE (Stat Cards) */}
-          <div className="flex-none w-full md:w-72 space-y-4 md:space-y-5">
-            <div className="bg-blue-600 dark:bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden">
+          <div className="flex-none w-full md:w-72 flex flex-col space-y-4 md:space-y-5">
+            <div className="bg-blue-600 dark:bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
