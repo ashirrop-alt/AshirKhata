@@ -158,14 +158,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           </div>
 
           {/* RIGHT SIDE (Customer List Container) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative transition-all">
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative transition-all mx-3 md:mx-0">
             <div className="relative z-10 flex flex-col h-full">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
+              <div className="px-5 md:px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <Users className="w-4 h-4 text-slate-400" />
                 <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
               </div>
 
-              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 p-4">
+              <div className="flex-1 overflow-y-auto pr-1 custom-scrollbar pb-24 md:pb-4 p-3 md:p-4">
                 {filtered.length === 0 ? (
                   <div className="h-64 flex flex-col items-center justify-center bg-white/30 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200/60 dark:border-white/5 animate-in fade-in duration-500">
                     <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 shadow-inner">
