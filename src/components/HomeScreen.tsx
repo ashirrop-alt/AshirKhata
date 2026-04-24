@@ -78,8 +78,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
-      {/* --- NAVBAR (Synced with Detail Page) --- */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm">
+      {/* --- NAVBAR --- */}
+      <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-blue-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
@@ -158,9 +158,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           </div>
 
           {/* RIGHT SIDE (Customer List Container) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative">
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative transition-all">
             <div className="relative z-10 flex flex-col h-full">
-              {/* Header section synced with Detail page header */}
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <Users className="w-4 h-4 text-slate-400" />
                 <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
@@ -213,7 +212,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         </div>
       </main>
 
-      {/* FAB Mobile */}
       <button onClick={onAddCustomer} className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20">
         <Plus className="w-6 h-6" />
       </button>
