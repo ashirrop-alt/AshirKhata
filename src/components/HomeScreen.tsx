@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ArrowUpRight, ArrowDownLeft } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X } from "lucide-react";
 
 interface Props {
   shopName: string;
@@ -78,7 +78,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
-      {/* --- NAVBAR (Unchanged) --- */}
+      {/* --- NAVBAR --- */}
       <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {editingShop ? (
@@ -113,9 +113,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       <main className="flex-1 overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
-          {/* LEFT SIDE (Stat Cards - Unchanged) */}
-          <div className="flex-none w-full md:w-72 flex flex-col space-y-4 md:space-y-5">
-            <div className="bg-blue-600 dark:bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center">
+          {/* LEFT SIDE (Stat Cards) */}
+          <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
+            <div className="bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
@@ -157,61 +157,54 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </div>
           </div>
 
-          {/* RIGHT SIDE (Customer List Container - FIXED ALIGNMENT) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden relative transition-all">
-            <div className="relative z-10 flex flex-col h-full">
+          {/* RIGHT SIDE (Customer List Container) */}
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
+            <div className="flex flex-col h-full">
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <Users className="w-4 h-4 text-slate-400" />
                 <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
               </div>
 
-              {/* LIST SCROLLING AREA - Exact Match with CustomerDetail */}
-              <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3 pb-24 md:pb-4">
+              <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {filtered.length === 0 ? (
                   <div className="h-64 flex flex-col items-center justify-center bg-white/30 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200/60 dark:border-white/5">
-                    <Search className="w-8 h-8 text-slate-300 mb-2" />
-                    <p className="text-slate-500 text-sm font-semibold italic">Koi customer nahi mila</p>
+                    <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 shadow-inner">
+                      <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                    </div>
+                    <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold italic tracking-wide">
+                      Koi customer nahi mila
+                    </p>
                   </div>
                 ) : (
-                  filtered.map(c => {
-                    const total = getCustomerTotal(c);
-                    return (
-                      <button 
-                        key={c.id} 
-                        onClick={() => onSelectCustomer(c.id)} 
-                        className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-300 group active:scale-[0.99] flex items-center justify-between"
-                      >
-                        {/* LEFT: ICON + NAME (Aligned like Transactions) */}
-                        <div className="flex items-center gap-3 md:gap-4 text-left">
-                          <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${total > 0 ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
-                            {total > 0 ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
-                          </div>
-                          <div>
-                            <p className="font-extrabold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover:text-blue-500 transition-colors">
-                              {c.name}
-                            </p>
-                            <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
-                              {c.phone || "No Phone"} • {c.transactions.length} entries
-                            </p>
-                          </div>
-                        </div>
-
-                        {/* RIGHT: BALANCE (Aligned like Transactions) */}
-                        <div className="flex items-center gap-1">
-                          <div className="text-right">
-                            <div className={`flex items-baseline justify-end gap-0.5 font-extrabold leading-tight ${total > 0 ? "text-red-500" : "text-emerald-600 dark:text-emerald-400"}`}>
-                              <span className="text-[10px] md:text-xs font-bold">Rs</span>
-                              <p className="text-base md:text-lg">{Math.abs(total).toLocaleString()}</p>
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
+                    {filtered.map(c => {
+                      const total = getCustomerTotal(c);
+                      return (
+                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-300 group active:scale-[0.99] flex items-center justify-between">
+                          <div className="flex items-center gap-3 md:gap-4 text-left">
+                            <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-blue-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
+                              <span className="text-base md:text-lg font-black text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
                             </div>
-                            <p className={`text-[8px] md:text-[9px] uppercase font-black tracking-tighter ${total > 0 ? "text-red-400/70" : "text-emerald-500/70"}`}>
-                              {total > 0 ? "Baqaya" : "Barabar"}
-                            </p>
+                            <div>
+                              <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover:text-blue-500 transition-colors">{c.name}</p>
+                              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-medium">{c.transactions.length} entries</p>
+                            </div>
                           </div>
-                          <ChevronRight className="w-4 h-4 text-slate-300 group-hover:text-blue-500 transition-colors ml-1" />
-                        </div>
-                      </button>
-                    );
-                  })
+                          <div className="flex items-center gap-3 md:gap-4">
+                            <div className="text-right">
+                              <p className={`text-base md:text-xl font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
+                                {total > 0 ? "+" : ""} {Math.abs(total).toLocaleString()}
+                              </p>
+                              <p className="text-[8px] md:text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 mt-1">Balance</p>
+                            </div>
+                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-blue-600 transition-colors">
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600 group-hover:text-white" />
+                            </div>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
                 )}
               </div>
             </div>
@@ -219,7 +212,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         </div>
       </main>
 
-      {/* FAB (Unchanged) */}
       <button onClick={onAddCustomer} className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20">
         <Plus className="w-6 h-6" />
       </button>
