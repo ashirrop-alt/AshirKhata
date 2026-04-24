@@ -78,9 +78,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
-      {/* --- NAVBAR (Height Matched with CustomerDetail) --- */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all min-h-[65px] md:min-h-[81px] flex items-center">
-        <div className="max-w-7xl mx-auto w-full flex items-center justify-between">
+      {/* --- NAVBAR --- */}
+      <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-blue-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
               <input value={tempName} onChange={e => setTempName(e.target.value)} className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white" autoFocus />
@@ -115,10 +115,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
           {/* LEFT SIDE (Stat Cards) */}
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
-            {/* MATCHED min-height with CustomerDetail card */}
-            <div className="bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden min-h-[120px] md:min-h-[145px] flex flex-col justify-center transition-all">
+            <div className="bg-blue-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-blue-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-              <div className="relative z-10 space-y-3 md:space-y-5">
+              <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
                   <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
