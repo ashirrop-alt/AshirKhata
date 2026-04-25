@@ -251,51 +251,41 @@ export function CustomerDetail({ customer, onBack }: Props) {
             {/* Rest of the action buttons */}
             {/* Container: Mobile par spacing khatam, Laptop par space-y-2 wapis */}
             {/* Container: Spacing handle karne ke liye */}
-<div className="mt-5 flex flex-wrap gap-3">
+<div className="space-y-0">
+  {/* Container: Laptop par left-aligned, Mobile par 3-column grid */}
+  <div className="grid grid-cols-3 md:flex md:flex-row md:items-center gap-2 md:gap-3 mt-4">
 
-  {/* Reminder (WhatsApp Style) */}
-  <Button
-    onClick={sendReminder}
-    className="flex items-center gap-2 px-4 h-11 rounded-full 
-    bg-[#0f172a] hover:bg-[#111c3a] 
-    border border-white/10 
-    text-slate-200 text-sm font-medium
-    transition-all duration-200 hover:scale-[1.03]"
-  >
-    {/* WhatsApp Icon (Original) */}
-    <svg viewBox="0 0 24 24" className="w-5 h-5 fill-[#25D366]">
-      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
-    </svg>
+    {/* WhatsApp Reminder Button */}
+    <Button
+      variant="outline"
+      className="flex flex-col md:flex-row h-16 md:h-10 items-center justify-center text-[10px] md:text-xs font-semibold border-slate-200 dark:border-white/5 bg-white dark:bg-[#1e293b] hover:bg-emerald-50 dark:hover:bg-emerald-500/10 text-slate-600 dark:text-slate-300 hover:text-emerald-600 dark:hover:text-emerald-400 rounded-xl w-full md:w-auto md:px-5 transition-all gap-1 md:gap-2"
+      onClick={sendReminder}
+    >
+      <MessageCircle className="w-4 h-4 text-emerald-500" />
+      <span>Reminder</span>
+    </Button>
 
-    <span>Reminder</span>
-  </Button>
+    {/* PDF Button */}
+    <Button
+      variant="outline"
+      onClick={downloadInvoice}
+      className="flex flex-col md:flex-row h-16 md:h-10 items-center justify-center text-[10px] md:text-xs font-semibold border-slate-200 dark:border-white/5 bg-white dark:bg-[#1e293b] hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 rounded-xl w-full md:w-auto md:px-5 transition-all gap-1 md:gap-2"
+    >
+      <FileText className="w-4 h-4 text-blue-500" />
+      <span>PDF</span>
+    </Button>
 
-  {/* PDF */}
-  <Button
-    onClick={downloadInvoice}
-    className="flex items-center gap-2 px-4 h-11 rounded-full 
-    bg-[#0f172a] hover:bg-[#111c3a] 
-    border border-white/10 
-    text-slate-200 text-sm font-medium
-    transition-all duration-200 hover:scale-[1.03]"
-  >
-    <FileText className="w-4 h-4 text-blue-400" />
-    <span>PDF</span>
-  </Button>
+    {/* History Button */}
+    <Button
+      variant="outline"
+      onClick={shareFullHistory}
+      className="flex flex-col md:flex-row h-16 md:h-10 items-center justify-center text-[10px] md:text-xs font-semibold border-slate-200 dark:border-white/5 bg-white dark:bg-[#1e293b] hover:bg-amber-50 dark:hover:bg-amber-500/10 text-slate-600 dark:text-slate-300 hover:text-amber-600 dark:hover:text-amber-400 rounded-xl w-full md:w-auto md:px-5 transition-all gap-1 md:gap-2"
+    >
+      <History className="w-4 h-4 text-amber-500" />
+      <span>History</span>
+    </Button>
 
-  {/* History */}
-  <Button
-    onClick={shareFullHistory}
-    className="flex items-center gap-2 px-4 h-11 rounded-full 
-    bg-[#0f172a] hover:bg-[#111c3a] 
-    border border-white/10 
-    text-slate-200 text-sm font-medium
-    transition-all duration-200 hover:scale-[1.03]"
-  >
-    <History className="w-4 h-4 text-emerald-400" />
-    <span>History</span>
-  </Button>
-
+  </div>
 </div>
           </div>
 
