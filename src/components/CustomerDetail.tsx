@@ -252,16 +252,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
             {/* Container: Mobile par spacing khatam, Laptop par space-y-2 wapis */}
             {/* Container: Spacing handle karne ke liye */}
 <div className="space-y-0">
-  <div className="grid grid-cols-3 md:flex gap-2 md:gap-3 mt-4">
+  <div className="grid grid-cols-3 md:flex md:justify-start gap-2 md:gap-3 mt-4">
 
     {/* Reminder */}
     <Button
       variant="outline"
-      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 gap-1 md:gap-2 rounded-xl w-full md:flex-1"
+      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 gap-1 md:gap-2 rounded-xl w-full md:w-auto md:px-4"
       onClick={sendReminder}
     >
-      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#25D366">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967..."/>
+      {/* WhatsApp Icon */}
+      <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0 text-green-500" fill="currentColor">
+        <path d="M20.52 3.48A11.86 11.86 0 0012.06 0C5.42 0 .02 5.4 0 12.05c0 2.12.55 4.2 1.6 6.03L0 24l6.17-1.62a11.9 11.9 0 005.9 1.52h.01c6.63 0 12.03-5.4 12.05-12.04a11.9 11.9 0 00-3.6-8.38z"/>
       </svg>
       <span>Reminder</span>
     </Button>
@@ -270,9 +271,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <Button
       variant="outline"
       onClick={downloadInvoice}
-      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:flex-1 gap-1 md:gap-2"
+      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:w-auto md:px-5 gap-1 md:gap-2"
     >
-      <FileText className="w-4 h-4 text-blue-500" />
+      <FileText className="w-4 h-4 text-blue-500 shrink-0" />
       <span>PDF</span>
     </Button>
 
@@ -280,18 +281,18 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <Button
       variant="outline"
       onClick={shareFullHistory}
-      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:flex-1 gap-1 md:gap-2"
+      className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:w-auto md:px-4 gap-1 md:gap-2"
     >
-      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#25D366">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03..."/>
+      {/* WhatsApp Icon */}
+      <svg viewBox="0 0 24 24" className="w-4 h-4 shrink-0 text-green-500" fill="currentColor">
+        <path d="M20.52 3.48A11.86 11.86 0 0012.06 0C5.42 0 .02 5.4 0 12.05c0 2.12.55 4.2 1.6 6.03L0 24l6.17-1.62a11.9 11.9 0 005.9 1.52h.01c6.63 0 12.03-5.4 12.05-12.04a11.9 11.9 0 00-3.6-8.38z"/>
       </svg>
       <span>History</span>
     </Button>
 
   </div>
 </div>
-
-   </div>
+          </div>
 
           {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
