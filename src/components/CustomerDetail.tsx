@@ -6,7 +6,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
