@@ -256,7 +256,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     {/* Reminder Button */}
     <Button
       variant="outline"
-      title="Send Payment Reminder via WhatsApp"
+      title="Send Payment Reminder"
       className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
       border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
       dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
@@ -284,7 +284,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     {/* History Button */}
     <Button
       variant="outline"
-      title="Share Full Report on WhatsApp"
+      title="Share Full Report"
       onClick={shareFullHistory}
       className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
       border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
