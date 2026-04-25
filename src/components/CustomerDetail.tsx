@@ -254,34 +254,44 @@ export function CustomerDetail({ customer, onBack }: Props) {
 <div className="space-y-0">
   <div className="grid grid-cols-3 md:flex gap-2 md:gap-3 mt-4">
 
+    {/* Reminder */}
     <Button
       variant="outline"
       className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 gap-1 md:gap-2 rounded-xl w-full md:flex-1"
       onClick={sendReminder}
     >
-      {/* icon */}
+      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#25D366">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967..."/>
+      </svg>
       <span>Reminder</span>
     </Button>
 
+    {/* PDF */}
     <Button
       variant="outline"
       onClick={downloadInvoice}
       className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:flex-1 gap-1 md:gap-2"
     >
+      <FileText className="w-4 h-4 text-blue-500" />
       <span>PDF</span>
     </Button>
 
+    {/* History */}
     <Button
       variant="outline"
       onClick={shareFullHistory}
       className="flex flex-col md:flex-row h-16 md:h-11 items-center justify-center text-[10px] md:text-sm font-bold border-slate-200 dark:border-white/10 bg-white dark:bg-[#0f172a] text-slate-600 dark:text-slate-300 rounded-xl w-full md:flex-1 gap-1 md:gap-2"
     >
+      <svg viewBox="0 0 24 24" className="w-4 h-4" fill="#25D366">
+        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03..."/>
+      </svg>
       <span>History</span>
     </Button>
 
   </div>
 </div>
-          </div>
+
+   </div>
 
           {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
