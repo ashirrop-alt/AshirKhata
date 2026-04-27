@@ -100,12 +100,18 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </button>
           )}
 
-          <div className="flex items-center gap-2 md:gap-3">
-            <ModeToggle />
-            <Button variant="ghost" size="sm" onClick={handleLogout} className="text-slate-500 hover:text-rose-500 dark:text-slate-400 dark:hover:text-rose-400 p-1.5 h-auto">
-              <LogOut className="w-4 h-4 md:w-5 md:h-5" />
-            </Button>
-          </div>
+         <div className="flex items-center gap-1">
+  {/* Ab ye ModeToggle bilkul transparent aur minimalist dikhega */}
+  <ModeToggle />
+  
+  {/* LogOut button jo ab phone icon ki tarah clean hai */}
+  <button 
+    onClick={handleLogout} 
+    className="p-2 rounded-lg text-slate-500 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-all duration-300"
+  >
+    <LogOut className="w-5 h-5" strokeWidth={1.5} />
+  </button>
+</div>
         </div>
       </header>
 
