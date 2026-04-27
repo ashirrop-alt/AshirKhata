@@ -217,26 +217,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       {/* --- MAIN --- */}
       <main className="flex-1 overflow-hidden">
-        <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
+  <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
-          {/* LEFT SIDE */}
-          <div className="flex-none w-full md:w-72 space-y-4">
-            {/* EXACT height match with Home Screen to prevent list jumping */}
-            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
-              {/* Prominent Bottom Line for "Ubhaar" */}
-              <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
+    {/* LEFT SIDE */}
+    <div className="flex-none w-full md:w-72 space-y-4">
+      {/* Box height wahi rakhi hai jo aapne set ki thi (129px) */}
+      <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
+        
+        <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
 
-              <p className="text-[10px] font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-1.5">
-                {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
-              </p>
+        {/* --- LABEL: Text size thoda bara aur font extra black kiya hai --- */}
+        <p className="text-[11px] md:text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-1">
+          {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
+        </p>
 
-              <div className={`flex items-baseline gap-1.5 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                <span className="text-sm md:text-lg font-black opacity-80">Rs</span>
-                <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">
-                  {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
-                </h2>
-              </div>
-            </div>
+        {/* --- AMOUNT: Mobile (text-4xl) aur Laptop (md:text-5xl) ko alag kiya hai --- */}
+        <div className={`flex items-baseline gap-1.5 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+          <span className="text-base md:text-xl font-black opacity-80">Rs</span>
+          <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-none">
+            {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
+          </h2>
+        </div>
+      </div>
 
             {/* Buttons container with exact Home Screen spacing */}
             <div className="grid grid-cols-2 md:grid-cols-1 gap-3 mt-4">
