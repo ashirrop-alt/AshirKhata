@@ -221,20 +221,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
     {/* LEFT SIDE */}
     <div className="flex-none w-full md:w-72 space-y-4">
-      {/* Box height wahi rakhi hai jo aapne set ki thi (129px) */}
+      {/* 1. Laptop (md:min-h-[145px]) ko wapis purani state par le aya hoon.
+          2. Mobile (min-h-[129px]) wahi hai jo aapne set kiya tha alignment ke liye.
+      */}
       <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
         
         <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
 
-        {/* --- LABEL: Text size thoda bara aur font extra black kiya hai --- */}
-        <p className="text-[11px] md:text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-1">
+        {/* LABEL: Mobile par size normal (10px) aur laptop par standard (xs) */}
+        <p className="text-[10px] md:text-xs font-black uppercase tracking-[0.15em] text-slate-400 dark:text-slate-500 mb-1">
           {total > 0 ? "Aap ne Lene Hain" : total < 0 ? "Aap ne Dene Hain" : "Hisaab Barabar"}
         </p>
 
-        {/* --- AMOUNT: Mobile (text-4xl) aur Laptop (md:text-5xl) ko alag kiya hai --- */}
+        {/* AMOUNT SECTION: No more '!' important. Sab balanced classes hain */}
         <div className={`flex items-baseline gap-1.5 ${total > 0 ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-          <span className="text-base md:text-xl font-black opacity-80">Rs</span>
-          <h2 className="text-4xl md:text-5xl font-black tracking-tighter leading-none">
+          {/* Rs symbol: Mobile pe sm, Laptop pe lg */}
+          <span className="text-sm md:text-lg font-black opacity-80">Rs</span>
+          
+          {/* Amount: Mobile pe text-3xl (Professional size) aur Laptop pe text-5xl (Original) */}
+          <h2 className="text-3xl md:text-5xl font-black tracking-tighter leading-none">
             {total < 0 ? Math.abs(total).toLocaleString() : total.toLocaleString()}
           </h2>
         </div>
