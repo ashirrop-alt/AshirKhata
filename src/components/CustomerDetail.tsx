@@ -222,7 +222,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             {/* EXACT height match with Home Screen to prevent list jumping */}
-            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[110px] md:min-h-[145px] flex flex-col justify-center">
+            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[140px] md:min-h-[145px] flex flex-col justify-center">
               {/* Prominent Bottom Line for "Ubhaar" */}
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
 
