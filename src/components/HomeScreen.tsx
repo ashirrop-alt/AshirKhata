@@ -76,10 +76,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }
 
   return (
-    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
+    <div className="h-screen flex flex-col bg-[#f8fafc] dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
       {/* --- NAVBAR --- */}
-      <header className="flex-none border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
+      <header className="flex-none border-b border-slate-200/60 bg-white/70 backdrop-blur-md dark:bg-[#0f172a] px-4 md:px-6 py-3 md:py-4 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-blue-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
@@ -158,7 +158,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           </div>
 
           {/* RIGHT SIDE (Customer List Container) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-[0_2px_15px_-3px_rgba(0,0,0,0.07)] border border-slate-200/50 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <Users className="w-4 h-4 text-slate-400" />
@@ -180,7 +180,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     {filtered.map(c => {
                       const total = getCustomerTotal(c);
                       return (
-                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-300 group active:scale-[0.99] flex items-center justify-between">
+                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-white dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-100 hover:border-blue-200 dark:border-transparent hover:shadow-md transition-all duration-300 group active:scale-[0.99] flex items-center justify-between">
                           <div className="flex items-center gap-3 md:gap-4 text-left">
                             <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-blue-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-blue-600 transition-all shadow-sm">
                               <span className="text-base md:text-lg font-black text-blue-600 dark:text-blue-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
