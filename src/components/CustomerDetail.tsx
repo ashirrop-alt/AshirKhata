@@ -222,7 +222,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             {/* EXACT height match with Home Screen to prevent list jumping */}
-            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
+            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-300/80 dark:border-white/20 overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
               {/* Prominent Bottom Line for "Ubhaar" */}
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
 
@@ -257,9 +257,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <Button
       variant="outline"
       title="Send Payment Reminder"
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
-      dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
+      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
       onClick={sendReminder}
     >
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
@@ -273,9 +271,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       variant="outline"
       title="Download PDF Invoice"
       onClick={downloadInvoice}
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
-      dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
+      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
     >
       <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
       <span className="leading-none text-slate-600 dark:text-slate-300">Invoice</span>
@@ -286,9 +282,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       variant="outline"
       title="Share Full Report"
       onClick={shareFullHistory}
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
-      dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
+      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
     >
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z"/>
@@ -311,7 +305,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex items-center justify-between">
+                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-3 md:gap-4 text-left">
                       <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
                         {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
