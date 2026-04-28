@@ -109,10 +109,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   onClick={handleLogout} 
   className="p-2 rounded-lg bg-transparent text-slate-600 dark:text-slate-300 hover:text-rose-500 dark:hover:text-rose-400 transition-all active:scale-90"
 >
-  <LogOut 
-    style={{ strokeWidth: "2.5px" }} 
-    className="w-[20px] h-[20px]" 
-  />
+  <LogOut className="w-4 h-4" strokeWidth={1.5} />
 </button>
 </div>
         </div>
