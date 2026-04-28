@@ -13,11 +13,11 @@ export function ModeToggle() {
 >
   <Sun 
     className="w-[20px] h-[20px] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" 
-    strokeWidth={1.5} 
+    strokeWidth={1.8} 
   />
   <Moon 
     className="absolute w-[20px] h-[20px] rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" 
-    strokeWidth={1.5} 
+    strokeWidth={1.8} 
   />
 </button>
   )
