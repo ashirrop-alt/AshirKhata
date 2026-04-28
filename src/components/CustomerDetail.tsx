@@ -150,7 +150,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden">
 
       {/* --- HEADER --- */}
-      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
+      <header className="flex-none h-16 md:h-[68px] border-b border-slate-300/60 dark:border-white/15 bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
      <div className="max-w-7xl mx-auto h-full flex items-center justify-between">   
           {/* Left Side: Back Button + Info */}
           <div className="flex items-center gap-2 md:gap-3">
@@ -222,7 +222,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* LEFT SIDE */}
           <div className="flex-none w-full md:w-72 space-y-4">
             {/* EXACT height match with Home Screen to prevent list jumping */}
-            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
+            <div className="relative rounded-3xl p-5 md:p-6 shadow-sm bg-white dark:bg-[#0f172a] border-slate-300/70 dark:border-white/10 overflow-hidden transition-all min-h-[129px] md:min-h-[145px] flex flex-col justify-center">
               {/* Prominent Bottom Line for "Ubhaar" */}
               <div className={`absolute bottom-0 left-0 right-0 h-1.5 ${total > 0 ? "bg-red-500 shadow-[0_-4px_20px_rgba(239,68,68,0.6)]" : "bg-emerald-500 shadow-[0_-4px_20px_rgba(16,185,129,0.6)]"}`} />
 
@@ -258,7 +258,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       variant="outline"
       title="Send Payment Reminder"
       className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
+      border-slate-300/80 dark:border-white/15 shadow-sm hover:bg-slate-50 dark:hover:bg-white/5
       dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
       onClick={sendReminder}
     >
@@ -274,7 +274,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       title="Download PDF Invoice"
       onClick={downloadInvoice}
       className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
+      border-slate-300/80 dark:border-white/15 shadow-sm hover:bg-slate-50 dark:hover:bg-white/5
       dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
     >
       <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
@@ -287,7 +287,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       title="Share Full Report"
       onClick={shareFullHistory}
       className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200
-      border-slate-200 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-300 hover:shadow-sm
+      border-slate-300/80 dark:border-white/15 shadow-sm hover:bg-slate-50 dark:hover:bg-white/5
       dark:border-white/10 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5 dark:hover:border-white/20"
     >
       <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
@@ -311,7 +311,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all flex items-center justify-between">
+                  <div key={tx.id} className="w-full bg-white dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-400 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
                     <div className="flex items-center gap-3 md:gap-4 text-left">
                       <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
                         {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}

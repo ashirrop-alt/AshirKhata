@@ -79,7 +79,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
       {/* --- NAVBAR --- */}
-      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
+      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200/60 dark:border-white/10 shadow-sm bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-indigo-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
@@ -154,7 +154,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             <div className="space-y-3">
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors z-10" />
-                <Input placeholder="Customer dhunndien..." className="pl-10 h-11 rounded-xl bg-white dark:bg-[#0f172a] border-slate-200 dark:border-white/10 shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Input placeholder="Customer dhunndien..." className="pl-10 h-11 rounded-xl bg-white dark:bg-[#0f172a] border-slate-300/80 dark:border-white/20 shadow-sm focus:border-indigo-500 focus:ring-0 transition-all dark:text-white" value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
               <Button onClick={onAddCustomer} className="w-full h-11 rounded-xl bg-indigo-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all hover:bg-indigo-700 dark:hover:bg-slate-200">
                 <Plus className="w-4 h-4 mr-2" />
@@ -164,7 +164,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           </div>
 
           {/* RIGHT SIDE (Customer List Container) */}
-          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
+          <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200/60 dark:border-white/10 shadow-sm overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
                 <Users className="w-4 h-4 text-slate-400" />
@@ -186,7 +186,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     {filtered.map(c => {
                       const total = getCustomerTotal(c);
                       return (
-                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-transparent hover:border-slate-200 dark:hover:border-white/[0.05] transition-all duration-300 group active:scale-[0.99] flex items-center justify-between">
+                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-white dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm">
                           <div className="flex items-center gap-3 md:gap-4 text-left">
                             <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-indigo-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-indigo-600 transition-all shadow-sm">
                               <span className="text-base md:text-lg font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
