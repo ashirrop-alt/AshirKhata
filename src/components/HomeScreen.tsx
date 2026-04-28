@@ -107,9 +107,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   {/* LogOut button jo ab phone icon ki tarah clean hai */}
   <button 
   onClick={handleLogout} 
-  className="p-2 rounded-lg bg-transparent text-slate-600 dark:text-slate-300 hover:text-rose-500 dark:hover:text-rose-400 transition-all active:scale-90"
+  className="p-2 rounded-lg bg-transparent text-slate-500 dark:text-slate-400 hover:text-rose-500 dark:hover:text-rose-400 transition-all active:scale-95"
 >
-  <LogOut className="w-[22px] h-[22px]" strokeWidth={2.2} />
+  <LogOut className="w-5 h-5" strokeWidth={1.8} />
 </button>
 </div>
         </div>
