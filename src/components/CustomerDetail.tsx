@@ -150,7 +150,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden">
 
       {/* --- HEADER --- */}
-      <header className="flex-none h-16 md:h-[72px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
+      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
      <div className="max-w-7xl mx-auto h-full flex items-center justify-between">   
           {/* Left Side: Back Button + Info */}
           <div className="flex items-center gap-2 md:gap-3">
