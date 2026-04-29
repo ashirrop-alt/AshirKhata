@@ -313,7 +313,7 @@ const confirmDeleteEntry = async () => {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>PDF Invoice Download Karein</p>
+          <p>Download PDF Invoice</p>
         </TooltipContent>
       </Tooltip>
 
