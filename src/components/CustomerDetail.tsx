@@ -296,7 +296,7 @@ const confirmDeleteEntry = async () => {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>WhatsApp Reminder Bhejein</p>
+          <p>Payment Reminder</p>
         </TooltipContent>
       </Tooltip>
 
@@ -332,7 +332,7 @@ const confirmDeleteEntry = async () => {
           </Button>
         </TooltipTrigger>
         <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>Pichli Transactions Dekhein</p>
+          <p>Full Report</p>
         </TooltipContent>
       </Tooltip>
 
