@@ -33,7 +33,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="w-[86%] max-w-[380px] bg-white dark:bg-[#0f172a] border-none shadow-2xl rounded-[2.2rem] p-7 outline-none transition-all duration-300">
+      <DialogContent className="w-[88%] max-w-[380px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 shadow-2xl rounded-[2rem] p-7 outline-none transition-all duration-300">
   <form onSubmit={handleSubmit} className="space-y-7">
     {/* --- Header --- */}
     <h2 className="text-xl font-black text-slate-900 dark:text-white text-center tracking-tight">
@@ -50,7 +50,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           placeholder="Naam likhien..."
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="h-12 bg-slate-50 dark:bg-slate-800/40 border-none text-slate-900 dark:text-white rounded-2xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400 transition-all"
+          className="h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400 transition-all"
           required
         />
       </div>
@@ -65,7 +65,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           type="tel"
-          className="h-12 bg-slate-50 dark:bg-slate-800/40 border-none text-slate-900 dark:text-white rounded-2xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400 transition-all"
+          className="h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.08] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400 transition-all"
           required
         />
       </div>
@@ -73,7 +73,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
       {/* --- Save Button --- */}
       <Button
         type="submit"
-        className="w-full h-13 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all mt-2"
+        className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all mt-2 uppercase tracking-wide text-sm"
         disabled={loading}
       >
         {loading ? "Saving..." : "Save Karein"}
