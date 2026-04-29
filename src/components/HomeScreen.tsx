@@ -186,7 +186,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     {filtered.map(c => {
                       const total = getCustomerTotal(c);
                       return (
-                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-400 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm">
+                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300/70 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm">
                           <div className="flex items-center gap-3 md:gap-4 text-left">
                             <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-indigo-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-indigo-600 transition-all shadow-sm">
                               <span className="text-base md:text-lg font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
