@@ -106,41 +106,45 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </button>
           )}
 
-          <TooltipProvider delayDuration={200}>
-            <div className="flex items-center gap-1">
+          <TooltipProvider delayDuration={100}>
+  <div className="flex items-center gap-1">
+    
+    {/* Theme Toggle Tooltip */}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        {/* div isliye taake size distrub na ho */}
+        <div className="flex items-center justify-center cursor-pointer"> 
+          <ModeToggle />
+        </div>
+      </TooltipTrigger>
+      <TooltipContent 
+        side="bottom" 
+        className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl"
+      >
+        <p>Theme Badlein</p>
+      </TooltipContent>
+    </Tooltip>
 
-              {/* Theme Toggle Tooltip */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  {/* ModeToggle ke gird div zaroori hai taake tooltip sahi trigger ho */}
-                  <div className="flex items-center justify-center">
-                    <ModeToggle />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent className="bg-slate-900 dark:bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Theme Badlein</p>
-                </TooltipContent>
-              </Tooltip>
+    {/* LogOut Button - Exact Same Size as Before */}
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <button
+          onClick={handleLogout}
+          className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center"
+        >
+          <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+        </button>
+      </TooltipTrigger>
+      <TooltipContent 
+        side="bottom" 
+        className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl"
+      >
+        <p>Logout Karein</p>
+      </TooltipContent>
+    </Tooltip>
 
-              {/* LogOut Button Tooltip */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={handleLogout}
-                    className="w-10 h-10 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center border-none"
-                  >
-                    <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent className="bg-rose-600 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Logout Karein</p>
-                </TooltipContent>
-              </Tooltip>
-
-            </div>
-          </TooltipProvider>
+  </div>
+</TooltipProvider>
         </div>
       </header>
 
