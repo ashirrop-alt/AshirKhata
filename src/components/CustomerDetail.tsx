@@ -364,40 +364,41 @@ const confirmDeleteEntry = async () => {
       </main>
 
       {/* --- Delete Modal Code --- */}
-      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <DialogContent className="w-[85%] max-w-[360px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
-          <div className="space-y-6 text-center">
-            <div className="mx-auto w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
-              <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
-            </div>
+     <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+  <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
+    <div className="space-y-6 text-center">
+      {/* Danger Icon with Better Visibility */}
+      <div className="mx-auto w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center">
+        <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
+      </div>
 
-            <div className="space-y-2">
-              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
-                Entry Delete Karein?
-              </h2>
-              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
-                Kya aap waqayi is entry ko khatam karna chahte hain? Ye wapas nahi aayegi.
-              </p>
-            </div>
+      <div className="space-y-1">
+        <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+          Entry Delete Karein?
+        </h2>
+        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+          Ye entry hamesha ke liye khatam ho jayegi.
+        </p>
+      </div>
 
-            <div className="flex flex-col gap-2">
-              <Button 
-                onClick={confirmDeleteEntry}
-                className="w-full h-13 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
-              >
-                Haan, Delete Kar Dein
-              </Button>
-              <Button 
-                onClick={() => setDeleteDialogOpen(false)}
-                variant="ghost"
-                className="w-full h-12 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
-              >
-                Nahi, Rehne Dein
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <div className="flex flex-col gap-3">
+        <Button 
+          onClick={confirmDeleteEntry}
+          className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
+        >
+          Haan
+        </Button>
+        <Button 
+          onClick={() => setDeleteDialogOpen(false)}
+          variant="outline"
+          className="w-full h-12 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all"
+        >
+          Nahi
+        </Button>
+      </div>
+    </div>
+  </DialogContent>
+</Dialog>
 
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
