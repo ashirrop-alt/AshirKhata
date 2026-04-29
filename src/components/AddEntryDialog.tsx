@@ -73,7 +73,8 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
                 placeholder="0"
                 value={amount}
                 onChange={(e) => setAmount(e.target.value)}
-                className="h-20 text-4xl font-black text-center rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
+                /* Text size text-3xl rakha hai taake mobile par fit aaye aur h-16 height balance lagegi */
+                className="h-16 text-3xl font-black text-center rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 text-slate-900 dark:text-white transition-all placeholder:text-slate-300 dark:placeholder:text-slate-700"
               />
             </div>
 
@@ -94,11 +95,10 @@ export function AddEntryDialog({ open, onClose, type, onAdd, initialAmount, init
           {/* --- Submit Button --- */}
           <Button
             type="submit"
-            className={`w-full h-14 rounded-xl font-bold text-base shadow-lg active:scale-95 transition-all ${
-              type === "udhar" 
-                ? "bg-red-600 hover:bg-red-700 shadow-red-500/25" 
+            className={`w-full h-14 rounded-xl font-bold text-base shadow-lg active:scale-95 transition-all ${type === "udhar"
+                ? "bg-red-600 hover:bg-red-700 shadow-red-500/25"
                 : "bg-emerald-600 hover:bg-emerald-700 shadow-emerald-500/25"
-            }`}
+              }`}
             disabled={loading}
           >
             {loading ? "Processing..." : (initialAmount ? "Update Karein" : "Save Karein")}
