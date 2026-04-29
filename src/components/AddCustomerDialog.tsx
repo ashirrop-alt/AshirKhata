@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog"; // DialogHeader/Title nikal diye kyunki hum custom h2 use kar rahe hain
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
@@ -33,33 +33,32 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      {/* 1. Mobile Width aur Dark Mode Background yahan fix kiya hai */}
-      <DialogContent className="w-[85%] max-w-[400px] bg-white dark:bg-[#1e293b] border-none shadow-2xl rounded-[2rem] p-6 outline-none transition-all duration-300">
-
-        <form onSubmit={handleSubmit} className="space-y-6">
+      <DialogContent className="w-[90%] max-w-[400px] bg-white dark:bg-[#0f172a] border-none shadow-2xl rounded-[2.5rem] p-8 outline-none">
+        
+        <form onSubmit={handleSubmit} className="space-y-8">
           {/* --- Header --- */}
-          <h2 className="text-xl font-black text-slate-900 dark:text-white text-center tracking-tight">
+          <h2 className="text-2xl font-black text-slate-900 dark:text-white text-center tracking-tighter">
             Naya Customer
           </h2>
 
-          <div className="space-y-5">
+          <div className="space-y-6">
             {/* --- Customer Naam --- */}
-            <div className="space-y-2">
-              <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
+            <div className="space-y-2.5">
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 ml-2 uppercase tracking-[0.15em]">
                 Customer ka Naam
               </p>
               <Input
                 placeholder="Naam likhien..."
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                className="h-14 bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-white/5 text-slate-900 dark:text-white rounded-2xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 border-none placeholder:text-slate-400 transition-all"
                 required
               />
             </div>
 
-            {/* --- Phone Number (Jo gayab ho gaya tha) --- */}
-            <div className="space-y-2">
-              <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
+            {/* --- Phone Number --- */}
+            <div className="space-y-2.5">
+              <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 ml-2 uppercase tracking-[0.15em]">
                 Phone Number
               </p>
               <Input
@@ -67,7 +66,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 type="tel"
-                className="h-14 bg-slate-50 dark:bg-slate-800/50 border-slate-200 dark:border-white/10 text-slate-900 dark:text-white rounded-2xl focus:ring-2 focus:ring-blue-500 placeholder:text-slate-400"
+                className="h-14 bg-slate-50 dark:bg-slate-800/40 border-slate-200 dark:border-white/5 text-slate-900 dark:text-white rounded-2xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 border-none placeholder:text-slate-400 transition-all"
                 required
               />
             </div>
@@ -75,7 +74,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
             {/* --- Save Button --- */}
             <Button
               type="submit"
-              className="w-full h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl font-bold shadow-lg shadow-blue-500/20 active:scale-[0.98] transition-all mt-2"
+              className="w-full h-14 bg-indigo-600 hover:bg-indigo-700 text-white rounded-2xl font-bold shadow-xl shadow-indigo-500/25 active:scale-95 transition-all mt-4 text-base"
               disabled={loading}
             >
               {loading ? "Saving..." : "Save Karein"}
