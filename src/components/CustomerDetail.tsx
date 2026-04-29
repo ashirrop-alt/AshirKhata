@@ -15,6 +15,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface Props {
   customer: Customer;
@@ -31,6 +32,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const { data } = useKhata();
   const savedShopName = localStorage.getItem("my_shop_name");
   const displayShopName = data?.shopName || savedShopName || "Khatify User";
+
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
   useEffect(() => {
     if (data?.shopName) {
@@ -85,17 +89,35 @@ export function CustomerDetail({ customer, onBack }: Props) {
     }
   };
 
-  const handleDeleteEntry = async (txId: string) => {
-    try {
-      const updatedTransactions = transactions.filter(t => t.id !== txId);
-      const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
-      if (error) throw error;
-      setTransactions(updatedTransactions);
-      toast.success("Entry delete ho gayi!");
-    } catch (error: any) {
-      toast.error("Delete nahi ho saka");
-    }
-  };
+  // 1. Ye function sirf Modal kholega aur ID yaad rakhega
+const askDeleteConfirmation = (txId: string) => {
+  setIdToDelete(txId);
+  setDeleteDialogOpen(true);
+};
+
+// 2. Ye function asal mein Supabase se delete karega (Jab user Modal mein "Haan" kahega)
+const confirmDeleteEntry = async () => {
+  if (!idToDelete) return;
+  
+  try {
+    const updatedTransactions = transactions.filter(t => t.id !== idToDelete);
+    const { error } = await supabase
+      .from('customers')
+      .update({ transactions: updatedTransactions })
+      .eq('id', customer.id);
+
+    if (error) throw error;
+    
+    setTransactions(updatedTransactions);
+    toast.success("Entry delete ho gayi!");
+  } catch (error: any) {
+    toast.error("Delete nahi ho saka");
+  } finally {
+    // Kaam khatam hone ke baad modal band kar do aur ID saaf kar do
+    setDeleteDialogOpen(false);
+    setIdToDelete(null);
+  }
+};
 
   const makeCall = (type: 'phone' | 'whatsapp') => {
     if (!customer.phone) return;
@@ -151,11 +173,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       {/* --- HEADER --- */}
       <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
-     <div className="max-w-7xl mx-auto h-full flex items-center justify-between">   
+        <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
           {/* Left Side: Back Button + Info */}
           <div className="flex items-center gap-2 md:gap-3">
             <button
-              onClick={onBack}className="p-2 -ml-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all group active:scale-90"
+              onClick={onBack} className="p-2 -ml-2 rounded-xl hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all group active:scale-90"
             >
               <ArrowLeft className="w-5 h-5 text-slate-500 dark:text-slate-400 group-hover:text-indigo-600 dark:group-hover:text-indigo-400" />
             </button>
@@ -249,49 +271,49 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
             {/* Rest of the action buttons */}
             {/* Container: Mobile par spacing khatam, Laptop par space-y-2 wapis */}
-<div className="space-y-0">
-  <div className="grid grid-cols-3 gap-3 mt-4">
+            <div className="space-y-0">
+              <div className="grid grid-cols-3 gap-3 mt-4">
 
-    {/* Reminder Button */}
-    <Button
-      variant="outline"
-      title="Send Payment Reminder"
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-      onClick={sendReminder}
-    >
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z"/>
-      </svg>
-      <span className="leading-none text-slate-600 dark:text-slate-300">Reminder</span>
-    </Button>
+                {/* Reminder Button */}
+                <Button
+                  variant="outline"
+                  title="Send Payment Reminder"
+                  className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                  onClick={sendReminder}
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                  </svg>
+                  <span className="leading-none text-slate-600 dark:text-slate-300">Reminder</span>
+                </Button>
 
-    {/* Invoice Button */}
-    <Button
-      variant="outline"
-      title="Download PDF Invoice"
-      onClick={downloadInvoice}
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-    >
-      <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
-      <span className="leading-none text-slate-600 dark:text-slate-300">Invoice</span>
-    </Button>
+                {/* Invoice Button */}
+                <Button
+                  variant="outline"
+                  title="Download PDF Invoice"
+                  onClick={downloadInvoice}
+                  className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                >
+                  <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
+                  <span className="leading-none text-slate-600 dark:text-slate-300">Invoice</span>
+                </Button>
 
-    {/* History Button */}
-    <Button
-      variant="outline"
-      title="Share Full Report"
-      onClick={shareFullHistory}
-      className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-    >
-      <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
-        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z"/>
-      </svg>
-      <span className="leading-none text-slate-600 dark:text-slate-300">History</span>
-    </Button>
+                {/* History Button */}
+                <Button
+                  variant="outline"
+                  title="Share Full Report"
+                  onClick={shareFullHistory}
+                  className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                >
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
+                    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                  </svg>
+                  <span className="leading-none text-slate-600 dark:text-slate-300">History</span>
+                </Button>
 
-  </div>
-</div>
-       
+              </div>
+            </div>
+
           </div>
 
           {/* RIGHT SIDE (Transaction List Container) */}
@@ -329,7 +351,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                     <div className="flex items-center gap-1">
                       <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
-                      <button onClick={() => { if (confirm("Hisaab delete kardein?")) handleDeleteEntry(tx.id) }} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+                      <button onClick={() => askDeleteConfirmation(tx.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
                         <Trash2 className="w-4 h-4" />
                       </button>
                     </div>
@@ -340,6 +362,42 @@ export function CustomerDetail({ customer, onBack }: Props) {
           </div>
         </div>
       </main>
+
+      {/* --- Delete Modal Code --- */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="w-[85%] max-w-[360px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
+          <div className="space-y-6 text-center">
+            <div className="mx-auto w-14 h-14 bg-red-50 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+              <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
+            </div>
+
+            <div className="space-y-2">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                Entry Delete Karein?
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium leading-relaxed">
+                Kya aap waqayi is entry ko khatam karna chahte hain? Ye wapas nahi aayegi.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <Button 
+                onClick={confirmDeleteEntry}
+                className="w-full h-13 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
+              >
+                Haan, Delete Kar Dein
+              </Button>
+              <Button 
+                onClick={() => setDeleteDialogOpen(false)}
+                variant="ghost"
+                className="w-full h-12 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-slate-800 rounded-xl"
+              >
+                Nahi, Rehne Dein
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
