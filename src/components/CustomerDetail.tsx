@@ -382,20 +382,24 @@ const confirmDeleteEntry = async () => {
       </div>
 
       <div className="flex flex-col gap-3">
-        <Button 
-          onClick={confirmDeleteEntry}
-          className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all"
-        >
-          Haan
-        </Button>
-        <Button 
-          onClick={() => setDeleteDialogOpen(false)}
-          variant="outline"
-          className="w-full h-12 border-slate-200 dark:border-white/10 text-slate-600 dark:text-slate-300 font-bold hover:bg-slate-50 dark:hover:bg-slate-800 rounded-xl transition-all"
-        >
-          Nahi
-        </Button>
-      </div>
+  <Button 
+    onClick={confirmDeleteEntry}
+    className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all border-none"
+  >
+    Haan
+  </Button>
+  <Button 
+    onClick={() => setDeleteDialogOpen(false)}
+    variant="outline"
+    className="w-full h-12 rounded-xl font-bold transition-all active:scale-95
+               /* Light Mode Styles */
+               border-slate-300 text-slate-700 hover:bg-slate-50
+               /* Dark Mode Styles - Ab ye 'bin bulaya mehmaan' nahi lagega */
+               dark:border-white/20 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+  >
+    Nahi
+  </Button>
+</div>
     </div>
   </DialogContent>
 </Dialog>
