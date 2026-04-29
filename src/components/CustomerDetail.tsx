@@ -320,7 +320,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                         {/* COMPACT NOTE SECTION - REDUCED PADDING & MARGIN */}
                         {tx.remarks && (
-                          <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[10px] font-black italic">
+                          <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black italic">
                             Note: {tx.remarks}
                           </div>
                         )}
