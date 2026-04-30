@@ -34,6 +34,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [entryOpen, setEntryOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [transactions, setTransactions] = useState(customer.transactions || []);
+  const [filterType, setFilterType] = useState("all");
 
   const { data } = useKhata();
   const savedShopName = localStorage.getItem("my_shop_name");
@@ -41,6 +42,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
+  
+  const filteredTransactions = transactions.filter(tx => {
+  if (filterType === "all") return true;
+  const txDate = new Date(tx.date);
+  const today = new Date();
+  
+  if (filterType === "thisMonth") {
+    return txDate.getMonth() === today.getMonth() && txDate.getFullYear() === today.getFullYear();
+  }
+  return true;
+});
 
   useEffect(() => {
     if (data?.shopName) {
@@ -345,46 +357,62 @@ const confirmDeleteEntry = async () => {
           {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
-                <History className="w-4 h-4 text-slate-400" />
-                <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Transactions ({transactions.length})</span>
-              </div>
+  {/* Header Section with Dropdown */}
+  <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center justify-between bg-slate-50/50 dark:bg-white/[0.02]">
+    <div className="flex items-center gap-2">
+      <History className="w-4 h-4 text-slate-400" />
+      <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">
+        Transactions ({filteredTransactions.length})
+      </span>
+    </div>
 
-              <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
-                {[...transactions].reverse().map(tx => (
-                  <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-300/60 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
-                    <div className="flex items-center gap-3 md:gap-4 text-left">
-                      <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
-                        {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
-                      </div>
-                      <div>
-                        <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                          <span className="text-[10px] md:text-xs">Rs</span>
-                          <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
-                        </div>
-                        <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
-                          {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
-                        </p>
+    <select 
+      value={filterType}
+      onChange={(e) => setFilterType(e.target.value)}
+      className="text-[10px] bg-transparent font-bold text-slate-500 dark:text-slate-400 outline-none cursor-pointer border-none focus:ring-0"
+    >
+      <option value="all" className="dark:bg-[#0f172a]">Sub Dekhein</option>
+      <option value="thisMonth" className="dark:bg-[#0f172a]">Is Mahine</option>
+    </select>
+  </div>
 
-                        {/* COMPACT NOTE SECTION - REDUCED PADDING & MARGIN */}
-                        {tx.remarks && (
-                          <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black italic">
-                            {tx.remarks}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-
-                    <div className="flex items-center gap-1">
-                      <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
-                      <button onClick={() => askDeleteConfirmation(tx.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
+  {/* Transactions List Section */}
+  <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
+    <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
+      {[...filteredTransactions].reverse().map(tx => (
+        <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-300/60 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
+          <div className="flex items-center gap-3 md:gap-4 text-left">
+            <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
+              {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
             </div>
+            <div>
+              <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                <span className="text-[10px] md:text-xs">Rs</span>
+                <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
+              </div>
+              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
+                {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
+              </p>
+
+              {tx.remarks && (
+                <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black italic">
+                  {tx.remarks}
+                </div>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-1">
+            <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
+            <button onClick={() => askDeleteConfirmation(tx.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</div>
           </div>
         </div>
       </main>
