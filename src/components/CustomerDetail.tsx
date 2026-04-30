@@ -397,37 +397,37 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
              {/* Final Premium Filter Header */}
-            <div className="px-4 py-3 md:px-6 md:py-4 border-b border-slate-100 dark:border-white/[0.05] bg-transparent min-h-[72px] flex items-center">
-  <div className="flex flex-col md:flex-row md:items-center justify-between gap-3 w-full">
+            <div className="px-4 py-3 md:px-6 md:py-4 border-b border-slate-100 dark:border-white/[0.05] bg-transparent min-h-[80px] flex items-center">
+  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 w-full">
     
-    {/* Transactions Count - Clean & No Background */}
-    <div className="flex items-center gap-2">
-      <History className="w-4 h-4 text-indigo-500" />
-      <span className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
+    {/* Transactions Count - Theme Matched */}
+    <div className="flex items-center gap-2.5">
+      <History className="w-5 h-5 text-[#6366f1]" />
+      <span className="text-[12px] font-bold uppercase tracking-[0.1em] text-slate-500 dark:text-slate-400">
         Transactions ({filteredTransactions.length})
       </span>
     </div>
 
-    {/* Filter Group */}
-    <div className="flex flex-wrap items-center gap-2" ref={dropdownRef}>
+    {/* Filter Group - Responsive Placement */}
+    <div className="flex flex-wrap items-center justify-center lg:justify-end gap-3" ref={dropdownRef}>
       
-      {/* Dropdown - Standard Size */}
-      <div className="relative">
+      {/* Premium Dropdown */}
+      <div className="relative min-w-[150px]">
         <button
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="min-w-[140px] flex items-center justify-between gap-3 bg-white dark:bg-white/[0.05] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-4 py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 transition-all shadow-sm"
+          className="w-full flex items-center justify-between gap-3 bg-white dark:bg-white/[0.05] text-slate-800 dark:text-slate-100 text-[13px] font-bold px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-[#6366f1]/50 transition-all shadow-sm active:scale-95"
         >
           <span>{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
         <AnimatePresence>
           {isDropdownOpen && (
             <motion.div
-              initial={{ opacity: 0, y: 5 }}
-              animate={{ opacity: 1, y: 2 }}
-              exit={{ opacity: 0, y: 5 }}
-              className="absolute right-0 left-0 md:left-auto z-[100] mt-1 md:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 4 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute right-0 left-0 lg:left-auto z-[100] mt-1 lg:w-[180px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5"
             >
               {filterOptions.map((option) => (
                 <button
@@ -437,14 +437,14 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     setIsDropdownOpen(false);
                     if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
                   }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
+                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[13px] font-semibold transition-all mb-1 last:mb-0
                     ${filterType === option.id 
-                      ? 'bg-indigo-600 text-white' 
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10 hover:text-indigo-600'
+                      ? 'bg-[#6366f1] text-white shadow-lg shadow-[#6366f1]/20' 
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-[#6366f1]/10 hover:text-[#6366f1]'
                     }`}
                 >
                   {option.label}
-                  {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                  {filterType === option.id && <Check className="w-4 h-4" />}
                 </button>
               ))}
             </motion.div>
@@ -452,24 +452,24 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </AnimatePresence>
       </div>
 
-      {/* Date Picker - Pro Alignment */}
+      {/* Date Picker - Pro Layout */}
       {filterType === 'custom' && (
         <motion.div 
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2"
+          initial={{ opacity: 0, scale: 0.98 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex items-center gap-2 bg-white dark:bg-white/[0.03] p-1.5 rounded-2xl border border-slate-200 dark:border-white/10 shadow-sm"
         >
-          <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/[0.03] p-1 rounded-xl border border-slate-200 dark:border-white/10">
+          <div className="flex items-center">
             <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-            <div className="w-[1px] h-4 bg-slate-200 dark:bg-white/10" />
+            <div className="w-[1px] h-5 bg-slate-200 dark:bg-white/10 mx-1" />
             <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
           </div>
           
           <button 
             onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-            className="p-2 hover:bg-red-50 text-red-500 rounded-xl transition-colors active:scale-95"
+            className="p-2 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-500 rounded-xl transition-all active:rotate-180 duration-500"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-4.5 h-4.5" />
           </button>
         </motion.div>
       )}
@@ -607,21 +607,20 @@ function DatePickerGroup({ startDate, setStartDate, endDate, setEndDate, setFilt
 // Is code ko file ke bilkul end mein paste karein
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="relative flex items-center gap-2 px-2 py-1.5 min-w-[125px]">
-      <span className="text-[9px] font-black text-indigo-500/80">{label}</span>
+    <div className="relative flex items-center gap-2 px-3 py-1.5">
+      <span className="text-[10px] font-black text-[#6366f1] tracking-tighter">{label}</span>
       <input 
         type="date" 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-[11px] font-bold outline-none dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] cursor-pointer"
+        className="bg-transparent text-[12px] font-bold outline-none text-slate-700 dark:text-slate-200 w-[105px] [color-scheme:light] dark:[color-scheme:dark] cursor-pointer"
       />
-      {/* Chrome/Safari mein calendar icon ko styling dene ke liye ye custom class help karegi */}
       <style>{`
         input[type="date"]::-webkit-calendar-picker-indicator {
           cursor: pointer;
-          filter: invert(0.5);
-          width: 14px;
-          height: 14px;
+          filter: invert(0.4) sepia(1) saturate(5) hue-rotate(200deg); /* Theme matched icon color */
+          width: 16px;
+          height: 16px;
         }
       `}</style>
     </div>
