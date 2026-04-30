@@ -398,83 +398,101 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Native & Premium Filter Header */}
              {/* Final Premium Filter Header */}
             <div className="px-4 py-4 md:px-6 md:py-5 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+  {/* Main Container: Mobile pe Column, Laptop pe Row */}
+  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
     
     {/* Left Side: Transactions Count */}
     <div className="flex items-center gap-2.5">
       <div className="p-1.5 bg-indigo-500/10 rounded-md text-indigo-500">
-        <History className="w-3.5 h-3.5" />
+        <History className="w-4 h-4" />
       </div>
-      <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
+      <span className="text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
         Transactions ({filteredTransactions.length})
       </span>
     </div>
 
-    {/* Right Side: Responsive Filter Group */}
-    <div className="flex flex-col items-end gap-3 w-full sm:w-auto" ref={dropdownRef}>
-      <div className="flex flex-wrap items-center justify-end gap-3 w-full sm:w-auto">
-        
-        {/* Compact Premium Dropdown */}
-        <div className="relative min-w-[140px]">
-          <button
-            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-            className="w-full flex items-center justify-between gap-3 bg-white dark:bg-white/[0.05] text-slate-900 dark:text-white text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/50 transition-all shadow-sm active:scale-[0.98]"
-          >
-            <span>{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-            <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-          </button>
+    {/* Right Side: Filters Group */}
+    <div className="flex flex-col items-stretch md:items-center md:flex-row gap-3" ref={dropdownRef}>
+      
+      {/* Dropdown Container */}
+      <div className="relative">
+        <button
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="w-full md:w-[160px] flex items-center justify-between gap-3 bg-white dark:bg-white/[0.05] text-slate-900 dark:text-white text-[12px] font-bold px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/50 transition-all shadow-sm"
+        >
+          <span>{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
 
-          <AnimatePresence>
-            {isDropdownOpen && (
-              <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 5, scale: 1 }}
-                exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                className="absolute right-0 z-[100] mt-2 min-w-[160px] bg-white dark:bg-[#1e1e2d] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5"
-              >
-                {filterOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => {
-                      setFilterType(option.id);
-                      setIsDropdownOpen(false);
-                      if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
-                    }}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-semibold transition-all mb-0.5 last:mb-0
-                      ${filterType === option.id 
-                        ? 'bg-indigo-600 text-white shadow-md' 
-                        : 'text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600 dark:hover:bg-indigo-500/20'
-                      }`}
-                  >
-                    {option.label}
-                    {filterType === option.id && <Check className="w-3 h-3 text-white" />}
-                  </button>
-                ))}
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </div>
-
-        {/* Desktop Date Picker (Visible next to dropdown on big screens) */}
-        {filterType === 'custom' && (
-          <motion.div 
-            initial={{ opacity: 0, x: 10 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="hidden sm:flex items-center gap-3 bg-white dark:bg-white/[0.05] p-1.5 pr-3 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm"
-          >
-            <DatePickerGroup startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} setFilterType={setFilterType} />
-          </motion.div>
-        )}
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 5 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 left-0 md:left-auto z-[100] mt-2 md:w-[180px] bg-white dark:bg-[#1e1e2d] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden p-1.5"
+            >
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => {
+                    setFilterType(option.id);
+                    setIsDropdownOpen(false);
+                    if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-[12px] font-semibold transition-all mb-1 last:mb-0
+                    ${filterType === option.id 
+                      ? 'bg-indigo-600 text-white shadow-md' 
+                      : 'text-slate-600 dark:text-slate-300 hover:bg-indigo-500/10 hover:text-indigo-600'
+                    }`}
+                >
+                  {option.label}
+                  {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
-      {/* Mobile Date Picker (Full width, appears below dropdown) */}
+      {/* Date Picker Group: Custom select hone par hi dikhega */}
       {filterType === 'custom' && (
         <motion.div 
-          initial={{ opacity: 0, y: -10 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex sm:hidden w-full items-center justify-between gap-2 bg-white dark:bg-white/[0.05] p-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm"
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-slate-50 dark:bg-white/[0.03] p-2 rounded-2xl border border-slate-200 dark:border-white/10"
         >
-          <DatePickerGroup startDate={startDate} setStartDate={setStartDate} endDate={endDate} setEndDate={setEndDate} setFilterType={setFilterType} isMobile />
+          {/* From Date */}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-transparent">
+            <span className="text-[9px] font-bold text-indigo-500 uppercase">From</span>
+            <input 
+              type="date" 
+              value={startDate}
+              onChange={(e) => setStartDate(e.target.value)}
+              className="bg-transparent text-[12px] font-bold outline-none dark:text-white [color-scheme:light] dark:[color-scheme:dark]"
+            />
+          </div>
+
+          <div className="hidden sm:block text-slate-300">—</div>
+
+          {/* To Date */}
+          <div className="flex items-center gap-2 px-3 py-1.5 bg-white dark:bg-white/5 rounded-xl border border-slate-100 dark:border-transparent">
+            <span className="text-[9px] font-bold text-indigo-500 uppercase">To</span>
+            <input 
+              type="date" 
+              value={endDate}
+              onChange={(e) => setEndDate(e.target.value)}
+              className="bg-transparent text-[12px] font-bold outline-none dark:text-white [color-scheme:light] dark:[color-scheme:dark]"
+            />
+          </div>
+
+          {/* Reset Button */}
+          <button 
+            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+            className="p-2.5 flex items-center justify-center hover:bg-red-50 text-red-500 rounded-xl transition-colors"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
         </motion.div>
       )}
     </div>
