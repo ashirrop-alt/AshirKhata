@@ -45,27 +45,22 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
-  const filteredTransactions = transactions.filter(tx => {
+ const filteredTransactions = transactions.filter(tx => {
     const txDate = new Date(tx.date);
-    const today = new Date();
+    txDate.setHours(0, 0, 0, 0);
 
-    // 1. Dropdown Filter (All / This Month)
-    if (filterType === "thisMonth") {
-      if (txDate.getMonth() !== today.getMonth() || txDate.getFullYear() !== today.getFullYear()) {
-        return false;
-      }
-    }
+    // Agar dates select nahi hain, toh sab dikhao
+    if (!startDate && !endDate) return true;
 
-    // 2. Custom Date Range Filter (From & To) - YE ADD KARNA HAI
     if (startDate) {
       const start = new Date(startDate);
-      start.setHours(0, 0, 0, 0); // Din ke shuru se check karein
+      start.setHours(0, 0, 0, 0);
       if (txDate < start) return false;
     }
 
     if (endDate) {
       const end = new Date(endDate);
-      end.setHours(23, 59, 59, 999); // Din ke aakhir tak check karein
+      end.setHours(0, 0, 0, 0);
       if (txDate > end) return false;
     }
 
@@ -376,45 +371,49 @@ export function CustomerDetail({ customer, onBack }: Props) {
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
-              <div className="px-4 py-5 border-b border-slate-100 dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.02]">
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-center gap-2">
-                    <History className="w-4 h-4 text-slate-400" />
-                    <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">
-                      Transactions ({filteredTransactions.length})
-                    </span>
+              {/* Premium Date Filter Header */}
+            <div className="px-6 py-4 border-b border-slate-100 dark:border-white/[0.05] bg-white dark:bg-[#1e293b]/50">
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="p-2 bg-blue-500/10 rounded-lg">
+                    <History className="w-4 h-4 text-blue-500" />
                   </div>
-
-                  {/* Date Inputs: From & To */}
-                  <div className="flex items-center gap-2">
-                    <div className="flex-1">
-                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1 ml-1">From</p>
-                      <input
-                        type="date"
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="w-full text-[11px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white"
-                      />
-                    </div>
-                    <div className="flex-1">
-                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1 ml-1">To</p>
-                      <input
-                        type="date"
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="w-full text-[11px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white"
-                      />
-                    </div>
-                    <button
-                      onClick={() => { setStartDate(''); setEndDate(''); }}
-                      className="mt-4 p-2 text-slate-400 hover:text-red-500 transition-colors"
-                      title="Reset"
-                    >
-                      <RotateCcw className="w-4 h-4" />
-                    </button>
+                  <div>
+                    <h3 className="text-sm font-bold text-slate-800 dark:text-white">Transaction History</h3>
+                    <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                      Showing {filteredTransactions.length} Records
+                    </p>
                   </div>
                 </div>
+
+                <div className="flex items-center gap-2 bg-slate-100 dark:bg-white/[0.03] p-1.5 rounded-xl border border-slate-200 dark:border-white/10">
+                  <div className="flex items-center px-2 gap-2">
+                    <input 
+                      type="date" 
+                      value={startDate}
+                      onChange={(e) => setStartDate(e.target.value)}
+                      className="bg-transparent text-[11px] font-bold outline-none dark:text-white cursor-pointer"
+                    />
+                    <span className="text-slate-400 text-xs">→</span>
+                    <input 
+                      type="date" 
+                      value={endDate}
+                      onChange={(e) => setEndDate(e.target.value)}
+                      className="bg-transparent text-[11px] font-bold outline-none dark:text-white cursor-pointer"
+                    />
+                  </div>
+                  
+                  {(startDate || endDate) && (
+                    <button 
+                      onClick={() => { setStartDate(''); setEndDate(''); }}
+                      className="p-1.5 hover:bg-red-500/10 text-slate-400 hover:text-red-500 rounded-lg transition-all"
+                    >
+                      <RotateCcw className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
               </div>
+            </div>
 
               {/* Transactions List Section */}
               <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
