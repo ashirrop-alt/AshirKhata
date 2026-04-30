@@ -1,8 +1,8 @@
-import { 
-  Tooltip, 
-  TooltipContent, 
-  TooltipProvider, 
-  TooltipTrigger 
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
 } from "@/components/ui/tooltip";
 import { useState, useEffect, useRef } from "react";
 import { useKhata } from "@/hooks/useKhata";
@@ -12,7 +12,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle, RotateCcw } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -29,6 +29,8 @@ interface Props {
 }
 
 export function CustomerDetail({ customer, onBack }: Props) {
+  const [startDate, setStartDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const invoiceRef = useRef<HTMLDivElement>(null);
   const [entryType, setEntryType] = useState<"udhar" | "payment">("udhar");
   const [entryOpen, setEntryOpen] = useState(false);
@@ -42,17 +44,33 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
-  
+
   const filteredTransactions = transactions.filter(tx => {
-  if (filterType === "all") return true;
-  const txDate = new Date(tx.date);
-  const today = new Date();
-  
-  if (filterType === "thisMonth") {
-    return txDate.getMonth() === today.getMonth() && txDate.getFullYear() === today.getFullYear();
-  }
-  return true;
-});
+    const txDate = new Date(tx.date);
+    const today = new Date();
+
+    // 1. Dropdown Filter (All / This Month)
+    if (filterType === "thisMonth") {
+      if (txDate.getMonth() !== today.getMonth() || txDate.getFullYear() !== today.getFullYear()) {
+        return false;
+      }
+    }
+
+    // 2. Custom Date Range Filter (From & To) - YE ADD KARNA HAI
+    if (startDate) {
+      const start = new Date(startDate);
+      start.setHours(0, 0, 0, 0); // Din ke shuru se check karein
+      if (txDate < start) return false;
+    }
+
+    if (endDate) {
+      const end = new Date(endDate);
+      end.setHours(23, 59, 59, 999); // Din ke aakhir tak check karein
+      if (txDate > end) return false;
+    }
+
+    return true;
+  });
 
   useEffect(() => {
     if (data?.shopName) {
@@ -108,34 +126,34 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   // 1. Ye function sirf Modal kholega aur ID yaad rakhega
-const askDeleteConfirmation = (txId: string) => {
-  setIdToDelete(txId);
-  setDeleteDialogOpen(true);
-};
+  const askDeleteConfirmation = (txId: string) => {
+    setIdToDelete(txId);
+    setDeleteDialogOpen(true);
+  };
 
-// 2. Ye function asal mein Supabase se delete karega (Jab user Modal mein "Haan" kahega)
-const confirmDeleteEntry = async () => {
-  if (!idToDelete) return;
-  
-  try {
-    const updatedTransactions = transactions.filter(t => t.id !== idToDelete);
-    const { error } = await supabase
-      .from('customers')
-      .update({ transactions: updatedTransactions })
-      .eq('id', customer.id);
+  // 2. Ye function asal mein Supabase se delete karega (Jab user Modal mein "Haan" kahega)
+  const confirmDeleteEntry = async () => {
+    if (!idToDelete) return;
 
-    if (error) throw error;
-    
-    setTransactions(updatedTransactions);
-    toast.success("Entry delete ho gayi!");
-  } catch (error: any) {
-    toast.error("Delete nahi ho saka");
-  } finally {
-    // Kaam khatam hone ke baad modal band kar do aur ID saaf kar do
-    setDeleteDialogOpen(false);
-    setIdToDelete(null);
-  }
-};
+    try {
+      const updatedTransactions = transactions.filter(t => t.id !== idToDelete);
+      const { error } = await supabase
+        .from('customers')
+        .update({ transactions: updatedTransactions })
+        .eq('id', customer.id);
+
+      if (error) throw error;
+
+      setTransactions(updatedTransactions);
+      toast.success("Entry delete ho gayi!");
+    } catch (error: any) {
+      toast.error("Delete nahi ho saka");
+    } finally {
+      // Kaam khatam hone ke baad modal band kar do aur ID saaf kar do
+      setDeleteDialogOpen(false);
+      setIdToDelete(null);
+    }
+  };
 
   const makeCall = (type: 'phone' | 'whatsapp') => {
     if (!customer.phone) return;
@@ -290,173 +308,191 @@ const confirmDeleteEntry = async () => {
             {/* Rest of the action buttons */}
             {/* Container: Mobile par spacing khatam, Laptop par space-y-2 wapis */}
             <div className="space-y-0">
-  <TooltipProvider delayDuration={100}>
-    <div className="grid grid-cols-3 gap-3 mt-4">
+              <TooltipProvider delayDuration={100}>
+                <div className="grid grid-cols-3 gap-3 mt-4">
 
-      {/* Reminder Button */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-            onClick={sendReminder}
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
-            </svg>
-            <span className="leading-none text-slate-600 dark:text-slate-300">Reminder</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>Payment Reminder</p>
-        </TooltipContent>
-      </Tooltip>
+                  {/* Reminder Button */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                        onClick={sendReminder}
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                        </svg>
+                        <span className="leading-none text-slate-600 dark:text-slate-300">Reminder</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                      <p>Payment Reminder</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-      {/* Invoice Button */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            onClick={downloadInvoice}
-            className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-          >
-            <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
-            <span className="leading-none text-slate-600 dark:text-slate-300">Invoice</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>Download PDF Invoice</p>
-        </TooltipContent>
-      </Tooltip>
+                  {/* Invoice Button */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        onClick={downloadInvoice}
+                        className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                      >
+                        <FileText className="w-5 h-5 text-blue-500 mb-0.5 transition-transform duration-200 group-hover:scale-110" />
+                        <span className="leading-none text-slate-600 dark:text-slate-300">Invoice</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                      <p>Download PDF Invoice</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-      {/* History Button */}
-      <Tooltip>
-        <TooltipTrigger asChild>
-          <Button
-            variant="outline"
-            onClick={shareFullHistory}
-            className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
-          >
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
-            </svg>
-            <span className="leading-none text-slate-600 dark:text-slate-300">History</span>
-          </Button>
-        </TooltipTrigger>
-        <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-          <p>Full Report</p>
-        </TooltipContent>
-      </Tooltip>
+                  {/* History Button */}
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <Button
+                        variant="outline"
+                        onClick={shareFullHistory}
+                        className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                      >
+                        <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                        </svg>
+                        <span className="leading-none text-slate-600 dark:text-slate-300">History</span>
+                      </Button>
+                    </TooltipTrigger>
+                    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                      <p>Full Report</p>
+                    </TooltipContent>
+                  </Tooltip>
 
-    </div>
-  </TooltipProvider>
-</div>
+                </div>
+              </TooltipProvider>
+            </div>
 
           </div>
 
           {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
-  {/* Header Section with Dropdown */}
-  <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center justify-between bg-slate-50/50 dark:bg-white/[0.02]">
-    <div className="flex items-center gap-2">
-      <History className="w-4 h-4 text-slate-400" />
-      <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">
-        Transactions ({filteredTransactions.length})
-      </span>
-    </div>
+              {/* Date Filter Header Section */}
+              <div className="px-4 py-5 border-b border-slate-100 dark:border-white/[0.05] bg-slate-50/50 dark:bg-white/[0.02]">
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center gap-2">
+                    <History className="w-4 h-4 text-slate-400" />
+                    <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">
+                      Transactions ({filteredTransactions.length})
+                    </span>
+                  </div>
 
-    <select 
-      value={filterType}
-      onChange={(e) => setFilterType(e.target.value)}
-      className="text-[10px] bg-transparent font-bold text-slate-500 dark:text-slate-400 outline-none cursor-pointer border-none focus:ring-0"
-    >
-      <option value="all" className="dark:bg-[#0f172a]">Sub Dekhein</option>
-      <option value="thisMonth" className="dark:bg-[#0f172a]">Is Mahine</option>
-    </select>
-  </div>
-
-  {/* Transactions List Section */}
-  <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
-    <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
-      {[...filteredTransactions].reverse().map(tx => (
-        <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-300/60 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
-          <div className="flex items-center gap-3 md:gap-4 text-left">
-            <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
-              {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
-            </div>
-            <div>
-              <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
-                <span className="text-[10px] md:text-xs">Rs</span>
-                <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
-              </div>
-              <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
-                {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
-              </p>
-
-              {tx.remarks && (
-                <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black italic">
-                  {tx.remarks}
+                  {/* Date Inputs: From & To */}
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1 ml-1">From</p>
+                      <input
+                        type="date"
+                        value={startDate}
+                        onChange={(e) => setStartDate(e.target.value)}
+                        className="w-full text-[11px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1 ml-1">To</p>
+                      <input
+                        type="date"
+                        value={endDate}
+                        onChange={(e) => setEndDate(e.target.value)}
+                        className="w-full text-[11px] bg-white dark:bg-slate-800 border border-slate-200 dark:border-white/10 rounded-lg px-2 py-1.5 focus:ring-2 focus:ring-blue-500 outline-none dark:text-white"
+                      />
+                    </div>
+                    <button
+                      onClick={() => { setStartDate(''); setEndDate(''); }}
+                      className="mt-4 p-2 text-slate-400 hover:text-red-500 transition-colors"
+                      title="Reset"
+                    >
+                      <RotateCcw className="w-4 h-4" />
+                    </button>
+                  </div>
                 </div>
-              )}
-            </div>
-          </div>
+              </div>
 
-          <div className="flex items-center gap-1">
-            <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all active:scale-90"><Pencil className="w-4 h-4" /></button>
-            <button onClick={() => askDeleteConfirmation(tx.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all active:scale-90">
-              <Trash2 className="w-4 h-4" />
-            </button>
-          </div>
-        </div>
-      ))}
-    </div>
-  </div>
-</div>
+              {/* Transactions List Section */}
+              <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
+                <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
+                  {[...filteredTransactions].reverse().map(tx => (
+                    <div key={tx.id} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-blue-300/60 dark:hover:border-blue-500/50 transition-all flex items-center justify-between shadow-sm">
+                      <div className="flex items-center gap-3 md:gap-4 text-left">
+                        <div className={`w-10 h-10 md:w-11 md:h-11 rounded-xl flex items-center justify-center border border-slate-100 dark:border-white/5 transition-all shadow-sm ${tx.type === "udhar" ? "bg-red-50 dark:bg-red-500/10" : "bg-emerald-50 dark:bg-emerald-500/10"}`}>
+                          {tx.type === "udhar" ? <ArrowUpRight className="w-5 h-5 text-red-500" /> : <ArrowDownLeft className="w-5 h-5 text-emerald-600" />}
+                        </div>
+                        <div>
+                          <div className={`flex items-baseline gap-0.5 font-extrabold leading-tight ${tx.type === "udhar" ? "text-red-500 dark:text-red-400" : "text-emerald-600 dark:text-emerald-400"}`}>
+                            <span className="text-[10px] md:text-xs">Rs</span>
+                            <p className="text-base md:text-lg">{tx.amount.toLocaleString()}</p>
+                          </div>
+                          <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 font-bold uppercase tracking-tight">
+                            {tx.type === "udhar" ? "Udhar Diya" : "Paisa Mila"} • {formatDate(tx.date)}
+                          </p>
+                          {tx.remarks && (
+                            <div className="mt-1.5 inline-block px-2 py-0.5 rounded-md bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 text-[10px] font-black italic">
+                              {tx.remarks}
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-1">
+                        <button onClick={() => { setEditingEntry(tx); setEntryType(tx.type); setEntryOpen(true); }} className="p-2 text-slate-400 hover:text-blue-500 transition-all"><Pencil className="w-4 h-4" /></button>
+                        <button onClick={() => askDeleteConfirmation(tx.id)} className="p-2 text-slate-400 hover:text-red-500 transition-all"><Trash2 className="w-4 h-4" /></button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </main>
 
       {/* --- Delete Modal Code --- */}
-     <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-  <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
-    <div className="space-y-6 text-center">
-      {/* Danger Icon with Better Visibility */}
-      <div className="mx-auto w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center">
-        <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
-      </div>
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
+          <div className="space-y-6 text-center">
+            {/* Danger Icon with Better Visibility */}
+            <div className="mx-auto w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center">
+              <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
+            </div>
 
-      <div className="space-y-1">
-        <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
-          Entry Delete Karein?
-        </h2>
-        <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
-          Ye entry hamesha ke liye khatam ho jayegi.
-        </p>
-      </div>
+            <div className="space-y-1">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                Entry Delete Karein?
+              </h2>
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                Ye entry hamesha ke liye khatam ho jayegi.
+              </p>
+            </div>
 
-      <div className="flex flex-col gap-3">
-  <Button 
-    onClick={confirmDeleteEntry}
-    className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all border-none"
-  >
-    Haan
-  </Button>
-  <Button 
-    onClick={() => setDeleteDialogOpen(false)}
-    variant="outline"
-    className="w-full h-12 rounded-xl font-bold transition-all active:scale-95
+            <div className="flex flex-col gap-3">
+              <Button
+                onClick={confirmDeleteEntry}
+                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all border-none"
+              >
+                Haan
+              </Button>
+              <Button
+                onClick={() => setDeleteDialogOpen(false)}
+                variant="outline"
+                className="w-full h-12 rounded-xl font-bold transition-all active:scale-95
                /* Light Mode Styles */
                border-slate-300 text-slate-700 hover:bg-slate-50
                /* Dark Mode Styles - Ab ye 'bin bulaya mehmaan' nahi lagega */
                dark:border-white/20 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
-  >
-    Nahi
-  </Button>
-</div>
-    </div>
-  </DialogContent>
-</Dialog>
+              >
+                Nahi
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
