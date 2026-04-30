@@ -12,7 +12,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle, RotateCcw } from "lucide-react";
+import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle, RotateCcw, ChevronDown } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import {
@@ -380,48 +380,58 @@ const filteredTransactions = transactions.filter(tx => {
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
             {/* Unified Header - Matches Home Page Look */}
-            {/* Jahil-Proof Header - Mobile Friendly */}
+            {/* Native & Premium Filter Header */}
             <div className="px-4 py-4 md:px-6 md:py-5 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-              <div className="flex flex-wrap items-center justify-between gap-3">
-                <div className="flex items-center gap-2">
-                  <History className="w-4 h-4 text-slate-400" />
-                  <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">
+              <div className="flex items-center justify-between gap-3">
+                
+                {/* Left Side: Title (Synced with Home Page Style) */}
+                <div className="flex items-center gap-2.5">
+                  <div className="p-1.5 bg-slate-100 dark:bg-white/[0.05] rounded-md">
+                    <History className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  </div>
+                  <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
                     Transactions ({filteredTransactions.length})
                   </span>
                 </div>
 
-                <div className="flex items-center gap-2">
-                  {/* Dropdown Selector */}
-                  <select 
-                    value={filterType}
-                    onChange={(e) => setFilterType(e.target.value)}
-                    className="bg-slate-100 dark:bg-white/[0.05] text-[10px] font-bold px-3 py-1.5 rounded-full border-none outline-none dark:text-white cursor-pointer"
-                  >
-                    <option value="all">Sub Dekhein</option>
-                    <option value="today">Aaj Ka</option>
-                    <option value="thisMonth">Is Mahine</option>
-                    <option value="custom">Tarikh Chunien</option>
-                  </select>
+                {/* Right Side: Smart Filter */}
+                <div className="flex items-center gap-3">
+                  <div className="relative group">
+                    <select 
+                      value={filterType}
+                      onChange={(e) => setFilterType(e.target.value)}
+                      className="appearance-none bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-slate-200 text-[11px] font-bold pl-4 pr-8 py-2 rounded-lg border border-transparent focus:border-blue-500/30 outline-none transition-all cursor-pointer hover:bg-slate-200 dark:hover:bg-white/[0.08]"
+                    >
+                      <option value="all">Sub Dekhein</option>
+                      <option value="today">Aaj Ka</option>
+                      <option value="thisMonth">Is Mahine</option>
+                      <option value="custom">Tarikh Chunien</option>
+                    </select>
+                    {/* Custom Arrow for Premium Look */}
+                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
+                      <ChevronDown className="w-3 h-3" />
+                    </div>
+                  </div>
 
-                  {/* Custom Date Inputs - Sirf tab dikhenge jab 'custom' select ho */}
+                  {/* Minimalist Date Picker - Only for Custom */}
                   {filterType === 'custom' && (
-                    <div className="flex items-center gap-1 bg-slate-50 dark:bg-white/[0.03] px-2 py-1 rounded-full border border-slate-200 dark:border-white/10 animate-in fade-in slide-in-from-right-2 duration-300">
+                    <div className="flex items-center gap-2 bg-white dark:bg-white/[0.02] px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm animate-in fade-in zoom-in-95 duration-200">
                       <input 
                         type="date" 
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
-                        className="bg-transparent text-[9px] font-bold outline-none dark:text-white w-[85px]"
+                        className="bg-transparent text-[10px] font-bold text-slate-600 dark:text-slate-300 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
                       />
-                      <span className="text-slate-300 text-[9px]">—</span>
+                      <div className="w-[1px] h-3 bg-slate-200 dark:bg-white/10" />
                       <input 
                         type="date" 
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
-                        className="bg-transparent text-[9px] font-bold outline-none dark:text-white w-[85px]"
+                        className="bg-transparent text-[10px] font-bold text-slate-600 dark:text-slate-300 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
                       />
                       <button 
                         onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-                        className="ml-1 text-red-500"
+                        className="ml-1 p-1 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-md transition-colors"
                       >
                         <RotateCcw className="w-3 h-3" />
                       </button>
