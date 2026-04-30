@@ -45,7 +45,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
 
-const filteredTransactions = transactions.filter(tx => {
+  const filteredTransactions = transactions.filter(tx => {
     const txDate = new Date(tx.date);
     const today = new Date();
     today.setHours(0, 0, 0, 0);
@@ -54,7 +54,7 @@ const filteredTransactions = transactions.filter(tx => {
     if (filterType === "today") {
       return txDate.getTime() === today.getTime();
     }
-    
+
     if (filterType === "thisMonth") {
       return txDate.getMonth() === today.getMonth() && txDate.getFullYear() === today.getFullYear();
     }
@@ -62,12 +62,12 @@ const filteredTransactions = transactions.filter(tx => {
     if (filterType === "custom") {
       if (startDate) {
         const start = new Date(startDate);
-        start.setHours(0,0,0,0);
+        start.setHours(0, 0, 0, 0);
         if (txDate < start) return false;
       }
       if (endDate) {
         const end = new Date(endDate);
-        end.setHours(23,59,59,999);
+        end.setHours(23, 59, 59, 999);
         if (txDate > end) return false;
       }
     }
@@ -379,59 +379,63 @@ const filteredTransactions = transactions.filter(tx => {
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
-            {/* Unified Header - Matches Home Page Look */}
-            {/* Native & Premium Filter Header */}
+              {/* Unified Header - Matches Home Page Look */}
+              {/* Native & Premium Filter Header */}
+             {/* Final Premium Filter Header */}
             <div className="px-4 py-4 md:px-6 md:py-5 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-              <div className="flex items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 
-                {/* Left Side: Title (Synced with Home Page Style) */}
+                {/* Transactions Count */}
                 <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 bg-slate-100 dark:bg-white/[0.05] rounded-md">
-                    <History className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
+                  <div className="p-1.5 bg-slate-100 dark:bg-white/[0.05] rounded-md text-slate-500 dark:text-slate-400">
+                    <History className="w-3.5 h-3.5" />
                   </div>
                   <span className="text-[10px] md:text-[11px] font-black uppercase tracking-[0.15em] text-slate-500 dark:text-slate-400">
                     Transactions ({filteredTransactions.length})
                   </span>
                 </div>
 
-                {/* Right Side: Smart Filter */}
-                <div className="flex items-center gap-3">
-                  <div className="relative group">
+                {/* Filter Controls */}
+                <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+                  <div className="relative flex-1 sm:flex-initial">
                     <select 
                       value={filterType}
                       onChange={(e) => setFilterType(e.target.value)}
-                      className="appearance-none bg-slate-100 dark:bg-white/[0.05] text-slate-700 dark:text-slate-200 text-[11px] font-bold pl-4 pr-8 py-2 rounded-lg border border-transparent focus:border-blue-500/30 outline-none transition-all cursor-pointer hover:bg-slate-200 dark:hover:bg-white/[0.08]"
+                      className="w-full appearance-none bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-slate-100 text-[11px] font-bold pl-4 pr-9 py-2 rounded-lg border border-transparent focus:border-blue-500/30 outline-none cursor-pointer transition-all"
                     >
-                      <option value="all">Sub Dekhein</option>
-                      <option value="today">Aaj Ka</option>
-                      <option value="thisMonth">Is Mahine</option>
-                      <option value="custom">Tarikh Chunien</option>
+                      <option value="all" className="bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white">Sub Dekhein</option>
+                      <option value="today" className="bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white">Aaj Ka</option>
+                      <option value="thisMonth" className="bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white">Is Mahine</option>
+                      <option value="custom" className="bg-white dark:bg-[#1e293b] text-slate-900 dark:text-white">Tarikh Chunien</option>
                     </select>
-                    {/* Custom Arrow for Premium Look */}
-                    <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-400">
-                      <ChevronDown className="w-3 h-3" />
-                    </div>
+                    <ChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 w-3 h-3 text-slate-400 pointer-events-none" />
                   </div>
 
-                  {/* Minimalist Date Picker - Only for Custom */}
+                  {/* Date Inputs - Clean & Explicit */}
                   {filterType === 'custom' && (
-                    <div className="flex items-center gap-2 bg-white dark:bg-white/[0.02] px-3 py-1.5 rounded-lg border border-slate-200 dark:border-white/10 shadow-sm animate-in fade-in zoom-in-95 duration-200">
-                      <input 
-                        type="date" 
-                        value={startDate}
-                        onChange={(e) => setStartDate(e.target.value)}
-                        className="bg-transparent text-[10px] font-bold text-slate-600 dark:text-slate-300 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
-                      />
+                    <div className="flex items-center gap-2 bg-slate-50 dark:bg-white/[0.03] px-2 py-1 rounded-lg border border-slate-200 dark:border-white/10 animate-in fade-in zoom-in-95 duration-200">
+                      <div className="flex items-center">
+                        <span className="text-[9px] font-bold text-slate-400 mr-2 uppercase">From</span>
+                        <input 
+                          type="date" 
+                          value={startDate}
+                          onChange={(e) => setStartDate(e.target.value)}
+                          className="bg-transparent text-[10px] font-bold text-slate-700 dark:text-slate-200 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
+                        />
+                      </div>
                       <div className="w-[1px] h-3 bg-slate-200 dark:bg-white/10" />
-                      <input 
-                        type="date" 
-                        value={endDate}
-                        onChange={(e) => setEndDate(e.target.value)}
-                        className="bg-transparent text-[10px] font-bold text-slate-600 dark:text-slate-300 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
-                      />
+                      <div className="flex items-center">
+                        <span className="text-[9px] font-bold text-slate-400 mr-2 uppercase">To</span>
+                        <input 
+                          type="date" 
+                          value={endDate}
+                          onChange={(e) => setEndDate(e.target.value)}
+                          className="bg-transparent text-[10px] font-bold text-slate-700 dark:text-slate-200 outline-none w-[100px] [color-scheme:light] dark:[color-scheme:dark]"
+                        />
+                      </div>
                       <button 
                         onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-                        className="ml-1 p-1 hover:bg-red-50 dark:hover:bg-red-500/10 text-red-400 hover:text-red-500 rounded-md transition-colors"
+                        className="p-1 hover:bg-red-500/10 text-red-500 rounded-md transition-colors"
                       >
                         <RotateCcw className="w-3 h-3" />
                       </button>
