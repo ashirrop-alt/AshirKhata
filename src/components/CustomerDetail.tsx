@@ -460,7 +460,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     className="flex flex-row items-center gap-2 w-full lg:w-auto"
   >
     {/* Input Box - Laptop/Mobile dono par ab solid box nazar ayega */}
-    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] p-1 sm:p-1 rounded-xl border border-slate-200 dark:border-white/10 divide-x divide-slate-200 dark:divide-white/10 sm:divide-none flex-nowrap overflow-hidden">
+    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] p-1.5 sm:p-1 rounded-xl border border-slate-200 dark:border-white/10 divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
       <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
       
       {/* Laptop Only Divider */}
@@ -579,29 +579,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 min-w-0 gap-0 sm:gap-2 relative">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
+      {/* Label Styling */}
       <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center h-6">
-        {/* Universal Display Layer: Ye har mobile/laptop par 'dd/mm/yyyy' dikhayega */}
-        <div className="absolute inset-0 flex items-center justify-between pointer-events-none">
-          <span className={`text-[10px] sm:text-[11px] font-bold ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400 uppercase'}`}>
-            {value ? new Date(value).toLocaleDateString('en-GB').replace(/\//g, '/') : 'dd/mm/yyyy'}
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
+        {/* Mobile Placeholder: Sirf tab dikhega jab value na ho aur screen choti ho */}
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-bold text-slate-400 pointer-events-none sm:hidden">
+            dd/mm/yyyy
           </span>
-          {/* Custom Small Icon taake S8+ par fit aaye */}
-          <svg className="w-2.5 h-2.5 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
+        )}
 
-        {/* Hidden Native Input: Ye sirf tap handle karega */}
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-10"
+          required
+          /* 
+             sm:appearance-auto: Laptop par native browser styling (typing enabled)
+             appearance-none: Mobile par custom look taake overlap na ho
+          */
+          className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
         />
       </div>
     </div>
