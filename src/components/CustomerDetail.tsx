@@ -578,41 +578,42 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
-  // Agar value khaali hai tw aaj ki date ya placeholder dikhane ke liye
-  const displayDate = value ? value : "Select Date";
+  // Date format karne ke liye function (e.g., 02/05/2026)
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "DD/MM/YYYY";
+    const [y, m, d] = dateStr.split('-');
+    return `${d}/${m}/${y}`;
+  };
 
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2 relative">
-      {/* Label Styling */}
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none z-10">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2 relative group">
+      {/* Label: Fixed look as you liked */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full min-h-[1.5rem] flex items-center">
-        {/* Fake Placeholder: Ye tab dikhega jab value khaali ho (Mobile Fix) */}
-        {!value && (
-          <span className="absolute left-0 text-[12px] sm:text-[11px] font-medium text-slate-400 pointer-events-none">
-            DD/MM/YYYY
-          </span>
-        )}
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
+        {/* Visual Display: Ye humein clean text dikhayega bina kisi glitch ke */}
+        <span className={`text-[11px] font-bold truncate ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
+          {formatDate(value)}
+        </span>
 
+        {/* Hidden Native Input: Ye background mein picker trigger karega */}
         <input 
           type="date" 
-          value={value}
+          value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] block relative z-20 opacity-0 sm:opacity-100 focus:opacity-100 transition-opacity"
+          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
           style={{
-            WebkitAppearance: 'none',
-            display: 'block',
+            colorScheme: 'light dark',
+            WebkitAppearance: 'none'
           }}
         />
         
-        {/* Mobile par value dikhane ke liye extra span (taake khaali na lage) */}
-        {value && (
-          <span className="absolute left-0 text-[12px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 sm:hidden">
-            {new Date(value).toLocaleDateString('en-GB')}
-          </span>
-        )}
+        {/* Tiny Icon to fill space and look pro */}
+        <svg className={`w-2.5 h-2.5 ml-auto transition-colors ${value ? 'text-indigo-500' : 'text-slate-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
+        </svg>
       </div>
     </div>
   );
