@@ -452,26 +452,27 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* Date Picker - Responsive Fix */}
       {/* Date Picker - Premium Refined Version */}
 {/* Date Picker - Adaptive Hybrid Layout */}
+{/* Date Picker Section */}
 {filterType === 'custom' && (
   <motion.div 
     initial={{ opacity: 0, scale: 0.98 }}
     animate={{ opacity: 1, scale: 1 }}
     className="flex flex-row items-center gap-2 w-full lg:w-auto"
   >
-    {/* Input Box - Mobile par background hai, Laptop par transparent */}
-    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] sm:bg-transparent p-1 sm:p-0 rounded-xl border border-slate-200 dark:border-white/10 sm:border-none divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
+    {/* Input Box - Laptop/Mobile dono par ab solid box nazar ayega */}
+    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] p-1.5 sm:p-1 rounded-xl border border-slate-200 dark:border-white/10 divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
       <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
       
       {/* Laptop Only Divider */}
-      <div className="hidden sm:block w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1" />
+      <div className="hidden sm:block w-[1px] h-4 bg-slate-300 dark:bg-white/20 mx-1" />
       
       <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
     </div>
     
-    {/* Refresh Icon - Always Outside and Clean */}
+    {/* Refresh Icon - Box se bahar, clean look */}
     <button 
       onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="p-2.5 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20 shadow-sm sm:shadow-none"
+      className="p-3 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20"
     >
       <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
     </button>
@@ -578,38 +579,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="relative flex flex-col sm:flex-row sm:items-center flex-1 px-3 sm:px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
-      {/* Label: Mobile par top par, Laptop par side par */}
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-500/80 sm:text-indigo-500 tracking-wider uppercase">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-0.5 sm:py-0 min-w-0 gap-0 sm:gap-2">
+      {/* Label Styling */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none">
         {label}
       </span>
       
       <input 
         type="date" 
         value={value}
+        placeholder="dd/mm/yyyy"
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0"
+        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[20px] leading-normal"
       />
-
-      {/* CSS fix for Mobile visibility and Icons */}
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* Laptop par default icon dikhane ke liye */
-        input::-webkit-calendar-picker-indicator {
-          cursor: pointer;
-          filter: invert(0.5); /* Icon ka color adjust karne ke liye */
-        }
-        
-        /* Dark mode mein icon ko white/bright karne ke liye */
-        .dark input::-webkit-calendar-picker-indicator {
-          filter: invert(1);
-        }
-
-        /* Mobile Chrome/Safari par placeholder color fix */
-        input[type="date"]::before {
-          color: inherit;
-          content: attr(placeholder);
-        }
-      `}} />
     </div>
   );
 }
