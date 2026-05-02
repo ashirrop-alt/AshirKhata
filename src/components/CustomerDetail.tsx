@@ -451,27 +451,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       {/* Date Picker - Responsive Fix */}
       {/* Date Picker - Premium Refined Version */}
+{/* Date Picker - Adaptive Hybrid Layout */}
 {filterType === 'custom' && (
   <motion.div 
-    initial={{ opacity: 0, y: -10 }}
-    animate={{ opacity: 1, y: 0 }}
-    className="w-full lg:w-auto"
+    initial={{ opacity: 0, scale: 0.98 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex flex-row items-center gap-2 w-full lg:w-auto"
   >
-    {/* Ye neechay wala div main container hai jo glass-look deta hai */}
-    <div className="flex items-center gap-2 p-1.5 bg-slate-100/50 dark:bg-white/[0.04] rounded-2xl border border-slate-200/60 dark:border-white/10 shadow-inner">
-      <div className="flex flex-1 items-center divide-x divide-slate-200 dark:divide-white/10">
-        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-      </div>
+    {/* Input Box - Mobile par background hai, Laptop par transparent */}
+    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] sm:bg-transparent p-1 sm:p-0 rounded-xl border border-slate-200 dark:border-white/10 sm:border-none divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
       
-      {/* Refresh/Reset Button */}
-      <button 
-        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-        className="p-2.5 bg-white dark:bg-white/10 text-red-500 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/20 transition-all shadow-sm active:scale-95"
-      >
-        <RotateCcw className="w-4 h-4" />
-      </button>
+      {/* Laptop Only Divider */}
+      <div className="hidden sm:block w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1" />
+      
+      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
     </div>
+    
+    {/* Refresh Icon - Always Outside and Clean */}
+    <button 
+      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+      className="p-2.5 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20 shadow-sm sm:shadow-none"
+    >
+      <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
+    </button>
   </motion.div>
 )}
     </div>
@@ -573,52 +576,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-function DatePickerGroup({ startDate, setStartDate, endDate, setEndDate, setFilterType, isMobile = false }: any) {
-  return (
-    <>
-      <div className="flex items-center gap-2 pl-2">
-        <span className="text-[9px] font-black text-indigo-500 uppercase">From</span>
-        <input 
-          type="date" 
-          value={startDate}
-          onChange={(e) => setStartDate(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold text-slate-700 dark:text-slate-200 outline-none ${isMobile ? 'w-full' : 'w-[110px]'} [color-scheme:light] dark:[color-scheme:dark]`}
-        />
-      </div>
-      <div className="w-[1px] h-4 bg-slate-200 dark:bg-white/10" />
-      <div className="flex items-center gap-2">
-        <span className="text-[9px] font-black text-indigo-500 uppercase">To</span>
-        <input 
-          type="date" 
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold text-slate-700 dark:text-slate-200 outline-none ${isMobile ? 'w-full' : 'w-[110px]'} [color-scheme:light] dark:[color-scheme:dark]`}
-        />
-      </div>
-      <button 
-        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-        className="ml-1 p-1.5 hover:bg-red-500/10 text-red-500 rounded-lg transition-colors"
-      >
-        <RotateCcw className="w-3.5 h-3.5" />
-      </button>
-    </>
-  );
-}
-
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="relative flex flex-col flex-1 px-3 py-1 min-w-0">
-      {/* Label ko chota aur stylish banaya gaya hai */}
-      <span className="text-[7px] font-black text-indigo-500/60 tracking-[0.1em] uppercase mb-0.5">
+    <div className="relative flex flex-col sm:flex-row sm:items-center flex-1 px-3 sm:px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
+      {/* Label: Mobile par top par, Laptop par side par */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-500/60 sm:text-indigo-500 tracking-wider uppercase">
         {label}
       </span>
       <input 
         type="date" 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-[13px] font-bold outline-none text-slate-700 dark:text-slate-100 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 appearance-none"
+        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 appearance-none"
       />
-      {/* Ye chota sa style tag input ko mazeed clean dikhata hai */}
       <style dangerouslySetInnerHTML={{ __html: `
         input::-webkit-calendar-picker-indicator {
           background: transparent;
