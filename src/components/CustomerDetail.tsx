@@ -578,25 +578,42 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
+  // Agar value khaali hai tw aaj ki date ya placeholder dikhane ke liye
+  const displayDate = value ? value : "Select Date";
+
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
-      {/* Label Styling - Keeping it exactly as you liked */}
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2 relative">
+      {/* Label Styling */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none z-10">
         {label}
       </span>
       
-      <input 
-        type="date" 
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        /* Mobile Browser Fix: Added min-height and explicit colors */
-        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] block"
-        style={{
-          /* Force display for mobile browsers that hide the placeholder */
-          WebkitAppearance: 'none',
-          display: 'block'
-        }}
-      />
+      <div className="relative w-full min-h-[1.5rem] flex items-center">
+        {/* Fake Placeholder: Ye tab dikhega jab value khaali ho (Mobile Fix) */}
+        {!value && (
+          <span className="absolute left-0 text-[12px] sm:text-[11px] font-medium text-slate-400 pointer-events-none">
+            DD/MM/YYYY
+          </span>
+        )}
+
+        <input 
+          type="date" 
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] block relative z-20 opacity-0 sm:opacity-100 focus:opacity-100 transition-opacity"
+          style={{
+            WebkitAppearance: 'none',
+            display: 'block',
+          }}
+        />
+        
+        {/* Mobile par value dikhane ke liye extra span (taake khaali na lage) */}
+        {value && (
+          <span className="absolute left-0 text-[12px] sm:text-[11px] font-bold text-slate-700 dark:text-slate-200 sm:hidden">
+            {new Date(value).toLocaleDateString('en-GB')}
+          </span>
+        )}
+      </div>
     </div>
   );
 }
