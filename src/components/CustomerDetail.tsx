@@ -580,26 +580,31 @@ export function CustomerDetail({ customer, onBack }: Props) {
 function DatePickerInput({ label, value, onChange }: any) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
-      {/* Label Styling - Fixed & Professional */}
+      {/* Label Styling */}
       <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <input 
-        type="date" 
-        value={value || ''}
-        onChange={(e) => onChange(e.target.value)}
-        /* 
-           Laptop par normal behave karega. 
-           Mobile par 'before' content use kiya hai jo placeholder ka kaam karega 
-           agar value empty ho.
-        */
-        className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] 
-                   before:content-[attr(data-placeholder)] before:text-slate-400 before:font-medium 
-                   invalid:before:inline-block valid:before:hidden"
-        data-placeholder="dd/mm/yyyy"
-        required
-      />
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
+        {/* Mobile Placeholder: Sirf tab dikhega jab value na ho aur screen choti ho */}
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-bold text-slate-400 pointer-events-none sm:hidden">
+            dd/mm/yyyy
+          </span>
+        )}
+
+        <input 
+          type="date" 
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          required
+          /* 
+             sm:appearance-auto: Laptop par native browser styling (typing enabled)
+             appearance-none: Mobile par custom look taake overlap na ho
+          */
+          className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
+        />
+      </div>
     </div>
   );
 }
