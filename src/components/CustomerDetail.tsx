@@ -452,27 +452,26 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* Date Picker - Responsive Fix */}
       {/* Date Picker - Premium Refined Version */}
 {/* Date Picker - Adaptive Hybrid Layout */}
-{/* Date Picker Section */}
 {filterType === 'custom' && (
   <motion.div 
     initial={{ opacity: 0, scale: 0.98 }}
     animate={{ opacity: 1, scale: 1 }}
     className="flex flex-row items-center gap-2 w-full lg:w-auto"
   >
-    {/* Input Box - Laptop/Mobile dono par ab solid box nazar ayega */}
-    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] p-1.5 sm:p-1 rounded-xl border border-slate-200 dark:border-white/10 divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
+    {/* Input Box - Mobile par background hai, Laptop par transparent */}
+    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] sm:bg-transparent p-1 sm:p-0 rounded-xl border border-slate-200 dark:border-white/10 sm:border-none divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
       <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
       
       {/* Laptop Only Divider */}
-      <div className="hidden sm:block w-[1px] h-4 bg-slate-300 dark:bg-white/20 mx-1" />
+      <div className="hidden sm:block w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1" />
       
       <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
     </div>
     
-    {/* Refresh Icon - Box se bahar, clean look */}
+    {/* Refresh Icon - Always Outside and Clean */}
     <button 
       onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="p-3 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20"
+      className="p-2.5 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20 shadow-sm sm:shadow-none"
     >
       <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
     </button>
