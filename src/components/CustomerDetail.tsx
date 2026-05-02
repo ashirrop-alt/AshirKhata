@@ -578,43 +578,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
-  // Date format karne ke liye function (e.g., 02/05/2026)
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "DD/MM/YYYY";
-    const [y, m, d] = dateStr.split('-');
-    return `${d}/${m}/${y}`;
-  };
-
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2 relative group">
-      {/* Label: Fixed look as you liked */}
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
+      {/* Label Styling - Fixed & Professional */}
       <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Visual Display: Ye humein clean text dikhayega bina kisi glitch ke */}
-        <span className={`text-[11px] font-bold truncate ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
-          {formatDate(value)}
-        </span>
-
-        {/* Hidden Native Input: Ye background mein picker trigger karega */}
-        <input 
-          type="date" 
-          value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full"
-          style={{
-            colorScheme: 'light dark',
-            WebkitAppearance: 'none'
-          }}
-        />
-        
-        {/* Tiny Icon to fill space and look pro */}
-        <svg className={`w-2.5 h-2.5 ml-auto transition-colors ${value ? 'text-indigo-500' : 'text-slate-300'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M19 9l-7 7-7-7" />
-        </svg>
-      </div>
+      <input 
+        type="date" 
+        value={value || ''}
+        onChange={(e) => onChange(e.target.value)}
+        /* 
+           Laptop par normal behave karega. 
+           Mobile par 'before' content use kiya hai jo placeholder ka kaam karega 
+           agar value empty ho.
+        */
+        className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] 
+                   before:content-[attr(data-placeholder)] before:text-slate-400 before:font-medium 
+                   invalid:before:inline-block valid:before:hidden"
+        data-placeholder="dd/mm/yyyy"
+        required
+      />
     </div>
   );
 }
