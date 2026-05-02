@@ -456,24 +456,26 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
       {/* Date Picker Section */}
       {filterType === 'custom' && (
-        <motion.div 
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 w-full lg:w-auto"
-        >
-          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] p-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-          </div>
-          
-          <button 
-            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-            className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all border border-slate-200 dark:border-white/10"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </motion.div>
-      )}
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.98 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
+  >
+    {/* Input Box Container */}
+    <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+    </div>
+    
+    {/* Refresh Icon - Height matched with the box above */}
+    <button 
+      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+    >
+      <RotateCcw className="w-4 h-4" />
+    </button>
+  </motion.div>
+)}
     </div>
   </div>
 </div>
@@ -575,16 +577,15 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
-      {/* Label Styling */}
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Mobile Placeholder: Sirf tab dikhega jab value na ho aur screen choti ho */}
+      <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {/* Clean custom placeholder jo shadow nahi banayega */}
         {!value && (
-          <span className="absolute left-0 text-[11px] font-bold text-slate-400 pointer-events-none sm:hidden">
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
           </span>
         )}
@@ -593,13 +594,12 @@ function DatePickerInput({ label, value, onChange }: any) {
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          required
-          /* 
-             sm:appearance-auto: Laptop par native browser styling (typing enabled)
-             appearance-none: Mobile par custom look taake overlap na ho
-          */
-          className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
+          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 ${!value ? 'text-transparent' : 'text-slate-700 dark:text-slate-200'}`}
+          style={{ WebkitAppearance: 'none', display: 'block' }}
         />
+        
+        {/* Calendar Icon - Jo har mobile par dikhega */}
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
     </div>
   );
