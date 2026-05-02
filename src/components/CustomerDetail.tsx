@@ -580,22 +580,18 @@ export function CustomerDetail({ customer, onBack }: Props) {
 function DatePickerInput({ label, value, onChange }: any) {
   return (
     <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none">
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
       <input 
-        type="date" 
+        type={value ? "date" : "text"} 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        /* Is logic se jab value empty hogi tw ye text dikhayega (placeholder ki tarah) */
+        onFocus={(e) => (e.target.type = "date")}
+        onBlur={(e) => { if(!e.target.value) e.target.type = "text" }}
         placeholder="dd/mm/yyyy"
-        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] block before:content-[attr(placeholder)] before:mr-auto before:text-slate-400 before:font-normal [&:valid]:before:display-none invalid:before:inline-block"
-        required
-        style={{
-          WebkitAppearance: 'none',
-          display: 'block'
-        }}
+        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] block"
       />
     </div>
   );
