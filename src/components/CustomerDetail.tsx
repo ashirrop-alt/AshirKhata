@@ -586,7 +586,7 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Mobile Placeholder: Sirf tab dikhega jab value na ho aur screen choti ho */}
+        {/* Mobile Placeholder: Only shows when no value */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-bold text-slate-400 pointer-events-none sm:hidden">
             dd/mm/yyyy
@@ -598,12 +598,16 @@ function DatePickerInput({ label, value, onChange }: any) {
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
           required
-          /* 
-             sm:appearance-auto: Laptop par native browser styling (typing enabled)
-             appearance-none: Mobile par custom look taake overlap na ho
-          */
+          /* Laptop par native icon rakha hai, mobile par custom icon niche add kiya hai */
           className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
         />
+
+        {/* Custom Calendar Icon for Mobile (Hidden on Laptop to avoid double icons) */}
+        <div className="sm:hidden absolute right-0 pointer-events-none">
+          <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
       </div>
     </div>
   );
