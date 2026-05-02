@@ -580,27 +580,34 @@ function DatePickerInput({ label, value, onChange }: any) {
   return (
     <div className="relative flex flex-col sm:flex-row sm:items-center flex-1 px-3 sm:px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
       {/* Label: Mobile par top par, Laptop par side par */}
-      <span className="text-[7px] sm:text-[8px] font-black text-indigo-500/60 sm:text-indigo-500 tracking-wider uppercase">
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-500/80 sm:text-indigo-500 tracking-wider uppercase">
         {label}
       </span>
+      
       <input 
         type="date" 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 appearance-none"
+        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0"
       />
+
+      {/* CSS fix for Mobile visibility and Icons */}
       <style dangerouslySetInnerHTML={{ __html: `
+        /* Laptop par default icon dikhane ke liye */
         input::-webkit-calendar-picker-indicator {
-          background: transparent;
-          bottom: 0;
-          color: transparent;
           cursor: pointer;
-          height: auto;
-          left: 0;
-          position: absolute;
-          right: 0;
-          top: 0;
-          width: auto;
+          filter: invert(0.5); /* Icon ka color adjust karne ke liye */
+        }
+        
+        /* Dark mode mein icon ko white/bright karne ke liye */
+        .dark input::-webkit-calendar-picker-indicator {
+          filter: invert(1);
+        }
+
+        /* Mobile Chrome/Safari par placeholder color fix */
+        input[type="date"]::before {
+          color: inherit;
+          content: attr(placeholder);
         }
       `}} />
     </div>
