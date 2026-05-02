@@ -409,12 +409,16 @@ export function CustomerDetail({ customer, onBack }: Props) {
     </div>
 
     {/* Controls Group */}
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2" ref={dropdownRef}>
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
       
-      {/* Dropdown */}
-      <div className="relative">
+      {/* Dropdown - Fixed Click Issue */}
+      <div className="relative z-[110]"> 
         <button
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsDropdownOpen(!isDropdownOpen);
+          }}
           className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm"
         >
           <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
@@ -422,62 +426,54 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </button>
 
         <AnimatePresence>
-          {filterType === 'custom' && (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.98 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex items-center gap-2 w-full lg:w-auto"
-  >
-    {/* Input Box - Responsive Container */}
-    <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] sm:bg-white/5 p-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm sm:shadow-none divide-x divide-slate-100 dark:divide-white/5">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-      
-      {/* Divider logic handled by 'divide-x' class above */}
-      
-      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-    </div>
-    
-    {/* Refresh Icon - Clean & Simple */}
-    <button 
-      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10"
-      title="Reset Filter"
-    >
-      <RotateCcw className="w-4 h-4" />
-    </button>
-  </motion.div>
-)}
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 4 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute left-0 right-0 sm:left-auto z-[120] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+            >
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => {
+                    setFilterType(option.id);
+                    setIsDropdownOpen(false);
+                    if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
+                    ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
+                >
+                  {option.label}
+                  {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                </button>
+              ))}
+            </motion.div>
+          )}
         </AnimatePresence>
       </div>
 
-      {/* Date Picker - Responsive Fix */}
-      {/* Date Picker - Premium Refined Version */}
-{/* Date Picker - Adaptive Hybrid Layout */}
-{filterType === 'custom' && (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.98 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex flex-row items-center gap-2 w-full lg:w-auto"
-  >
-    {/* Input Box - Mobile par background hai, Laptop par transparent */}
-    <div className="flex flex-1 items-center bg-slate-50 dark:bg-white/[0.03] sm:bg-transparent p-1 sm:p-0 rounded-xl border border-slate-200 dark:border-white/10 sm:border-none divide-x divide-slate-200 dark:divide-white/10 sm:divide-none">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-      
-      {/* Laptop Only Divider */}
-      <div className="hidden sm:block w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1" />
-      
-      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-    </div>
-    
-    {/* Refresh Icon - Always Outside and Clean */}
-    <button 
-      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="p-2.5 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-all shrink-0 border border-red-100 dark:border-red-500/20 shadow-sm sm:shadow-none"
-    >
-      <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-    </button>
-  </motion.div>
-)}
+      {/* Date Picker Section */}
+      {filterType === 'custom' && (
+        <motion.div 
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 w-full lg:w-auto"
+        >
+          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] p-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+          </div>
+          
+          <button 
+            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+            className="p-2.5 bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all border border-slate-200 dark:border-white/10"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
     </div>
   </div>
 </div>
@@ -579,22 +575,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1.5 sm:py-1 min-w-0 gap-1 sm:gap-2">
-      {/* Label Styling - Slightly bigger for readability */}
-      <span className="text-[9px] sm:text-[10px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2">
+      {/* Label Styling */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center group">
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
+        {/* Mobile Placeholder: Sirf tab dikhega jab value na ho aur screen choti ho */}
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-bold text-slate-400 pointer-events-none sm:hidden">
+            dd/mm/yyyy
+          </span>
+        )}
+
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[12px] font-medium outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] cursor-pointer"
-          style={{
-            // Mobile par default icons ko manage karne ke liye
-            WebkitAppearance: 'listbox', 
-          }}
+          required
+          /* 
+             sm:appearance-auto: Laptop par native browser styling (typing enabled)
+             appearance-none: Mobile par custom look taake overlap na ho
+          */
+          className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
         />
       </div>
     </div>
