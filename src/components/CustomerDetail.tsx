@@ -450,26 +450,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
 
       {/* Date Picker - Responsive Fix */}
-      {filterType === 'custom' && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex flex-row items-center gap-2 w-full sm:w-auto"
-        >
-          <div className="flex flex-col sm:flex-row flex-1 items-stretch sm:items-center bg-slate-50 dark:bg-white/[0.03] p-1.5 sm:p-1 rounded-xl border border-slate-200 dark:border-white/10 gap-1 sm:gap-0">
-            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-            <div className="hidden sm:block w-[1px] h-4 bg-slate-200 dark:bg-white/10 mx-1" />
-            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-          </div>
-          
-          <button 
-            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-            className="p-3 sm:p-2 bg-red-50 dark:bg-red-500/10 text-red-500 rounded-xl sm:rounded-lg hover:bg-red-100 transition-colors shrink-0 border border-red-100 dark:border-red-500/20"
-          >
-            <RotateCcw className="w-4 h-4 sm:w-3.5 sm:h-3.5" />
-          </button>
-        </motion.div>
-      )}
+      {/* Date Picker - Premium Refined Version */}
+{filterType === 'custom' && (
+  <motion.div 
+    initial={{ opacity: 0, y: -10 }}
+    animate={{ opacity: 1, y: 0 }}
+    className="w-full lg:w-auto"
+  >
+    {/* Ye neechay wala div main container hai jo glass-look deta hai */}
+    <div className="flex items-center gap-2 p-1.5 bg-slate-100/50 dark:bg-white/[0.04] rounded-2xl border border-slate-200/60 dark:border-white/10 shadow-inner">
+      <div className="flex flex-1 items-center divide-x divide-slate-200 dark:divide-white/10">
+        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+      </div>
+      
+      {/* Refresh/Reset Button */}
+      <button 
+        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+        className="p-2.5 bg-white dark:bg-white/10 text-red-500 rounded-xl hover:bg-red-50 dark:hover:bg-red-500/20 transition-all shadow-sm active:scale-95"
+      >
+        <RotateCcw className="w-4 h-4" />
+      </button>
+    </div>
+  </motion.div>
+)}
     </div>
   </div>
 </div>
@@ -603,14 +607,32 @@ function DatePickerGroup({ startDate, setStartDate, endDate, setEndDate, setFilt
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex items-center justify-between sm:justify-start gap-2 px-2 py-1.5 sm:py-1 flex-1 min-w-0">
-      <span className="text-[9px] sm:text-[8px] font-black text-indigo-500/80 shrink-0 tracking-tighter w-8 sm:w-auto">{label}</span>
+    <div className="relative flex flex-col flex-1 px-3 py-1 min-w-0">
+      {/* Label ko chota aur stylish banaya gaya hai */}
+      <span className="text-[7px] font-black text-indigo-500/60 tracking-[0.1em] uppercase mb-0.5">
+        {label}
+      </span>
       <input 
         type="date" 
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        className="bg-transparent text-[12px] sm:text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full min-w-0 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 text-right sm:text-left"
+        className="bg-transparent text-[13px] font-bold outline-none text-slate-700 dark:text-slate-100 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 appearance-none"
       />
+      {/* Ye chota sa style tag input ko mazeed clean dikhata hai */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        input::-webkit-calendar-picker-indicator {
+          background: transparent;
+          bottom: 0;
+          color: transparent;
+          cursor: pointer;
+          height: auto;
+          left: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: auto;
+        }
+      `}} />
     </div>
   );
 }
