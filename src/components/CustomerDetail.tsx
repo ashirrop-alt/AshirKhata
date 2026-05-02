@@ -578,41 +578,32 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
-  // Date format function for a clean look (e.g., 02 May 2026)
-  const formatDisplayDate = (dateStr: string) => {
-    if (!dateStr) return "Select Date";
-    const date = new Date(dateStr);
-    return date.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' });
-  };
-
   return (
-    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-3 py-2 sm:py-0 min-w-0 gap-1 sm:gap-2 relative bg-slate-50/50 dark:bg-slate-800/50 sm:bg-transparent rounded-lg sm:rounded-none">
-      {/* Label: Small & Sharp */}
-      <span className="text-[9px] sm:text-[8px] font-bold text-indigo-500 uppercase tracking-tighter shrink-0">
+    <div className="flex flex-col sm:flex-row sm:items-center flex-1 px-2 py-1 sm:py-0 min-w-0 gap-0 sm:gap-2 relative">
+      {/* Label: Fixed & Sharp as before */}
+      <span className="text-[7px] sm:text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center group cursor-pointer">
-        {/* Display Layer: Ye wo hai jo user ko nazar aayega (Clean & Professional) */}
-        <div className="flex items-center justify-between w-full">
-          <span className={`text-[12px] sm:text-[11px] font-semibold truncate ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
-            {formatDisplayDate(value)}
-          </span>
-          
-          {/* Professional Calendar Icon */}
-          <svg className={`w-3.5 h-3.5 sm:w-3 sm:h-3 ${value ? 'text-indigo-500' : 'text-slate-400'} ml-2`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-        </div>
-
-        {/* Invisible Native Input: User is par tap karega tw calendar khulega magar ye nazar nahi aayega */}
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer w-full h-full z-20"
-          style={{ colorScheme: 'light dark' }}
+          required
+          /* 
+             sm:appearance-auto: Laptop par original icon aur typing wapas aa jayegi.
+             Mobile par 'appearance-none' icon chupa deta hai, isliye hum apna custom add karenge.
+          */
+          className="bg-transparent text-[11px] font-bold outline-none text-slate-700 dark:text-slate-200 w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 appearance-none sm:appearance-auto"
         />
+
+        {/* Mobile-Only Icon: Sirf tab dikhega jab laptop wala icon browser chupa dega */}
+        <div className="sm:hidden absolute right-0 pointer-events-none flex items-center">
+          <svg className="w-3 h-3 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+        </div>
       </div>
     </div>
   );
