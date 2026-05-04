@@ -411,7 +411,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     {/* Controls Group */}
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
       
-      {/* Dropdown - Fixed Click Issue */}
+      {/* Dropdown Section */}
       <div className="relative z-[110]"> 
         <button
           type="button"
@@ -419,7 +419,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             e.preventDefault();
             setIsDropdownOpen(!isDropdownOpen);
           }}
-          className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm"
+          className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm transition-all"
         >
           <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
           <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -454,28 +454,26 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </AnimatePresence>
       </div>
 
-      {/* Date Picker Section */}
+      {/* Custom Date Picker Section */}
       {filterType === 'custom' && (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.98 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
-  >
-    {/* Input Box Container */}
-    <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-    </div>
-    
-    {/* Refresh Icon - Height matched with the box above */}
-    <button 
-      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-    >
-      <RotateCcw className="w-4 h-4" />
-    </button>
-  </motion.div>
-)}
+        <motion.div 
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 w-full lg:w-auto"
+        >
+          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[42px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+          </div>
+          
+          <button 
+            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+            className="h-[42px] w-[42px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
     </div>
   </div>
 </div>
@@ -583,27 +581,35 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
-        {!value && (
-          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
-            dd/mm/yyyy
-          </span>
-        )}
-
         <input 
-          type="date" 
+          // Logic: Agar value hai ya focused hai tw 'date', warna 'text' taake placeholder dikhe
+          type={value ? "date" : "text"}
+          onFocus={(e) => (e.target.type = "date")}
+          onBlur={(e) => !value && (e.target.type = "text")}
+          
+          placeholder="dd/mm/yyyy"
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
-            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
-          style={{ 
-            WebkitAppearance: 'none', 
-            display: 'block',
-            minWidth: '100%' // Ensure it covers the area
-          }}
+          
+          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] z-10"
         />
         
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
+        {/* Calendar Icon - Is par pointer-events-none hai taake ye typing na rokay */}
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60" />
       </div>
+
+      <style>{`
+        /* Laptop ke liye manual typing icon ko hide karna */
+        input::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          position: absolute;
+          right: 0;
+          width: 20px;
+          height: 100%;
+          opacity: 0;
+          z-index: 20;
+        }
+      `}</style>
     </div>
   );
 }
