@@ -29,6 +29,44 @@ interface Props {
   onBack: () => void;
 }
 
+// File ke bilkul start mein, imports ke niche paste karen
+const GlobalDatePickerStyles = () => (
+  <style>{`
+    /* 1. Laptop par browser ka apna "dd/mm/yyyy" hide karne ke liye */
+    .date-picker-clean::-webkit-datetime-edit-text,
+    .date-picker-clean::-webkit-datetime-edit-month-field,
+    .date-picker-clean::-webkit-datetime-edit-day-field,
+    .date-picker-clean::-webkit-datetime-edit-year-field {
+      color: transparent;
+    }
+
+    /* 2. Jab user type kare ya date select ho jaye, tab asli text dikhao */
+    .date-picker-clean:focus::-webkit-datetime-edit-text,
+    .date-picker-clean:focus::-webkit-datetime-edit-month-field,
+    .date-picker-clean:focus::-webkit-datetime-edit-day-field,
+    .date-picker-clean:focus::-webkit-datetime-edit-year-field,
+    .date-picker-clean:not(:invalid)::-webkit-datetime-edit-text,
+    .date-picker-clean:not(:invalid)::-webkit-datetime-edit-month-field,
+    .date-picker-clean:not(:invalid)::-webkit-datetime-edit-day-field,
+    .date-picker-clean:not(:invalid)::-webkit-datetime-edit-year-field {
+      color: inherit !important;
+    }
+
+    /* 3. Browser ka default icon hide karna takay hamara icon kaam kare */
+    .date-picker-clean::-webkit-calendar-picker-indicator {
+      position: absolute;
+      right: 0;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      opacity: 0;
+      cursor: pointer;
+      z-index: 20;
+    }
+  `}</style>
+);
+
 export function CustomerDetail({ customer, onBack }: Props) {
   // 1. STATES
   const [startDate, setStartDate] = useState('');
@@ -573,57 +611,35 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-// CustomerDetail.tsx mein function se pehle ye daal den
-const calendarStyles = `
-  .date-input-field::-webkit-datetime-edit-fields-wrapper {
-    padding: 0;
-  }
-  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-text,
-  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-month-field,
-  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-day-field,
-  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-year-field {
-    color: transparent;
-  }
-  .date-input-field::-webkit-calendar-picker-indicator {
-    position: absolute;
-    right: 0;
-    width: 20px;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    cursor: pointer;
-    opacity: 0;
-    z-index: 30;
-  }
-`;
 function DatePickerInput({ label, value, onChange }: any) {
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5 group">
+      {/* Label */}
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
-        {/* Fake Placeholder: Sirf tab dikhega jab value khali ho */}
+        {/* Custom Placeholder: Ye sirf tab dikhega jab value khali ho */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
             dd/mm/yyyy
           </span>
         )}
 
+        {/* Input Field */}
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 text-slate-700 dark:text-slate-200 date-input-field"
+          className="date-picker-clean bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 text-slate-700 dark:text-slate-200"
           style={{ 
-            WebkitAppearance: 'none',
-            display: 'block',
-            minWidth: '100%',
-            cursor: 'text' 
+            cursor: 'text',
+            WebkitAppearance: 'none'
           }}
         />
         
+        {/* Calendar Icon */}
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none z-20" />
       </div>
     </div>
