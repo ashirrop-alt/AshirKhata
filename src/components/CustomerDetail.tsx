@@ -583,20 +583,45 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {/* Mobile placeholder jo sirf tab dikhega jab value khali ho */}
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
+            dd/mm/yyyy
+          </span>
+        )}
+
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          placeholder="dd/mm/yyyy"
-          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem]"
+          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 appearance-none"
           style={{ 
-            WebkitAppearance: 'none', 
+            WebkitAppearance: 'none',
             display: 'block'
           }}
         />
-        {/* Calendar icon sirf tab dikhega jab value na ho, taake typing mein masla na kare */}
-        {!value && <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />}
+        
+        {/* Calendar icon sirf tab dikhega jab value na ho taake shadow na bane */}
+        {!value && (
+          <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none z-0" />
+        )}
       </div>
+
+      {/* Ye chota sa global CSS block aapki file mein kahin bhi (baahar) kaam kar jayega ya index.css mein daal den */}
+      <style>{`
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          background: transparent;
+          bottom: 0;
+          color: transparent;
+          cursor: pointer;
+          height: auto;
+          left: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: auto;
+        }
+      `}</style>
     </div>
   );
 }
