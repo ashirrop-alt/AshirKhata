@@ -46,7 +46,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-const toRef = useRef(null);
+const fromRef = useRef<HTMLInputElement>(null);
+const toRef = useRef<HTMLInputElement>(null);
+
+
 
   // 3. HOOKS & DATA
   const { data } = useKhata();
@@ -78,34 +81,44 @@ const toRef = useRef(null);
   }, [data]);
 
   // 5. FILTER LOGIC
-  const filteredTransactions = transactions.filter(tx => {
-    const txDate = new Date(tx.date);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    txDate.setHours(0, 0, 0, 0);
+  const filteredTransactions = transactions.filter(t => {
+  if (filterType === 'all') return true;
 
-    if (filterType === "today") {
-      return txDate.getTime() === today.getTime();
-    }
+  const tDate = new Date(t.date);
+  tDate.setHours(0, 0, 0, 0); // Time ko saaf karein comparison k liye
 
-    if (filterType === "thisMonth") {
-      return txDate.getMonth() === today.getMonth() && txDate.getFullYear() === today.getFullYear();
-    }
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    if (filterType === "custom") {
-      if (startDate) {
-        const start = new Date(startDate);
-        start.setHours(0, 0, 0, 0);
-        if (txDate < start) return false;
-      }
-      if (endDate) {
-        const end = new Date(endDate);
-        end.setHours(23, 59, 59, 999);
-        if (txDate > end) return false;
-      }
-    }
-    return true;
-  });
+  // TODAY Filter
+  if (filterType === 'today') {
+    return tDate.getTime() === today.getTime();
+  }
+
+  // THIS MONTH Filter
+  if (filterType === 'thisMonth') {
+    return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear();
+  }
+
+  // CUSTOM Filter (Yahan aapki mehnat kaam ayegi)
+  if (filterType === 'custom') {
+    // Agar dates poori nahi likhi tw filter mat karo (sab dikhao)
+    if (startDate.length < 10 || endDate.length < 10) return true;
+
+    const [sD, sM, sY] = startDate.split('/');
+    const [eD, eM, eY] = endDate.split('/');
+    
+    const start = new Date(`${sY}-${sM}-${sD}`);
+    const end = new Date(`${eY}-${eM}-${eY}`);
+    
+    start.setHours(0,0,0,0);
+    end.setHours(23,59,59,999);
+    
+    return tDate >= start && tDate <= end;
+  }
+
+  return true;
+});
 
   // 6. CALCULATIONS & UTILS
   const total = transactions.reduce((acc, tx) => {
@@ -464,8 +477,22 @@ const toRef = useRef(null);
   >
     {/* Input Box Container */}
     <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} nextRef={toRef} />
-<DatePickerInput label="TO" value={endDate} onChange={setEndDate} ref={toRef} />
+      {/* FROM box: isme batana hai ke ye kahan se start ho (fromRef) aur kahan khatam (toRef) */}
+<DatePickerInput 
+  label="FROM" 
+  value={startDate} 
+  onChange={setStartDate} 
+  inputRef={fromRef} 
+  nextRef={toRef} 
+/>
+
+{/* TO box: isme sirf iska apna ref aayega */}
+<DatePickerInput 
+  label="TO" 
+  value={endDate} 
+  onChange={setEndDate} 
+  inputRef={toRef} 
+/>
     </div>
     
     {/* Refresh Icon - Height matched with the box above */}
@@ -580,7 +607,7 @@ const toRef = useRef(null);
 
 // FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
 
-function DatePickerInput({ label, value, onChange, nextRef }: any) {
+function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -613,6 +640,7 @@ function DatePickerInput({ label, value, onChange, nextRef }: any) {
         {/* MAIN INPUT */}
         <input
           type="text"
+          ref={inputRef}
           value={value}
           onChange={(e) => {
             let val = e.target.value;
@@ -639,23 +667,24 @@ function DatePickerInput({ label, value, onChange, nextRef }: any) {
 
         {/* Desktop calendar only on icon */}
         {!isMobile && (
-          <input
-            type="date"
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
-          />
-        )}
+  <input
+    type="date"
+    tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
+    value={toISO(value)}
+    onChange={(e) => onChange(fromISO(e.target.value))}
+    className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
+  />
+)}
 
-        {/* Mobile unchanged */}
-        {isMobile && (
-          <input
-            type="date"
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute inset-0 opacity-0"
-          />
-        )}
+{isMobile && (
+  <input
+    type="date"
+    tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
+    value={toISO(value)}
+    onChange={(e) => onChange(fromISO(e.target.value))}
+    className="absolute inset-0 opacity-0"
+  />
+)}
 
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
