@@ -583,7 +583,6 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
-        {/* Clean custom placeholder jo shadow nahi banayega */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
@@ -594,11 +593,15 @@ function DatePickerInput({ label, value, onChange }: any) {
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 ${!value ? 'text-transparent' : 'text-slate-700 dark:text-slate-200'}`}
-          style={{ WebkitAppearance: 'none', display: 'block' }}
+          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
+            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+          style={{ 
+            WebkitAppearance: 'none', 
+            display: 'block',
+            minWidth: '100%' // Ensure it covers the area
+          }}
         />
         
-        {/* Calendar Icon - Jo har mobile par dikhega */}
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
     </div>
