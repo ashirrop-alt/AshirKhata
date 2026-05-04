@@ -82,43 +82,53 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   // 5. FILTER LOGIC
   const filteredTransactions = transactions.filter(t => {
-    if (filterType === 'all') return true;
+  // 1. Agar 'All' select hai tw sab dikhao
+  if (filterType === 'all') return true;
 
-    const tDate = new Date(t.date);
-    tDate.setHours(0, 0, 0, 0); // Time ko saaf karein comparison k liye
+  // 2. Transaction ki date ko format karna (Database date check)
+  const txDate = new Date(t.date);
+  txDate.setHours(0, 0, 0, 0);
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
 
-    // TODAY Filter
-    if (filterType === 'today') {
-      return tDate.getTime() === today.getTime();
+  // 3. Aaj ka Filter
+  if (filterType === 'today') {
+    return txDate.getTime() === today.getTime();
+  }
+
+  // 4. Is Mahine ka Filter
+  if (filterType === 'thisMonth') {
+    return txDate.getMonth() === today.getMonth() && 
+           txDate.getFullYear() === today.getFullYear();
+  }
+
+  // 5. CUSTOM FILTER (Jo masla kar raha tha)
+  if (filterType === 'custom') {
+    // Agar dono dates poori nahi likhi (10 characters), tw filter apply mat karo
+    if (startDate.length < 10 || endDate.length < 10) return true;
+
+    try {
+      // dd/mm/yyyy ko split karke Year, Month, Day nikalna
+      const [sDay, sMonth, sYear] = startDate.split('/').map(Number);
+      const [eDay, eMonth, eYear] = endDate.split('/').map(Number);
+
+      // JavaScript months 0 se start hote hain isliye (sMonth - 1)
+      const startLimit = new Date(sYear, sMonth - 1, sDay);
+      const endLimit = new Date(eYear, eMonth - 1, eDay);
+
+      startLimit.setHours(0, 0, 0, 0);
+      endLimit.setHours(23, 59, 59, 999);
+
+      return txDate >= startLimit && txDate <= endLimit;
+    } catch (e) {
+      console.error("Date filter error:", e);
+      return true; 
     }
+  }
 
-    // THIS MONTH Filter
-    if (filterType === 'thisMonth') {
-      return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear();
-    }
-
-    // CUSTOM Filter (Yahan aapki mehnat kaam ayegi)
-    if (filterType === 'custom') {
-      // Agar dates poori nahi likhi tw filter mat karo (sab dikhao)
-      if (startDate.length < 10 || endDate.length < 10) return true;
-
-      const [sD, sM, sY] = startDate.split('/');
-      const [eD, eM, eY] = endDate.split('/');
-
-      const start = new Date(`${sY}-${sM}-${sD}`);
-      const end = new Date(`${eY}-${eM}-${eY}`);
-
-      start.setHours(0, 0, 0, 0);
-      end.setHours(23, 59, 59, 999);
-
-      return tDate >= start && tDate <= end;
-    }
-
-    return true;
-  });
+  return true;
+});
 
   // 6. CALCULATIONS & UTILS
   const total = transactions.reduce((acc, tx) => {
