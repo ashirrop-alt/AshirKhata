@@ -583,7 +583,7 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Hamara Custom Placeholder jo sirf tab dikhega jab koi value nahi hogi */}
+        {/* Persistent Placeholder: Ye ab kabhi overlap nahi karega */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
             dd/mm/yyyy
@@ -605,27 +605,39 @@ function DatePickerInput({ label, value, onChange }: any) {
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        /* Laptop browsers ka default placeholder text gayab karne ke liye */
+        /* Step 1: Laptop browsers ke 'ghost' placeholder ko gayab karo */
+        input[type="date"]::-webkit-datetime-edit {
+          display: ${value ? 'block' : 'none'};
+          padding: 0;
+        }
+
+        /* Step 2: Jab value ho, toh browser ka internal shadow khatam karo */
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+          padding: 0;
+          background: none;
+        }
+
+        /* Step 3: Manual typing ke waqt glitch hatane ke liye color control */
         input[type="date"]::-webkit-datetime-edit-text,
         input[type="date"]::-webkit-datetime-edit-month-field,
         input[type="date"]::-webkit-datetime-edit-day-field,
         input[type="date"]::-webkit-datetime-edit-year-field {
-          color: ${value ? 'inherit' : 'transparent'};
+          padding: 0;
         }
 
-        /* Shadow aur inner icons hatane ke liye */
-        input[type="date"]::-webkit-inner-spin-button,
+        /* Step 4: Laptop par calendar indicator ko hide karo (Shadow fix) */
         input[type="date"]::-webkit-calendar-picker-indicator {
-          opacity: 0;
-          -webkit-appearance: none;
-        }
-
-        /* Takay manual typing ke waqt color sahi dikhay */
-        input[type="date"]:focus::-webkit-datetime-edit-text,
-        input[type="date"]:focus::-webkit-datetime-edit-month-field,
-        input[type="date"]:focus::-webkit-datetime-edit-day-field,
-        input[type="date"]:focus::-webkit-datetime-edit-year-field {
-          color: inherit;
+          background: transparent;
+          bottom: 0;
+          color: transparent;
+          cursor: pointer;
+          height: auto;
+          left: 0;
+          position: absolute;
+          right: 0;
+          top: 0;
+          width: auto;
+          z-index: 30; /* Click area poore box par rakho */
         }
       `}} />
     </div>
