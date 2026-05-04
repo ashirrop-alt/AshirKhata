@@ -17,7 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  DropdownMenu, 
+  DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -46,8 +46,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-const fromRef = useRef<HTMLInputElement>(null);
-const toRef = useRef<HTMLInputElement>(null);
+  const fromRef = useRef<HTMLInputElement>(null);
+  const toRef = useRef<HTMLInputElement>(null);
 
 
 
@@ -82,43 +82,43 @@ const toRef = useRef<HTMLInputElement>(null);
 
   // 5. FILTER LOGIC
   const filteredTransactions = transactions.filter(t => {
-  if (filterType === 'all') return true;
+    if (filterType === 'all') return true;
 
-  const tDate = new Date(t.date);
-  tDate.setHours(0, 0, 0, 0); // Time ko saaf karein comparison k liye
+    const tDate = new Date(t.date);
+    tDate.setHours(0, 0, 0, 0); // Time ko saaf karein comparison k liye
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  // TODAY Filter
-  if (filterType === 'today') {
-    return tDate.getTime() === today.getTime();
-  }
+    // TODAY Filter
+    if (filterType === 'today') {
+      return tDate.getTime() === today.getTime();
+    }
 
-  // THIS MONTH Filter
-  if (filterType === 'thisMonth') {
-    return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear();
-  }
+    // THIS MONTH Filter
+    if (filterType === 'thisMonth') {
+      return tDate.getMonth() === today.getMonth() && tDate.getFullYear() === today.getFullYear();
+    }
 
-  // CUSTOM Filter (Yahan aapki mehnat kaam ayegi)
-  if (filterType === 'custom') {
-    // Agar dates poori nahi likhi tw filter mat karo (sab dikhao)
-    if (startDate.length < 10 || endDate.length < 10) return true;
+    // CUSTOM Filter (Yahan aapki mehnat kaam ayegi)
+    if (filterType === 'custom') {
+      // Agar dates poori nahi likhi tw filter mat karo (sab dikhao)
+      if (startDate.length < 10 || endDate.length < 10) return true;
 
-    const [sD, sM, sY] = startDate.split('/');
-    const [eD, eM, eY] = endDate.split('/');
-    
-    const start = new Date(`${sY}-${sM}-${sD}`);
-    const end = new Date(`${eY}-${eM}-${eY}`);
-    
-    start.setHours(0,0,0,0);
-    end.setHours(23,59,59,999);
-    
-    return tDate >= start && tDate <= end;
-  }
+      const [sD, sM, sY] = startDate.split('/');
+      const [eD, eM, eY] = endDate.split('/');
 
-  return true;
-});
+      const start = new Date(`${sY}-${sM}-${sD}`);
+      const end = new Date(`${eY}-${eM}-${eY}`);
+
+      start.setHours(0, 0, 0, 0);
+      end.setHours(23, 59, 59, 999);
+
+      return tDate >= start && tDate <= end;
+    }
+
+    return true;
+  });
 
   // 6. CALCULATIONS & UTILS
   const total = transactions.reduce((acc, tx) => {
@@ -410,103 +410,103 @@ const toRef = useRef<HTMLInputElement>(null);
               {/* Date Filter Header Section */}
               {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
-             {/* Final Premium Filter Header */}
-            <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
-    
-    {/* Section Title */}
-    <div className="flex items-center gap-2">
-      <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-      <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        Transactions ({filteredTransactions.length})
-      </span>
-    </div>
+              {/* Final Premium Filter Header */}
+              <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
 
-    {/* Controls Group */}
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
-      
-      {/* Dropdown - Fixed Click Issue */}
-      <div className="relative z-[110]"> 
-        <button
-          type="button"
-          onClick={(e) => {
-            e.preventDefault();
-            setIsDropdownOpen(!isDropdownOpen);
-          }}
-          className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm"
-        >
-          <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-        </button>
+                  {/* Section Title */}
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+                    <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Transactions ({filteredTransactions.length})
+                    </span>
+                  </div>
 
-        <AnimatePresence>
-          {isDropdownOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 4 }}
-              exit={{ opacity: 0, y: 8 }}
-              className="absolute left-0 right-0 sm:left-auto z-[120] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
-            >
-              {filterOptions.map((option) => (
-                <button
-                  key={option.id}
-                  type="button"
-                  onClick={() => {
-                    setFilterType(option.id);
-                    setIsDropdownOpen(false);
-                    if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
-                  }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
+                  {/* Controls Group */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
+
+                    {/* Dropdown - Fixed Click Issue */}
+                    <div className="relative z-[110]">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          setIsDropdownOpen(!isDropdownOpen);
+                        }}
+                        className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm"
+                      >
+                        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      <AnimatePresence>
+                        {isDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }}
+                            animate={{ opacity: 1, y: 4 }}
+                            exit={{ opacity: 0, y: 8 }}
+                            className="absolute left-0 right-0 sm:left-auto z-[120] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+                          >
+                            {filterOptions.map((option) => (
+                              <button
+                                key={option.id}
+                                type="button"
+                                onClick={() => {
+                                  setFilterType(option.id);
+                                  setIsDropdownOpen(false);
+                                  if (option.id !== 'custom') { setStartDate(''); setEndDate(''); }
+                                }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
                     ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
-                >
-                  {option.label}
-                  {filterType === option.id && <Check className="w-3.5 h-3.5" />}
-                </button>
-              ))}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+                              >
+                                {option.label}
+                                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
 
-      {/* Date Picker Section */}
-      {filterType === 'custom' && (
-  <motion.div 
-    initial={{ opacity: 0, scale: 0.98 }}
-    animate={{ opacity: 1, scale: 1 }}
-    className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
-  >
-    {/* Input Box Container */}
-    <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-      {/* FROM box: isme batana hai ke ye kahan se start ho (fromRef) aur kahan khatam (toRef) */}
-<DatePickerInput 
-  label="FROM" 
-  value={startDate} 
-  onChange={setStartDate} 
-  inputRef={fromRef} 
-  nextRef={toRef} 
-/>
+                    {/* Date Picker Section */}
+                    {filterType === 'custom' && (
+                      <motion.div
+                        initial={{ opacity: 0, scale: 0.98 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
+                      >
+                        {/* Input Box Container */}
+                        <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+                          {/* FROM box: isme batana hai ke ye kahan se start ho (fromRef) aur kahan khatam (toRef) */}
+                          <DatePickerInput
+                            label="FROM"
+                            value={startDate}
+                            onChange={setStartDate}
+                            inputRef={fromRef}
+                            nextRef={toRef}
+                          />
 
-{/* TO box: isme sirf iska apna ref aayega */}
-<DatePickerInput 
-  label="TO" 
-  value={endDate} 
-  onChange={setEndDate} 
-  inputRef={toRef} 
-/>
-    </div>
-    
-    {/* Refresh Icon - Height matched with the box above */}
-    <button 
-      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-    >
-      <RotateCcw className="w-4 h-4" />
-    </button>
-  </motion.div>
-)}
-    </div>
-  </div>
-</div>
+                          {/* TO box: isme sirf iska apna ref aayega */}
+                          <DatePickerInput
+                            label="TO"
+                            value={endDate}
+                            onChange={setEndDate}
+                            inputRef={toRef}
+                          />
+                        </div>
+
+                        {/* Refresh Icon - Height matched with the box above */}
+                        <button
+                          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+                          className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                        </button>
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              </div>
 
               {/* Transactions List Section */}
               <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
@@ -667,24 +667,24 @@ function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
 
         {/* Desktop calendar only on icon */}
         {!isMobile && (
-  <input
-    type="date"
-    tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
-    value={toISO(value)}
-    onChange={(e) => onChange(fromISO(e.target.value))}
-    className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
-  />
-)}
+          <input
+            type="date"
+            tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
+            value={toISO(value)}
+            onChange={(e) => onChange(fromISO(e.target.value))}
+            className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
+          />
+        )}
 
-{isMobile && (
-  <input
-    type="date"
-    tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
-    value={toISO(value)}
-    onChange={(e) => onChange(fromISO(e.target.value))}
-    className="absolute inset-0 opacity-0"
-  />
-)}
+        {isMobile && (
+          <input
+            type="date"
+            tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
+            value={toISO(value)}
+            onChange={(e) => onChange(fromISO(e.target.value))}
+            className="absolute inset-0 opacity-0"
+          />
+        )}
 
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
