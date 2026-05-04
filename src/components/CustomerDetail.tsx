@@ -46,10 +46,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
-const fromRef = useRef<HTMLInputElement>(null);
-const toRef = useRef<HTMLInputElement>(null);
-
-
+const toRef = useRef(null);
 
   // 3. HOOKS & DATA
   const { data } = useKhata();
@@ -467,22 +464,8 @@ const toRef = useRef<HTMLInputElement>(null);
   >
     {/* Input Box Container */}
     <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-      {/* FROM box: isme batana hai ke ye kahan se start ho (fromRef) aur kahan khatam (toRef) */}
-<DatePickerInput 
-  label="FROM" 
-  value={startDate} 
-  onChange={setStartDate} 
-  inputRef={fromRef} 
-  nextRef={toRef} 
-/>
-
-{/* TO box: isme sirf iska apna ref aayega */}
-<DatePickerInput 
-  label="TO" 
-  value={endDate} 
-  onChange={setEndDate} 
-  inputRef={toRef} 
-/>
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} nextRef={toRef} />
+<DatePickerInput label="TO" value={endDate} onChange={setEndDate} ref={toRef} />
     </div>
     
     {/* Refresh Icon - Height matched with the box above */}
@@ -597,7 +580,7 @@ const toRef = useRef<HTMLInputElement>(null);
 
 // FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
 
-function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
+function DatePickerInput({ label, value, onChange, nextRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -630,7 +613,6 @@ function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
         {/* MAIN INPUT */}
         <input
           type="text"
-          ref={inputRef}
           value={value}
           onChange={(e) => {
             let val = e.target.value;
