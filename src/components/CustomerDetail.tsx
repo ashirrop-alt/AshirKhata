@@ -576,51 +576,34 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
-  // Date ko readable format mein dikhane ke liye (e.g., 04/05/2026)
-  const formatDate = (dateStr: string) => {
-    if (!dateStr) return "dd/mm/yyyy";
-    const [y, m, d] = dateStr.split('-');
-    return `${d}/${m}/${y}`;
-  };
-
   return (
-    <div className="flex flex-col flex-1 px-3 py-1.5 min-w-[120px] relative border-r border-slate-200 dark:border-slate-800 last:border-0">
-      {/* Label (FROM/TO) */}
-      <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase mb-1">
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative flex items-center h-5">
-        {/* Actual visible text: No more shadows or overlaps! */}
-        <span className={`text-[11px] font-bold z-0 ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
-          {formatDate(value)}
-        </span>
+      <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
+          </span>
+        )}
 
-        {/* The Invisible Input: Is par click hoga toh picker khulega, lekin ye khud nazar nahi aayega */}
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full h-full"
+          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
+            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+          style={{ 
+            WebkitAppearance: 'none', 
+            display: 'block',
+            minWidth: '100%' // Ensure it covers the area
+          }}
         />
-
-        {/* Icon */}
-        <Calendar className="w-3.5 h-3.5 text-slate-400 ml-auto pointer-events-none" />
+        
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
-
-      <style dangerouslySetInnerHTML={{ __html: `
-        /* Laptop/Chrome ke internal kachre ko mukammal khatam karne ke liye */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-          position: absolute;
-          left: 0;
-          top: 0;
-          width: 100%;
-          height: 100%;
-          margin: 0;
-          padding: 0;
-          cursor: pointer;
-        }
-      `}} />
     </div>
   );
 }
