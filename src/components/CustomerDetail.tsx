@@ -582,28 +582,34 @@ function DatePickerInput({ label, value, onChange }: any) {
         {label}
       </span>
       
-      <div className="relative w-full flex items-center min-h-[1.2rem]">
-        {/* Custom Placeholder: Ye sirf tab dikhega jab value khali ho */}
-        {!value && (
-          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
-            dd/mm/yyyy
-          </span>
-        )}
-
+      <div className="relative w-full flex items-center min-h-[1.5rem]">
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
-            ${!value ? 'text-transparent' : 'text-slate-700 dark:text-slate-200'}`}
+          required
+          className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 text-slate-700 dark:text-slate-200"
           style={{ 
-            WebkitAppearance: 'none', 
+            WebkitAppearance: 'none',
             display: 'block'
           }}
         />
         
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none z-20" />
+        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-0" />
       </div>
+
+      {/* Shadow aur placeholder color fix karne ka safe tareeka */}
+      <style dangerouslySetInnerHTML={{ __html: `
+        input[type="date"]::-webkit-datetime-edit-text,
+        input[type="date"]::-webkit-datetime-edit-month-field,
+        input[type="date"]::-webkit-datetime-edit-day-field,
+        input[type="date"]::-webkit-datetime-edit-year-field {
+          color: inherit;
+        }
+        input[type="date"]:invalid::-webkit-datetime-edit {
+          color: #94a3b8;
+        }
+      `}} />
     </div>
   );
 }
