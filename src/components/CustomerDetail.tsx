@@ -583,31 +583,47 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.5rem]">
+        {/* Professional Custom Placeholder - Always visible on mobile/PC if value is empty */}
+        {!value && (
+          <div className="absolute inset-0 flex items-center text-[11px] font-medium text-slate-400 pointer-events-none z-0">
+            dd/mm/yyyy
+          </div>
+        )}
+
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          required
           className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 text-slate-700 dark:text-slate-200"
           style={{ 
             WebkitAppearance: 'none',
-            display: 'block'
+            display: 'block',
           }}
         />
         
-        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-0" />
+        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-20" />
       </div>
 
-      {/* Shadow aur placeholder color fix karne ka safe tareeka */}
+      {/* Ye CSS shadow aur browser ke default text ko force-hide karega */}
       <style dangerouslySetInnerHTML={{ __html: `
+        /* Laptop/Chrome shadow aur default text ko gayab karne ke liye */
+        input[type="date"]::-webkit-datetime-edit {
+          display: ${value ? 'block' : 'none'};
+        }
+        
+        /* Mobile par default icons/shadows hatane ke liye */
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          opacity: 0;
+          -webkit-appearance: none;
+        }
+
+        /* Typing ke waqt color consistent rakhne ke liye */
         input[type="date"]::-webkit-datetime-edit-text,
         input[type="date"]::-webkit-datetime-edit-month-field,
         input[type="date"]::-webkit-datetime-edit-day-field,
         input[type="date"]::-webkit-datetime-edit-year-field {
           color: inherit;
-        }
-        input[type="date"]:invalid::-webkit-datetime-edit {
-          color: #94a3b8;
         }
       `}} />
     </div>
