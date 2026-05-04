@@ -577,17 +577,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-[110px] gap-0.5 border-r border-slate-200 dark:border-slate-800 last:border-0">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Professional Custom Placeholder - Always visible on mobile/PC if value is empty */}
+        {/* Persistent Custom Placeholder */}
         {!value && (
-          <div className="absolute inset-0 flex items-center text-[11px] font-medium text-slate-400 pointer-events-none z-0">
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
-          </div>
+          </span>
         )}
 
         <input 
@@ -597,33 +597,29 @@ function DatePickerInput({ label, value, onChange }: any) {
           className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 text-slate-700 dark:text-slate-200"
           style={{ 
             WebkitAppearance: 'none',
-            display: 'block',
+            display: 'block'
           }}
         />
         
-        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-20" />
+        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-0" />
       </div>
 
-      {/* Ye CSS shadow aur browser ke default text ko force-hide karega */}
       <style dangerouslySetInnerHTML={{ __html: `
-        /* Laptop/Chrome shadow aur default text ko gayab karne ke liye */
-        input[type="date"]::-webkit-datetime-edit {
-          display: ${value ? 'block' : 'none'};
+        /* Hide browser's default placeholder text & shadows completely */
+        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
+          padding: 0;
         }
         
-        /* Mobile par default icons/shadows hatane ke liye */
-        input[type="date"]::-webkit-inner-spin-button,
-        input[type="date"]::-webkit-calendar-picker-indicator {
-          opacity: 0;
-          -webkit-appearance: none;
+        /* This line kills the ghost shadow on laptop */
+        input[type="date"]::-webkit-datetime-edit {
+          color: ${value ? 'inherit' : 'transparent'} !important;
         }
 
-        /* Typing ke waqt color consistent rakhne ke liye */
-        input[type="date"]::-webkit-datetime-edit-text,
-        input[type="date"]::-webkit-datetime-edit-month-field,
-        input[type="date"]::-webkit-datetime-edit-day-field,
-        input[type="date"]::-webkit-datetime-edit-year-field {
-          color: inherit;
+        /* Mobile specific fix to ensure our custom text stays visible */
+        input[type="date"]::-webkit-inner-spin-button,
+        input[type="date"]::-webkit-calendar-picker-indicator {
+          cursor: pointer;
+          z-index: 20;
         }
       `}} />
     </div>
