@@ -593,12 +593,13 @@ function DatePickerInput({ label, value, onChange }: any) {
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
+          // Opacity hata di taake input clickable rahe aur typing ho sake
           className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
-            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+            ${!value ? 'text-transparent' : 'text-slate-700 dark:text-slate-200'}`} 
           style={{ 
             WebkitAppearance: 'none', 
             display: 'block',
-            minWidth: '100%' // Ensure it covers the area
+            minWidth: '100%'
           }}
         />
         
