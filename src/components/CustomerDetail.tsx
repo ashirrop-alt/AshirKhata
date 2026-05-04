@@ -576,68 +576,49 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange }: any) {
+  // Date ko readable format mein dikhane ke liye (e.g., 04/05/2026)
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return "dd/mm/yyyy";
+    const [y, m, d] = dateStr.split('-');
+    return `${d}/${m}/${y}`;
+  };
+
   return (
-    <div className="flex flex-col flex-1 px-2 py-1 min-w-[115px] gap-0.5 border-r border-slate-100 dark:border-slate-800 last:border-0">
-      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
+    <div className="flex flex-col flex-1 px-3 py-1.5 min-w-[120px] relative border-r border-slate-200 dark:border-slate-800 last:border-0">
+      {/* Label (FROM/TO) */}
+      <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase mb-1">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center min-h-[1.5rem]">
-        {/* Persistent Placeholder: Ye ab kabhi overlap nahi karega */}
-        {!value && (
-          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
-            dd/mm/yyyy
-          </span>
-        )}
+      <div className="relative flex items-center h-5">
+        {/* Actual visible text: No more shadows or overlaps! */}
+        <span className={`text-[11px] font-bold z-0 ${value ? 'text-slate-700 dark:text-slate-200' : 'text-slate-400'}`}>
+          {formatDate(value)}
+        </span>
 
+        {/* The Invisible Input: Is par click hoga toh picker khulega, lekin ye khud nazar nahi aayega */}
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.5rem] relative z-10 text-slate-700 dark:text-slate-200"
-          style={{ 
-            WebkitAppearance: 'none',
-            display: 'block'
-          }}
+          className="absolute inset-0 opacity-0 cursor-pointer z-10 w-full h-full"
         />
-        
-        <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none z-20" />
+
+        {/* Icon */}
+        <Calendar className="w-3.5 h-3.5 text-slate-400 ml-auto pointer-events-none" />
       </div>
 
       <style dangerouslySetInnerHTML={{ __html: `
-        /* Step 1: Laptop browsers ke 'ghost' placeholder ko gayab karo */
-        input[type="date"]::-webkit-datetime-edit {
-          display: ${value ? 'block' : 'none'};
-          padding: 0;
-        }
-
-        /* Step 2: Jab value ho, toh browser ka internal shadow khatam karo */
-        input[type="date"]::-webkit-datetime-edit-fields-wrapper {
-          padding: 0;
-          background: none;
-        }
-
-        /* Step 3: Manual typing ke waqt glitch hatane ke liye color control */
-        input[type="date"]::-webkit-datetime-edit-text,
-        input[type="date"]::-webkit-datetime-edit-month-field,
-        input[type="date"]::-webkit-datetime-edit-day-field,
-        input[type="date"]::-webkit-datetime-edit-year-field {
-          padding: 0;
-        }
-
-        /* Step 4: Laptop par calendar indicator ko hide karo (Shadow fix) */
+        /* Laptop/Chrome ke internal kachre ko mukammal khatam karne ke liye */
         input[type="date"]::-webkit-calendar-picker-indicator {
-          background: transparent;
-          bottom: 0;
-          color: transparent;
-          cursor: pointer;
-          height: auto;
-          left: 0;
           position: absolute;
-          right: 0;
+          left: 0;
           top: 0;
-          width: auto;
-          z-index: 30; /* Click area poore box par rakho */
+          width: 100%;
+          height: 100%;
+          margin: 0;
+          padding: 0;
+          cursor: pointer;
         }
       `}} />
     </div>
