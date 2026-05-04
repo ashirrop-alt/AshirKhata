@@ -46,6 +46,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+const toRef = useRef(null);
 
   // 3. HOOKS & DATA
   const { data } = useKhata();
@@ -463,8 +464,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
   >
     {/* Input Box Container */}
     <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} nextRef={toRef} />
+<DatePickerInput label="TO" value={endDate} onChange={setEndDate} ref={toRef} />
     </div>
     
     {/* Refresh Icon - Height matched with the box above */}
@@ -577,17 +578,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 // FINAL FIXED DatePickerInput (Proper typing + cursor + correct format)
 
-function DatePickerInput({ label, value, onChange }: any) {
+// FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
+
+function DatePickerInput({ label, value, onChange, nextRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // Convert dd/mm/yyyy -> yyyy-mm-dd (for calendar)
   const toISO = (val: string) => {
     if (!val || val.length !== 10) return '';
     const [d, m, y] = val.split('/');
     return `${y}-${m}-${d}`;
   };
 
-  // Convert yyyy-mm-dd -> dd/mm/yyyy
   const fromISO = (val: string) => {
     if (!val) return '';
     const [y, m, d] = val.split('-');
@@ -602,18 +603,22 @@ function DatePickerInput({ label, value, onChange }: any) {
 
       <div className="relative w-full flex items-center">
 
-        {/* MAIN INPUT (VISIBLE ALWAYS) */}
+        {/* Placeholder overlay */}
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
+          </span>
+        )}
+
+        {/* MAIN INPUT */}
         <input
           type="text"
-          placeholder="dd/mm/yyyy"
           value={value}
           onChange={(e) => {
             let val = e.target.value;
 
-            // Allow only numbers
             val = val.replace(/[^0-9]/g, '');
 
-            // Format step by step (so typing feels natural)
             if (val.length <= 2) {
               // dd
             } else if (val.length <= 4) {
@@ -623,11 +628,16 @@ function DatePickerInput({ label, value, onChange }: any) {
             }
 
             onChange(val);
+
+            // Auto jump to next field when complete
+            if (val.length === 10 && nextRef?.current) {
+              nextRef.current.focus();
+            }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* CALENDAR (ONLY ON DESKTOP CLICK ICON AREA) */}
+        {/* Desktop calendar only on icon */}
         {!isMobile && (
           <input
             type="date"
@@ -637,7 +647,7 @@ function DatePickerInput({ label, value, onChange }: any) {
           />
         )}
 
-        {/* MOBILE: native full input */}
+        {/* Mobile unchanged */}
         {isMobile && (
           <input
             type="date"
@@ -652,16 +662,3 @@ function DatePickerInput({ label, value, onChange }: any) {
     </div>
   );
 }
-
-/*
-FINAL FIXES:
-
-✅ Typing visible properly (no invisible text bug)
-✅ Cursor works naturally (caret fixed)
-✅ No weird format like 0003-03-31
-✅ dd/mm/yyyy clean format always
-✅ Mobile UI preserved (same experience)
-✅ Calendar opens only from icon (no overlap issue)
-
-Now this is production-level clean UX.
-*/
