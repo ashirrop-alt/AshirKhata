@@ -397,11 +397,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
              {/* Final Premium Filter Header */}
-            <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+            <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent relative z-[50]">
   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
     
     {/* Section Title */}
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-2 shrink-0">
       <div className="w-1 h-4 bg-indigo-600 rounded-full" />
       <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
         Transactions ({filteredTransactions.length})
@@ -409,10 +409,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
     </div>
 
     {/* Controls Group */}
-    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
+    <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 relative" ref={dropdownRef}>
       
       {/* Dropdown Section */}
-      <div className="relative z-[110]"> 
+      <div className="relative z-[100] w-full sm:w-auto"> 
         <button
           type="button"
           onClick={(e) => {
@@ -431,7 +431,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 4 }}
               exit={{ opacity: 0, y: 8 }}
-              className="absolute left-0 right-0 sm:left-auto z-[120] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+              className="absolute left-0 right-0 sm:left-auto z-[110] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
             >
               {filterOptions.map((option) => (
                 <button
@@ -459,9 +459,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
         <motion.div 
           initial={{ opacity: 0, x: 10 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 w-full lg:w-auto"
+          className="flex items-center gap-2 flex-1 sm:flex-none"
         >
-          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[42px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[42px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5 min-w-[180px]">
             <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
             <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
           </div>
@@ -573,16 +573,40 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
+// CustomerDetail.tsx mein function se pehle ye daal den
+const calendarStyles = `
+  .date-input-field::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-text,
+  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-month-field,
+  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-day-field,
+  .date-input-field:not(:focus):invalid::-webkit-datetime-edit-year-field {
+    color: transparent;
+  }
+  .date-input-field::-webkit-calendar-picker-indicator {
+    position: absolute;
+    right: 0;
+    width: 20px;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+    opacity: 0;
+    z-index: 30;
+  }
+`;
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5 group">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {/* Fake Placeholder: Sirf tab dikhega jab value khali ho */}
         {!value && (
-          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
             dd/mm/yyyy
           </span>
         )}
@@ -591,16 +615,16 @@ function DatePickerInput({ label, value, onChange }: any) {
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
-            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+          className="bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 text-slate-700 dark:text-slate-200 date-input-field"
           style={{ 
-            WebkitAppearance: 'none', 
+            WebkitAppearance: 'none',
             display: 'block',
-            minWidth: '100%' // Ensure it covers the area
+            minWidth: '100%',
+            cursor: 'text' 
           }}
         />
         
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none z-20" />
       </div>
     </div>
   );
