@@ -575,11 +575,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-
 function DatePickerInput({ label, value, onChange }: any) {
-  // Mobile par placeholder dikhane ke liye logic
-  const [inputType, setInputType] = useState('text');
-
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
@@ -587,33 +583,27 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
+          </span>
+        )}
+
         <input 
-          // Jab focus ho tw date, warna text (placeholder ke liye)
-          type={value ? 'date' : inputType} 
+          type="date" 
           value={value || ''}
-          placeholder="dd/mm/yyyy"
-          onFocus={() => setInputType('date')}
-          onBlur={() => !value && setInputType('text')}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] z-10"
+          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
+            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+          style={{ 
+            WebkitAppearance: 'none', 
+            display: 'block',
+            minWidth: '100%' // Ensure it covers the area
+          }}
         />
         
-        {/* Calendar Icon - z-0 taake typing block na kare */}
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60 z-0" />
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
-
-      <style>{`
-        /* Laptop ke default icon shadow ko hide karne ke liye */
-        input[type="date"]::-webkit-calendar-picker-indicator {
-          cursor: pointer;
-          position: absolute;
-          right: 0;
-          width: 25px;
-          height: 100%;
-          opacity: 0;
-          z-index: 20;
-        }
-      `}</style>
     </div>
   );
 }
