@@ -575,7 +575,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
+
 function DatePickerInput({ label, value, onChange }: any) {
+  // Mobile par placeholder dikhane ke liye logic
+  const [inputType, setInputType] = useState('text');
+
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
@@ -584,31 +588,29 @@ function DatePickerInput({ label, value, onChange }: any) {
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
         <input 
-          type="date" 
+          // Jab focus ho tw date, warna text (placeholder ke liye)
+          type={value ? 'date' : inputType} 
           value={value || ''}
+          placeholder="dd/mm/yyyy"
+          onFocus={() => setInputType('date')}
+          onBlur={() => !value && setInputType('text')}
           onChange={(e) => onChange(e.target.value)}
           className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] z-10"
-          style={{ 
-            display: 'block',
-            minWidth: '100%' 
-          }}
         />
         
-        {/* Calendar Icon sirf ek indicator ke taur par, is par koi click logic nahi */}
-        {!value && (
-          <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-50" />
-        )}
+        {/* Calendar Icon - z-0 taake typing block na kare */}
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60 z-0" />
       </div>
 
       <style>{`
-        /* Sirf default icon ko side mein rakhne ke liye, poore input par nahi phelaenge */
+        /* Laptop ke default icon shadow ko hide karne ke liye */
         input[type="date"]::-webkit-calendar-picker-indicator {
           cursor: pointer;
-          opacity: 0; /* Isko hide rakhenge taake hamara icon nazar aaye */
           position: absolute;
           right: 0;
-          width: 20px;
+          width: 25px;
           height: 100%;
+          opacity: 0;
           z-index: 20;
         }
       `}</style>
