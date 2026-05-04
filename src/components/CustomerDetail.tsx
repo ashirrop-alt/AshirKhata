@@ -581,7 +581,6 @@ const toRef = useRef(null);
 // FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
 
 function DatePickerInput({ label, value, onChange, nextRef }: any) {
-  const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -605,22 +604,15 @@ function DatePickerInput({ label, value, onChange, nextRef }: any) {
       <div className="relative w-full flex items-center">
 
         {/* Placeholder overlay */}
-        <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
-  {value || "dd/mm/yyyy"}
-</span>
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
+          </span>
+        )}
 
         {/* MAIN INPUT */}
         <input
-  ref={inputRef}
-  type="text"
-  onKeyDown={(e) => {
-    if (e.key === 'Tab' || e.key === 'Enter') {
-      if (nextRef?.current) {
-        e.preventDefault();
-        nextRef.current.focus();
-      }
-    }
-  }}
+          type="text"
           value={value}
           onChange={(e) => {
             let val = e.target.value;
@@ -642,9 +634,7 @@ function DatePickerInput({ label, value, onChange, nextRef }: any) {
               nextRef.current.focus();
             }
           }}
-         className={`w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 
-${value ? 'text-slate-700 dark:text-slate-200' : 'text-transparent'} 
-caret-black dark:caret-white`}
+          className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
         {/* Desktop calendar only on icon */}
@@ -672,3 +662,4 @@ caret-black dark:caret-white`}
     </div>
   );
 }
+
