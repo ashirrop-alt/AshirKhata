@@ -17,7 +17,7 @@ import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  DropdownMenu,
+  DropdownMenu, 
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
@@ -324,6 +324,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
 
             {/* Rest of the action buttons */}
+            {/* Container: Mobile par spacing khatam, Laptop par space-y-2 wapis */}
             <div className="space-y-0">
               <TooltipProvider delayDuration={100}>
                 <div className="grid grid-cols-3 gap-3 mt-4">
@@ -392,107 +393,90 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {/* RIGHT SIDE (Transaction List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
+              {/* Date Filter Header Section */}
+              {/* Unified Header - Matches Home Page Look */}
+              {/* Native & Premium Filter Header */}
+             {/* Final Premium Filter Header */}
+            <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
+    
+    {/* Section Title */}
+    <div className="flex items-center gap-2">
+      <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+      <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Transactions ({filteredTransactions.length})
+      </span>
+    </div>
 
-              {/* ── FILTER HEADER ──────────────────────────────────────────────────
-                  Fixed-height technique: date inputs are ALWAYS rendered but toggled
-                  via visibility/opacity so the container never changes height.
-                  On desktop (flex-nowrap): single row — no shift ever possible.
-                  On mobile (flex-wrap): space is always reserved — no shift either.
-              ─────────────────────────────────────────────────────────────────── */}
-              <div className="px-3 py-3 md:px-6 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-                <div className="flex flex-wrap md:flex-nowrap items-center justify-between gap-x-3 gap-y-2">
+    {/* Controls Group */}
+    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
+      
+      {/* Dropdown Section */}
+      <div className="relative z-[110]"> 
+        <button
+          type="button"
+          onClick={(e) => {
+            e.preventDefault();
+            setIsDropdownOpen(!isDropdownOpen);
+          }}
+          className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm transition-all"
+        >
+          <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+          <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
 
-                  {/* Section Title */}
-                  <div className="flex items-center gap-2 shrink-0">
-                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-                    <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                      Transactions ({filteredTransactions.length})
-                    </span>
-                  </div>
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 4 }}
+              exit={{ opacity: 0, y: 8 }}
+              className="absolute left-0 right-0 sm:left-auto z-[120] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+            >
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  type="button"
+                  onClick={() => {
+                    setFilterType(option.id);
+                    setIsDropdownOpen(false);
+                    if(option.id !== 'custom') { setStartDate(''); setEndDate(''); }
+                  }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
+                    ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
+                >
+                  {option.label}
+                  {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
 
-                  {/* Controls Row — always single height, no layout shift */}
-                  <div
-                    ref={dropdownRef}
-                    className="flex items-center gap-2 w-full md:w-auto"
-                  >
-                    {/* ── Dropdown ── z-[20] keeps it below the native date picker UI */}
-                    <div className="relative z-[20] shrink-0">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsDropdownOpen(!isDropdownOpen);
-                        }}
-                        className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm transition-all"
-                      >
-                        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 flex-shrink-0 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                      </button>
-
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 6 }}
-                            animate={{ opacity: 1, y: 4 }}
-                            exit={{ opacity: 0, y: 6 }}
-                            transition={{ duration: 0.15 }}
-                            className="absolute left-0 z-[25] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
-                          >
-                            {filterOptions.map((option) => (
-                              <button
-                                key={option.id}
-                                type="button"
-                                onClick={() => {
-                                  setFilterType(option.id);
-                                  setIsDropdownOpen(false);
-                                  if (option.id !== 'custom') { setStartDate(''); setEndDate(''); }
-                                }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
-                                  ${filterType === option.id
-                                    ? 'bg-indigo-600 text-white'
-                                    : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'
-                                  }`}
-                              >
-                                {option.label}
-                                {filterType === option.id && <Check className="w-3.5 h-3.5 shrink-0" />}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* ── Date Inputs + Reset ──────────────────────────────────────────
-                        Always rendered (preserves space → no layout shift).
-                        visibility + pointer-events toggled so hidden state is inert.
-                        On mobile this flex group is always the same height.
-                    ──────────────────────────────────────────────────────────────── */}
-                    <div
-                      className="flex items-center gap-2 flex-1 md:flex-none transition-opacity duration-200"
-                      style={{
-                        visibility: filterType === 'custom' ? 'visible' : 'hidden',
-                        pointerEvents: filterType === 'custom' ? 'auto' : 'none',
-                      }}
-                      aria-hidden={filterType !== 'custom'}
-                    >
-                      <NativeDateInput label="FROM" value={startDate} onChange={setStartDate} />
-                      <NativeDateInput label="TO" value={endDate} onChange={setEndDate} />
-
-                      {/* Reset button — always same size, stays in flow */}
-                      <button
-                        type="button"
-                        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-                        className="h-[42px] w-[42px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-                        aria-label="Reset filter"
-                      >
-                        <RotateCcw className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-              {/* ── END FILTER HEADER ─────────────────────────────────────────── */}
+      {/* Custom Date Picker Section */}
+      {filterType === 'custom' && (
+        <motion.div 
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 w-full lg:w-auto"
+        >
+          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[42px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+          </div>
+          
+          <button 
+            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+            className="h-[42px] w-[42px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
+    </div>
+  </div>
+</div>
 
               {/* Transactions List Section */}
               <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
@@ -535,6 +519,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
           <div className="space-y-6 text-center">
+            {/* Danger Icon with Better Visibility */}
             <div className="mx-auto w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center">
               <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
             </div>
@@ -558,7 +543,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
               <Button
                 onClick={() => setDeleteDialogOpen(false)}
                 variant="outline"
-                className="w-full h-12 rounded-xl font-bold transition-all active:scale-95 border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-white/20 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+                className="w-full h-12 rounded-xl font-bold transition-all active:scale-95
+               /* Light Mode Styles */
+               border-slate-300 text-slate-700 hover:bg-slate-50
+               /* Dark Mode Styles - Ab ye 'bin bulaya mehmaan' nahi lagega */
+               dark:border-white/20 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
               >
                 Nahi
               </Button>
@@ -584,73 +573,35 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   NATIVE DATE INPUT — Transparent Overlay Technique
-   ─────────────────────────────────────────────────────────────────────────────
-   Visual Layer: a styled div with a <span> showing the formatted date label.
-   Interactive Layer: a native <input type="date"> positioned absolutely over
-   the visual layer, opacity: 0, cursor: pointer. Clicking anywhere on the
-   visible component opens the OS/browser native date picker (month/year
-   scroll included). No custom calendar, no ghost shadows, no glitches.
-
-   • Works perfectly on Chrome/Desktop: native date input supports manual
-     typing (MM/DD/YYYY) AND the calendar popup.
-   • Works on mobile: taps the overlay, opens the native OS date picker.
-   • No popover, no portal, no z-index conflicts with other UI.
-───────────────────────────────────────────────────────────────────────────── */
-
-function NativeDateInput({
-  label,
-  value,
-  onChange,
-}: {
-  label: string;
-  value: string;
-  onChange: (val: string) => void;
-}) {
-  const formatDisplay = (val: string): string => {
-    if (!val) return '';
-    const parts = val.split('-');
-    if (parts.length !== 3) return val;
-    const [y, m, d] = parts;
-    return `${d}/${m}/${y}`;
-  };
-
+function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="relative flex-1 min-w-[108px] max-w-[148px]">
-      {/* ── Visual layer (non-interactive, just for looks) ── */}
-      <div
-        className="flex flex-col bg-white dark:bg-[#1e1e2d] rounded-xl border border-slate-200 dark:border-white/10 shadow-sm px-3 py-2 hover:border-indigo-500/40 transition-all select-none"
-        style={{ pointerEvents: 'none' }}
-      >
-        <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none mb-1">
-          {label}
-        </span>
-        <div className="flex items-center gap-1.5 h-[18px]">
-          <span
-            className={`flex-1 text-[12px] font-semibold leading-none ${
-              value
-                ? 'text-slate-800 dark:text-slate-200'
-                : 'text-slate-400 dark:text-slate-500'
-            }`}
-          >
-            {value ? formatDisplay(value) : 'dd/mm/yyyy'}
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
+        {label}
+      </span>
+      
+      <div className="relative w-full flex items-center min-h-[1.2rem]">
+        {!value && (
+          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
           </span>
-          <Calendar className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400 shrink-0" />
-        </div>
-      </div>
+        )}
 
-      {/* ── Transparent native input overlay ──
-          opacity: 0 hides the ugly browser chrome.
-          The element is still fully interactive — clicks open the native
-          date picker, and on Chrome you can also type directly. ── */}
-      <input
-        type="date"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-        style={{ colorScheme: 'light dark', fontSize: '16px' }}
-      />
+        <input 
+          type="date" 
+          value={value || ''}
+          onChange={(e) => onChange(e.target.value)}
+          className={`bg-transparent text-[11px] font-bold outline-none w-full [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 
+            ${!value ? 'opacity-0' : 'opacity-100 text-slate-700 dark:text-slate-200'}`} // Changed text-transparent to opacity-0
+          style={{ 
+            WebkitAppearance: 'none', 
+            display: 'block',
+            minWidth: '100%' // Ensure it covers the area
+          }}
+        />
+        
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
+      </div>
     </div>
   );
 }
