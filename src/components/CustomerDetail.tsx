@@ -575,13 +575,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-// Updated DatePickerInput + fixes for manual typing, mobile UI, and double calendar issue
+// Updated DatePickerInput (Desktop typing fix, Mobile untouched)
 
 function DatePickerInput({ label, value, onChange }: any) {
-  const formatToInput = (val: string) => {
-    if (!val) return '';
-    return val;
-  };
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
@@ -590,33 +587,48 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
-        <input
-          type="text"
-          inputMode="numeric"
-          placeholder="dd/mm/yyyy"
-          value={value}
-          onChange={(e) => {
-            let val = e.target.value;
+        {/* Desktop: Manual typing */}
+        {!isMobile && (
+          <input
+            type="text"
+            placeholder="dd/mm/yyyy"
+            value={value}
+            onChange={(e) => {
+              let val = e.target.value;
 
-            // Auto format dd/mm/yyyy
-            val = val.replace(/[^0-9]/g, '');
-            if (val.length > 2 && val.length <= 4)
-              val = val.slice(0, 2) + '/' + val.slice(2);
-            else if (val.length > 4)
-              val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
+              // Allow only numbers
+              val = val.replace(/[^0-9]/g, '');
 
-            onChange(val);
-          }}
-          className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200"
-        />
+              // Auto format
+              if (val.length > 2 && val.length <= 4)
+                val = val.slice(0, 2) + '/' + val.slice(2);
+              else if (val.length > 4)
+                val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
 
-        {/* Hidden native picker for calendar */}
-        <input
-          type="date"
-          value={formatToInput(value)}
-          onChange={(e) => onChange(e.target.value)}
-          className="absolute inset-0 opacity-0 cursor-pointer"
-        />
+              onChange(val);
+            }}
+            className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200"
+          />
+        )}
+
+        {/* Mobile: Native picker (unchanged) */}
+        {isMobile && (
+          <input
+            type="date"
+            value={value || ''}
+            onChange={(e) => onChange(e.target.value)}
+            className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200"
+          />
+        )}
+
+        {/* Desktop: hidden calendar click */}
+        {!isMobile && (
+          <input
+            type="date"
+            onChange={(e) => onChange(e.target.value)}
+            className="absolute inset-0 opacity-0 cursor-pointer"
+          />
+        )}
 
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
