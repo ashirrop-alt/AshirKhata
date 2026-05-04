@@ -23,6 +23,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Calendar as CalendarWidget } from "@/components/ui/calendar";
+import { cn } from "@/lib/utils";
 
 interface Props {
   customer: Customer;
@@ -394,8 +401,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
-              {/* Unified Header - Matches Home Page Look */}
-              {/* Native & Premium Filter Header */}
              {/* Final Premium Filter Header */}
             <div className="px-3 py-3 md:px-6 md:py-3 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3">
@@ -455,27 +460,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
 
       {/* Custom Date Picker Section */}
-      {/* Custom Date Picker Section */}
-{filterType === 'custom' && (
-  <motion.div 
-    initial={{ opacity: 0, x: 10 }}
-    animate={{ opacity: 1, x: 0 }}
-    className="flex items-center gap-2 w-full sm:w-auto"
-  >
-    {/* Box ki width fix kar di hai taake click par hiley nahi */}
-    <div className="flex items-center bg-white dark:bg-[#1e1e2d] h-[44px] w-full sm:w-[240px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5 overflow-hidden">
-      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-    </div>
-    
-    <button 
-      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-    >
-      <RotateCcw className="w-4 h-4" />
-    </button>
-  </motion.div>
-)}
+      {filterType === 'custom' && (
+        <motion.div 
+          initial={{ opacity: 0, x: 10 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 w-full lg:w-auto"
+        >
+          <div className="flex flex-1 items-center gap-2 w-full lg:w-auto">
+            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+          </div>
+          
+          <button 
+            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+            className="h-[42px] w-[42px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+          >
+            <RotateCcw className="w-4 h-4" />
+          </button>
+        </motion.div>
+      )}
     </div>
   </div>
 </div>
@@ -575,41 +578,113 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-function DatePickerInput({ label, value, onChange }: any) {
-  return (
-    <div className="flex flex-col w-[110px] px-2 py-1 gap-0.5 shrink-0">
-      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
-        {label}
-      </span>
-      
-      <div className="relative w-full flex items-center h-[1.2rem]">
-        <input 
-          type={value ? "date" : "text"}
-          onFocus={(e) => (e.target.type = "date")}
-          onBlur={(e) => !value && (e.target.type = "text")}
-          placeholder="dd/mm/yyyy"
-          value={value || ''}
-          onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 z-10"
-          style={{ width: '100%' }}
-        />
-        
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60 z-0" />
-      </div>
+/* ─────────────────────────────────────────────────────────────
+   CUSTOM DATE PICKER INPUT — Professional, cross-platform
+   No native browser date input. Uses Shadcn Popover + Calendar
+   with manual dd/mm/yyyy text input support.
+   ───────────────────────────────────────────────────────────── */
 
-      <style>{`
-        input::-webkit-calendar-picker-indicator {
-          cursor: pointer;
-          position: absolute;
-          right: 0;
-          width: 20px;
-          height: 100%;
-          opacity: 0;
-          z-index: 20;
+function DatePickerInput({ label, value, onChange }: { label: string; value: string; onChange: (val: string) => void }) {
+  const [textValue, setTextValue] = useState('');
+  const [open, setOpen] = useState(false);
+
+  // Convert YYYY-MM-DD value to Date object for the calendar
+  const selectedDate = value ? new Date(value + 'T00:00:00') : undefined;
+
+  // Sync textValue when value changes externally (e.g. reset)
+  useEffect(() => {
+    if (value) {
+      const d = new Date(value + 'T00:00:00');
+      const dd = String(d.getDate()).padStart(2, '0');
+      const mm = String(d.getMonth() + 1).padStart(2, '0');
+      const yyyy = d.getFullYear();
+      setTextValue(`${dd}/${mm}/${yyyy}`);
+    } else {
+      setTextValue('');
+    }
+  }, [value]);
+
+  // Handle manual text input
+  const handleTextChange = (raw: string) => {
+    // Only allow digits and slashes
+    const cleaned = raw.replace(/[^\d/]/g, '');
+    
+    // Auto-insert slashes
+    let formatted = cleaned;
+    if (cleaned.length === 2 && !cleaned.includes('/')) {
+      formatted = cleaned + '/';
+    } else if (cleaned.length === 5 && cleaned.indexOf('/') === 2 && cleaned.lastIndexOf('/') === 2) {
+      formatted = cleaned + '/';
+    }
+    
+    // Cap at 10 chars (dd/mm/yyyy)
+    if (formatted.length > 10) formatted = formatted.slice(0, 10);
+    
+    setTextValue(formatted);
+
+    // Parse complete date
+    if (formatted.length === 10) {
+      const parts = formatted.split('/');
+      if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10);
+        const year = parseInt(parts[2], 10);
+        if (day >= 1 && day <= 31 && month >= 1 && month <= 12 && year >= 1900 && year <= 2099) {
+          const mm = String(month).padStart(2, '0');
+          const dd = String(day).padStart(2, '0');
+          onChange(`${year}-${mm}-${dd}`);
         }
-        /* Mobile ke default styles ko override karne ke liye */
-        input::-webkit-date-and-time-value { text-align: left; }
-      `}</style>
-    </div>
+      }
+    }
+  };
+
+  // Handle calendar selection
+  const handleCalendarSelect = (date: Date | undefined) => {
+    if (date) {
+      const yyyy = date.getFullYear();
+      const mm = String(date.getMonth() + 1).padStart(2, '0');
+      const dd = String(date.getDate()).padStart(2, '0');
+      onChange(`${yyyy}-${mm}-${dd}`);
+      setOpen(false);
+    }
+  };
+
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <div className="relative flex-1 min-w-[120px] lg:min-w-[140px]">
+        <div className="flex flex-col bg-white dark:bg-[#1e1e2d] rounded-xl border border-slate-200 dark:border-white/10 shadow-sm px-3 py-2 hover:border-indigo-500/40 transition-all">
+          <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none mb-1">
+            {label}
+          </span>
+          <div className="flex items-center gap-1.5">
+            <input
+              type="text"
+              inputMode="numeric"
+              placeholder="dd/mm/yyyy"
+              value={textValue}
+              onChange={(e) => handleTextChange(e.target.value)}
+              className="flex-1 bg-transparent text-[12px] font-semibold text-slate-800 dark:text-slate-200 placeholder:text-slate-400 dark:placeholder:text-slate-500 outline-none border-none p-0 min-w-0 focus:ring-0"
+            />
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                className="shrink-0 p-1 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-colors"
+              >
+                <Calendar className="w-3.5 h-3.5 text-indigo-500 dark:text-indigo-400" />
+              </button>
+            </PopoverTrigger>
+          </div>
+        </div>
+      </div>
+      <PopoverContent className="w-auto p-0 border-slate-200 dark:border-white/10 shadow-2xl rounded-xl" align="start" sideOffset={8}>
+        <CalendarWidget
+          mode="single"
+          selected={selectedDate}
+          onSelect={handleCalendarSelect}
+          initialFocus
+          className={cn("p-3 pointer-events-auto")}
+        />
+      </PopoverContent>
+    </Popover>
   );
 }
