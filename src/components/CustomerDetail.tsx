@@ -575,17 +575,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col flex-1 px-3 py-1.5 min-w-0 justify-center">
-      {/* Label - Thora bold aur clear */}
-      <span className="text-[9px] font-black text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase leading-none mb-1">
+    <div className="flex flex-col flex-1 px-3 py-1 min-w-0 justify-center">
+      {/* Label - Same as before */}
+      <span className="text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase leading-none mb-1">
         {label}
       </span>
       
-      <div className="relative flex items-center h-6">
-        {/* Placeholder - Iska color thora dark kiya hai taake "khaali" na lage */}
+      <div className="relative flex items-center h-5">
+        {/* Wapis purana "dd/mm/yyyy" placeholder */}
         {!value && (
-          <span className="absolute left-0 text-[12px] font-bold text-slate-400 dark:text-slate-500 pointer-events-none">
-            Pick Date
+          <span className="absolute left-0 text-[11px] md:text-[12px] font-medium text-slate-400 pointer-events-none">
+            dd/mm/yyyy
           </span>
         )}
 
@@ -593,17 +593,13 @@ function DatePickerInput({ label, value, onChange }: any) {
           type="date" 
           value={value || ''} 
           onChange={(e) => onChange(e.target.value)}
-          // text-transparent rakha hai jab value na ho taake peeche wala span dikhe
           className={`
-            bg-transparent text-[12px] font-black outline-none w-full cursor-pointer 
+            bg-transparent text-[11px] md:text-[12px] font-bold outline-none w-full cursor-pointer 
             [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0
             ${value ? 'text-slate-700 dark:text-white' : 'text-transparent'}
           `}
           style={{ WebkitAppearance: 'none' }}
         />
-        
-        {/* Chota sa calendar icon for premium look */}
-        <Calendar className="w-3 h-3 text-slate-400/60 absolute right-0 pointer-events-none" />
       </div>
     </div>
   );
