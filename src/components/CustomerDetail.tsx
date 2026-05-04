@@ -583,43 +583,33 @@ function DatePickerInput({ label, value, onChange }: any) {
       </span>
       
       <div className="relative w-full flex items-center min-h-[1.2rem]">
-        {/* Mobile placeholder jo sirf tab dikhega jab value khali ho */}
-        {!value && (
-          <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none z-0">
-            dd/mm/yyyy
-          </span>
-        )}
-
         <input 
           type="date" 
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] relative z-10 appearance-none"
+          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] z-10"
           style={{ 
-            WebkitAppearance: 'none',
-            display: 'block'
+            display: 'block',
+            minWidth: '100%' 
           }}
         />
         
-        {/* Calendar icon sirf tab dikhega jab value na ho taake shadow na bane */}
+        {/* Calendar Icon sirf ek indicator ke taur par, is par koi click logic nahi */}
         {!value && (
-          <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none z-0" />
+          <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-50" />
         )}
       </div>
 
-      {/* Ye chota sa global CSS block aapki file mein kahin bhi (baahar) kaam kar jayega ya index.css mein daal den */}
       <style>{`
+        /* Sirf default icon ko side mein rakhne ke liye, poore input par nahi phelaenge */
         input[type="date"]::-webkit-calendar-picker-indicator {
-          background: transparent;
-          bottom: 0;
-          color: transparent;
           cursor: pointer;
-          height: auto;
-          left: 0;
+          opacity: 0; /* Isko hide rakhenge taake hamara icon nazar aaye */
           position: absolute;
           right: 0;
-          top: 0;
-          width: auto;
+          width: 20px;
+          height: 100%;
+          z-index: 20;
         }
       `}</style>
     </div>
