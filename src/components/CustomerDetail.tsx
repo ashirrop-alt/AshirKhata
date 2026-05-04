@@ -411,7 +411,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     {/* Controls Group */}
     <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
       
-      {/* Dropdown - Premium Style */}
+      {/* Dropdown - Fixed Click Issue */}
       <div className="relative z-[110]"> 
         <button
           type="button"
@@ -454,26 +454,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </AnimatePresence>
       </div>
 
-      {/* Date Picker Section - Fixed for Mobile */}
+      {/* Date Picker Section */}
       {filterType === 'custom' && (
-        <motion.div 
-          initial={{ opacity: 0, scale: 0.98 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
-        >
-          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[46px] rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5 overflow-hidden">
-            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-          </div>
-          
-          <button 
-            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-            className="h-[46px] w-[46px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </motion.div>
-      )}
+  <motion.div 
+    initial={{ opacity: 0, scale: 0.98 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
+  >
+    {/* Input Box Container */}
+    <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+    </div>
+    
+    {/* Refresh Icon - Height matched with the box above */}
+    <button 
+      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+    >
+      <RotateCcw className="w-4 h-4" />
+    </button>
+  </motion.div>
+)}
     </div>
   </div>
 </div>
@@ -573,33 +575,50 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
+// Updated DatePickerInput + fixes for manual typing, mobile UI, and double calendar issue
+
 function DatePickerInput({ label, value, onChange }: any) {
+  const formatToInput = (val: string) => {
+    if (!val) return '';
+    return val;
+  };
+
   return (
-    <div className="flex flex-col flex-1 px-3 py-1 min-w-0 justify-center">
-      {/* Label - Same as before */}
-      <span className="text-[8px] font-black text-indigo-600 dark:text-indigo-400 tracking-tighter uppercase leading-none mb-1">
+    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+      <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
-      
-      <div className="relative flex items-center h-5">
-        {/* Wapis purana "dd/mm/yyyy" placeholder */}
-        {!value && (
-          <span className="absolute left-0 text-[11px] md:text-[12px] font-medium text-slate-400 pointer-events-none">
-            dd/mm/yyyy
-          </span>
-        )}
 
-        <input 
-          type="date" 
-          value={value || ''} 
-          onChange={(e) => onChange(e.target.value)}
-          className={`
-            bg-transparent text-[11px] md:text-[12px] font-bold outline-none w-full cursor-pointer 
-            [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0
-            ${value ? 'text-slate-700 dark:text-white' : 'text-transparent'}
-          `}
-          style={{ WebkitAppearance: 'none' }}
+      <div className="relative w-full flex items-center">
+        <input
+          type="text"
+          inputMode="numeric"
+          placeholder="dd/mm/yyyy"
+          value={value}
+          onChange={(e) => {
+            let val = e.target.value;
+
+            // Auto format dd/mm/yyyy
+            val = val.replace(/[^0-9]/g, '');
+            if (val.length > 2 && val.length <= 4)
+              val = val.slice(0, 2) + '/' + val.slice(2);
+            else if (val.length > 4)
+              val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
+
+            onChange(val);
+          }}
+          className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200"
         />
+
+        {/* Hidden native picker for calendar */}
+        <input
+          type="date"
+          value={formatToInput(value)}
+          onChange={(e) => onChange(e.target.value)}
+          className="absolute inset-0 opacity-0 cursor-pointer"
+        />
+
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
     </div>
   );
