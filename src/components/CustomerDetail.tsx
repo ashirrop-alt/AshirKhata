@@ -455,25 +455,27 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
 
       {/* Custom Date Picker Section */}
-      {filterType === 'custom' && (
-        <motion.div 
-          initial={{ opacity: 0, x: 10 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 w-full lg:w-auto"
-        >
-          <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[42px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-            <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
-            <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
-          </div>
-          
-          <button 
-            onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-            className="h-[42px] w-[42px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-          >
-            <RotateCcw className="w-4 h-4" />
-          </button>
-        </motion.div>
-      )}
+      {/* Custom Date Picker Section */}
+{filterType === 'custom' && (
+  <motion.div 
+    initial={{ opacity: 0, x: 10 }}
+    animate={{ opacity: 1, x: 0 }}
+    className="flex items-center gap-2 w-full sm:w-auto"
+  >
+    {/* Box ki width fix kar di hai taake click par hiley nahi */}
+    <div className="flex items-center bg-white dark:bg-[#1e1e2d] h-[44px] w-full sm:w-[240px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5 overflow-hidden">
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} />
+      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} />
+    </div>
+    
+    <button 
+      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+      className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
+    >
+      <RotateCcw className="w-4 h-4" />
+    </button>
+  </motion.div>
+)}
     </div>
   </div>
 </div>
@@ -575,31 +577,27 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 function DatePickerInput({ label, value, onChange }: any) {
   return (
-    <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
+    <div className="flex flex-col w-[110px] px-2 py-1 gap-0.5 shrink-0">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
         {label}
       </span>
       
-      <div className="relative w-full flex items-center min-h-[1.2rem]">
+      <div className="relative w-full flex items-center h-[1.2rem]">
         <input 
-          // Logic: Agar value hai ya focused hai tw 'date', warna 'text' taake placeholder dikhe
           type={value ? "date" : "text"}
           onFocus={(e) => (e.target.type = "date")}
           onBlur={(e) => !value && (e.target.type = "text")}
-          
           placeholder="dd/mm/yyyy"
           value={value || ''}
           onChange={(e) => onChange(e.target.value)}
-          
-          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 min-h-[1.2rem] z-10"
+          className="bg-transparent text-[11px] font-bold outline-none w-full text-slate-700 dark:text-slate-200 [color-scheme:light] dark:[color-scheme:dark] border-none p-0 focus:ring-0 z-10"
+          style={{ width: '100%' }}
         />
         
-        {/* Calendar Icon - Is par pointer-events-none hai taake ye typing na rokay */}
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60" />
+        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none opacity-60 z-0" />
       </div>
 
       <style>{`
-        /* Laptop ke liye manual typing icon ko hide karna */
         input::-webkit-calendar-picker-indicator {
           cursor: pointer;
           position: absolute;
@@ -609,6 +607,8 @@ function DatePickerInput({ label, value, onChange }: any) {
           opacity: 0;
           z-index: 20;
         }
+        /* Mobile ke default styles ko override karne ke liye */
+        input::-webkit-date-and-time-value { text-align: left; }
       `}</style>
     </div>
   );
