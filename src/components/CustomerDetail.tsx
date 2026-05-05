@@ -436,7 +436,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                  <div className="flex flex-col sm:flex-row items-center gap-2 relative" ref={dropdownRef}>
 
                     {/* Dropdown - Fixed Click Issue */}
-                    <div className="static sm:relative z-[2000] w-full sm:w-auto">
+                    <div className="relative z-[100] w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={(e) => {
@@ -455,7 +455,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                             initial={{ opacity: 0, y: 8 }}
                             animate={{ opacity: 1, y: 4 }}
                             exit={{ opacity: 0, y: 8 }}
-                           className="fixed sm:absolute left-4 right-4 sm:left-auto z-[9999] mt-1 w-[calc(100%-32px)] sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+                           className="absolute left-0 right-0 sm:left-auto z-[9999] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
                           >
                             {filterOptions.map((option) => (
                               <button
