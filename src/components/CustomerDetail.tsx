@@ -422,44 +422,84 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
               {/* --- Header Section (Heading + Filter) --- */}
-<div className="px-3 pt-4 pb-3 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+<div className="border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
   
-  {/* Row 1: Heading aur Dropdown (Mobile par bhi ek hi line mein) */}
-  <div className="flex flex-row items-center justify-between gap-2">
-    
-    {/* Left: Heading */}
-    <div className="flex items-center gap-2 shrink-0">
-      <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-      <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-        Hisaab ({filteredTransactions.length})
+  {/* 1. LAPTOP HEADER (Sirf Laptop/Desktop par dikhega) */}
+  <div className="hidden lg:flex px-6 py-5 items-center justify-between">
+    <div className="flex items-center gap-2">
+      <div className="w-1 h-5 bg-indigo-600 rounded-full" />
+      <span className="text-[13px] font-black uppercase tracking-widest text-slate-500 dark:text-slate-400">
+        Transactions ({filteredTransactions.length})
       </span>
     </div>
 
-    {/* Right: Dropdown + Laptop Date Inputs */}
-    <div className="flex items-center gap-2">
-      
-      {/* Laptop Date Picker (Sirf barri screen par dikhega) */}
+    <div className="flex items-center gap-3 relative" ref={dropdownRef}>
+      {/* Desktop Date Inputs */}
       {filterType === 'custom' && (
-        <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-[#1e1e2d] px-2 py-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm">
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] px-3 py-1.5 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm"
+        >
           <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
-          <div className="w-px h-4 bg-slate-200 dark:bg-white/10 mx-1" />
+          <div className="w-px h-6 bg-slate-200 dark:bg-white/10 mx-1" />
           <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-          <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="p-1.5 text-slate-400 hover:text-red-500">
-            <RotateCcw size={14} />
+          <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
+            <RotateCcw size={16} />
           </button>
-        </div>
+        </motion.div>
       )}
 
-      {/* Dropdown Button */}
-      <div className="relative z-30" ref={dropdownRef}>
+      {/* Desktop Dropdown */}
+      <div className="relative">
         <button
           type="button"
-          onClick={(e) => { e.preventDefault(); setIsDropdownOpen(!isDropdownOpen); }}
-          className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm active:scale-95 transition-all"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="min-w-[160px] flex items-center justify-between gap-3 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[13px] font-bold px-4 py-2.5 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/50 transition-all"
         >
-          <span className="max-w-[80px] truncate">
-            {filterOptions.find(opt => opt.id === filterType)?.label}
-          </span>
+          <span>{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+          <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
+
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 5 }} exit={{ opacity: 0, y: 10 }}
+              className="absolute right-0 z-50 mt-2 w-[180px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-2xl shadow-2xl p-1.5"
+            >
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
+                  className={`w-full flex items-center justify-between px-4 py-2.5 rounded-xl text-[12px] font-bold transition-all mb-1 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-500/30' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-white/5'}`}
+                >
+                  {option.label}
+                  {filterType === option.id && <Check className="w-4 h-4" />}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  </div>
+
+  {/* 2. MOBILE HEADER (Sirf Mobile par dikhega - Wahi jo aapko pasand aaya) */}
+  <div className="lg:hidden px-4 pt-4 pb-3">
+    <div className="flex flex-row items-center justify-between gap-2">
+      <div className="flex items-center gap-2">
+        <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+        <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+          Hisaab ({filteredTransactions.length})
+        </span>
+      </div>
+
+      <div className="relative" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm active:scale-95"
+        >
+          <span className="max-w-[90px] truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
           <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
         </button>
 
@@ -471,9 +511,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
             >
               {filterOptions.map((option) => (
                 <button
-                  key={option.id} type="button"
+                  key={option.id}
                   onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
-                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-white/5'}`}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-bold mb-0.5 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
                 >
                   {option.label}
                   {filterType === option.id && <Check className="w-3 h-3" />}
@@ -484,26 +524,27 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </AnimatePresence>
       </div>
     </div>
-  </div>
 
-  {/* Row 2: Mobile Date Picker (Sirf Custom select hone par niche khulega) */}
-  {filterType === 'custom' && (
-    <motion.div
-      initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
-      className="lg:hidden mt-3 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/[0.05]"
-    >
-      <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
-        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-      </div>
-      <button
-        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-        className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl border border-slate-200 dark:border-white/10"
+    {/* Mobile Custom Date Transition */}
+    {filterType === 'custom' && (
+      <motion.div
+        initial={{ height: 0, opacity: 0, marginTop: 0 }}
+        animate={{ height: 'auto', opacity: 1, marginTop: 12 }}
+        className="flex items-center gap-2 overflow-hidden"
       >
-        <RotateCcw className="w-4 h-4" />
-      </button>
-    </motion.div>
-  )}
+        <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[46px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+          <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
+          <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+        </div>
+        <button
+          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+          className="h-[46px] w-[46px] flex items-center justify-center bg-white dark:bg-[#1e1e2d] text-slate-400 rounded-xl border border-slate-200 dark:border-white/10"
+        >
+          <RotateCcw className="w-4 h-4" />
+        </button>
+      </motion.div>
+    )}
+  </div>
 </div>
 
               {/* Transactions List Section */}
