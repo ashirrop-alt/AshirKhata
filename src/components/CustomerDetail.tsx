@@ -82,53 +82,53 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   // 5. FILTER LOGIC
   const filteredTransactions = transactions.filter(t => {
-  // 1. Agar 'All' select hai tw sab dikhao
-  if (filterType === 'all') return true;
+    // 1. Agar 'All' select hai tw sab dikhao
+    if (filterType === 'all') return true;
 
-  // 2. Transaction ki date ko format karna (Database date check)
-  const txDate = new Date(t.date);
-  txDate.setHours(0, 0, 0, 0);
+    // 2. Transaction ki date ko format karna (Database date check)
+    const txDate = new Date(t.date);
+    txDate.setHours(0, 0, 0, 0);
 
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
 
-  // 3. Aaj ka Filter
-  if (filterType === 'today') {
-    return txDate.getTime() === today.getTime();
-  }
-
-  // 4. Is Mahine ka Filter
-  if (filterType === 'thisMonth') {
-    return txDate.getMonth() === today.getMonth() && 
-           txDate.getFullYear() === today.getFullYear();
-  }
-
-  // 5. CUSTOM FILTER (Jo masla kar raha tha)
-  if (filterType === 'custom') {
-    // Agar dono dates poori nahi likhi (10 characters), tw filter apply mat karo
-    if (startDate.length < 10 || endDate.length < 10) return true;
-
-    try {
-      // dd/mm/yyyy ko split karke Year, Month, Day nikalna
-      const [sDay, sMonth, sYear] = startDate.split('/').map(Number);
-      const [eDay, eMonth, eYear] = endDate.split('/').map(Number);
-
-      // JavaScript months 0 se start hote hain isliye (sMonth - 1)
-      const startLimit = new Date(sYear, sMonth - 1, sDay);
-      const endLimit = new Date(eYear, eMonth - 1, eDay);
-
-      startLimit.setHours(0, 0, 0, 0);
-      endLimit.setHours(23, 59, 59, 999);
-
-      return txDate >= startLimit && txDate <= endLimit;
-    } catch (e) {
-      console.error("Date filter error:", e);
-      return true; 
+    // 3. Aaj ka Filter
+    if (filterType === 'today') {
+      return txDate.getTime() === today.getTime();
     }
-  }
 
-  return true;
-});
+    // 4. Is Mahine ka Filter
+    if (filterType === 'thisMonth') {
+      return txDate.getMonth() === today.getMonth() &&
+        txDate.getFullYear() === today.getFullYear();
+    }
+
+    // 5. CUSTOM FILTER (Jo masla kar raha tha)
+    if (filterType === 'custom') {
+      // Agar dono dates poori nahi likhi (10 characters), tw filter apply mat karo
+      if (startDate.length < 10 || endDate.length < 10) return true;
+
+      try {
+        // dd/mm/yyyy ko split karke Year, Month, Day nikalna
+        const [sDay, sMonth, sYear] = startDate.split('/').map(Number);
+        const [eDay, eMonth, eYear] = endDate.split('/').map(Number);
+
+        // JavaScript months 0 se start hote hain isliye (sMonth - 1)
+        const startLimit = new Date(sYear, sMonth - 1, sDay);
+        const endLimit = new Date(eYear, eMonth - 1, eDay);
+
+        startLimit.setHours(0, 0, 0, 0);
+        endLimit.setHours(23, 59, 59, 999);
+
+        return txDate >= startLimit && txDate <= endLimit;
+      } catch (e) {
+        console.error("Date filter error:", e);
+        return true;
+      }
+    }
+
+    return true;
+  });
 
   // 6. CALCULATIONS & UTILS
   const total = transactions.reduce((acc, tx) => {
@@ -421,102 +421,90 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
-              <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-3 min-h-0 lg:min-h-[48px]">
+              {/* --- Header Section (Heading + Filter) --- */}
+<div className="px-3 pt-4 pb-3 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+  
+  {/* Row 1: Heading aur Dropdown (Mobile par bhi ek hi line mein) */}
+  <div className="flex flex-row items-center justify-between gap-2">
+    
+    {/* Left: Heading */}
+    <div className="flex items-center gap-2 shrink-0">
+      <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+      <span className="text-[10px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+        Hisaab ({filteredTransactions.length})
+      </span>
+    </div>
 
-                  {/* Section Title */}
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-                    <span className="text-[11px] md:text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                      Transactions ({filteredTransactions.length})
-                    </span>
-                  </div>
+    {/* Right: Dropdown + Laptop Date Inputs */}
+    <div className="flex items-center gap-2">
+      
+      {/* Laptop Date Picker (Sirf barri screen par dikhega) */}
+      {filterType === 'custom' && (
+        <div className="hidden lg:flex items-center gap-2 bg-white dark:bg-[#1e1e2d] px-2 py-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm">
+          <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
+          <div className="w-px h-4 bg-slate-200 dark:bg-white/10 mx-1" />
+          <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+          <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="p-1.5 text-slate-400 hover:text-red-500">
+            <RotateCcw size={14} />
+          </button>
+        </div>
+      )}
 
-                  {/* Controls Group */}
-                 <div className="flex flex-col sm:flex-row items-center gap-2 relative" ref={dropdownRef}>
+      {/* Dropdown Button */}
+      <div className="relative z-30" ref={dropdownRef}>
+        <button
+          type="button"
+          onClick={(e) => { e.preventDefault(); setIsDropdownOpen(!isDropdownOpen); }}
+          className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm active:scale-95 transition-all"
+        >
+          <span className="max-w-[80px] truncate">
+            {filterOptions.find(opt => opt.id === filterType)?.label}
+          </span>
+          <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+        </button>
 
-                    {/* Dropdown - Fixed Click Issue */}
-                    <div className="relative z-30 w-full sm:w-auto">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setIsDropdownOpen(!isDropdownOpen);
-                        }}
-                        className="w-full sm:w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2.5 sm:py-2 rounded-xl border border-slate-200 dark:border-white/10 hover:border-indigo-500/40 shadow-sm"
-                      >
-                        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                      </button>
+        <AnimatePresence>
+          {isDropdownOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
+              className="absolute right-0 z-40 mt-1 w-[150px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
+            >
+              {filterOptions.map((option) => (
+                <button
+                  key={option.id} type="button"
+                  onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-medium mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-white/5'}`}
+                >
+                  {option.label}
+                  {filterType === option.id && <Check className="w-3 h-3" />}
+                </button>
+              ))}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </div>
+  </div>
 
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-  initial={{ opacity: 0, y: 8 }}
-  animate={{ opacity: 1, y: 4 }}
-  exit={{ opacity: 0, y: 8 }}
-  className="absolute left-0 right-0 sm:left-auto z-40 mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
->
-                            {filterOptions.map((option) => (
-                              <button
-                                key={option.id}
-                                type="button"
-                                onClick={() => {
-                                  setFilterType(option.id);
-                                  setIsDropdownOpen(false);
-                                  if (option.id !== 'custom') { setStartDate(''); setEndDate(''); }
-                                }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0
-                    ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
-                              >
-                                {option.label}
-                                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-
-                    {/* Date Picker Section */}
-                    {filterType === 'custom' && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 10 }}
-animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center gap-2 w-full lg:w-auto mt-1 sm:mt-0"
-                      >
-                        {/* Input Box Container */}
-                        <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-                          {/* FROM box: isme batana hai ke ye kahan se start ho (fromRef) aur kahan khatam (toRef) */}
-                          <DatePickerInput
-                            label="FROM"
-                            value={startDate}
-                            onChange={setStartDate}
-                            inputRef={fromRef}
-                            nextRef={toRef}
-                          />
-
-                          {/* TO box: isme sirf iska apna ref aayega */}
-                          <DatePickerInput
-                            label="TO"
-                            value={endDate}
-                            onChange={setEndDate}
-                            inputRef={toRef}
-                          />
-                        </div>
-
-                        {/* Refresh Icon - Height matched with the box above */}
-                        <button
-                          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
-                          className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl hover:bg-red-50 hover:text-red-500 transition-all shrink-0 border border-slate-200 dark:border-white/10 shadow-sm"
-                        >
-                          <RotateCcw className="w-4 h-4" />
-                        </button>
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-              </div>
+  {/* Row 2: Mobile Date Picker (Sirf Custom select hone par niche khulega) */}
+  {filterType === 'custom' && (
+    <motion.div
+      initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }}
+      className="lg:hidden mt-3 flex items-center gap-2 pt-2 border-t border-slate-100 dark:border-white/[0.05]"
+    >
+      <div className="flex flex-1 items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
+        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+      </div>
+      <button
+        onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+        className="h-[44px] w-[44px] flex items-center justify-center bg-slate-50 dark:bg-white/5 text-slate-400 rounded-xl border border-slate-200 dark:border-white/10"
+      >
+        <RotateCcw className="w-4 h-4" />
+      </button>
+    </motion.div>
+  )}
+</div>
 
               {/* Transactions List Section */}
               <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-transparent">
