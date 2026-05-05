@@ -452,13 +452,12 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* Desktop Dropdown - Exact 150px and 12px text */}
       <div className="relative">
         <button
-          type="button"
-          onClick={(e) => {
-  e.preventDefault(); // Browser ki default behavior ko rokne ke liye
-  e.stopPropagation();
-  // State ko functional update se change karein taake laptop par double-toggle na ho
-  setIsDropdownOpen(prev => !prev);
-}}
+  type="button"
+  onClick={(e) => {
+    e.preventDefault(); // Laptop par double action rokne ke liye
+    e.stopPropagation();
+    setIsDropdownOpen((prev) => !prev); // Functional update se toggle confirm hota hai
+  }}
           className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
         >
           <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
