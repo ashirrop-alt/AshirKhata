@@ -423,10 +423,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Final Premium Filter Header */}
               {/* --- Header Section (Heading + Filter) --- */}
 {/* --- Header Section (Heading + Filter) --- */}
-<div className="border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+<div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
   
-  {/* 1. LAPTOP HEADER (Sizes matched with your provided old code) */}
-  <div className="hidden lg:flex px-6 py-2 items-center justify-between min-h-[48px]">
+  {/* 1. LAPTOP HEADER (Exact Accuracy from your provided old code & image_01f43b.png) */}
+  <div className="hidden lg:flex items-center justify-between min-h-[48px]">
     <div className="flex items-center gap-2">
       <div className="w-1 h-4 bg-indigo-600 rounded-full" />
       <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
@@ -438,24 +438,23 @@ export function CustomerDetail({ customer, onBack }: Props) {
       {/* Desktop Date Inputs */}
       {filterType === 'custom' && (
         <motion.div 
-          initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] px-3 py-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm"
+          initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
+          className="flex items-center bg-white dark:bg-[#1e1e2d] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
         >
           <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
-          <div className="w-px h-6 bg-slate-200 dark:bg-white/10 mx-1" />
           <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-          <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="p-2 text-slate-400 hover:text-red-500 transition-colors">
-            <RotateCcw size={14} />
+          <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="h-[44px] w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
+            <RotateCcw size={16} />
           </button>
         </motion.div>
       )}
 
-      {/* Desktop Dropdown - Width & Font matched to old code */}
+      {/* Desktop Dropdown - Exact 150px and 12px text */}
       <div className="relative">
         <button
           type="button"
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40 transition-all"
+          className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
         >
           <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
           <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -465,7 +464,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {isDropdownOpen && (
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-              className="absolute right-0 z-50 mt-1 w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
+              className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
             >
               {filterOptions.map((option) => (
                 <button
@@ -484,13 +483,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
     </div>
   </div>
 
-  {/* 2. MOBILE HEADER (Aapka "Perfect" layout - untouched) */}
-  <div className="lg:hidden px-4 pt-4 pb-3">
+  {/* 2. MOBILE HEADER (Aapka "Perfect" layout - No changes here) */}
+  <div className="lg:hidden">
     <div className="flex flex-row items-center justify-between gap-2">
       <div className="flex items-center gap-2">
         <div className="w-1 h-4 bg-indigo-600 rounded-full" />
         <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
-          Hisaab ({filteredTransactions.length})
+          HISAAB ({filteredTransactions.length})
         </span>
       </div>
 
@@ -526,6 +525,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       </div>
     </div>
 
+    {/* Mobile Custom Date Transition */}
     {filterType === 'custom' && (
       <motion.div
         initial={{ height: 0, opacity: 0, marginTop: 0 }}
