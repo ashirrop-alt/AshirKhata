@@ -422,7 +422,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
               <div className="px-3 py-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 min-h-[56px] md:min-h-[48px]">
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 min-h-0 lg:min-h-[48px]">
 
                   {/* Section Title */}
                   <div className="flex items-center gap-2">
@@ -433,7 +433,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   </div>
 
                   {/* Controls Group */}
-                 <div className="flex flex-col sm:flex-row items-center gap-2 relative" ref={dropdownRef}>
+                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 relative" ref={dropdownRef}>
 
                     {/* Dropdown - Fixed Click Issue */}
                     <div className="relative z-[110]">
