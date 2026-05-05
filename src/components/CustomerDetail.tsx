@@ -464,7 +464,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
           {isDropdownOpen && (
             <motion.div
               initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-              className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.25] rounded-xl shadow-xl p-1"
+              className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.18] rounded-xl shadow-xl p-1"
             >
               {filterOptions.map((option) => (
                 <button
