@@ -421,8 +421,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
               {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
-              <div className="px-3 py-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3 min-h-0 lg:min-h-[48px]">
+              <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+  <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 md:gap-3 min-h-0 lg:min-h-[48px]">
 
                   {/* Section Title */}
                   <div className="flex items-center gap-2">
