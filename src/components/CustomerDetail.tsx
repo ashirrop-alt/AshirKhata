@@ -250,7 +250,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] transition-colors duration-500 overflow-hidden">
 
       {/* --- HEADER --- */}
-      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-10 shadow-sm transition-all">
+      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-[100] shadow-sm transition-all">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
           {/* Left Side: Back Button + Info */}
           <div className="flex items-center gap-2 md:gap-3">
@@ -436,7 +436,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                  <div className="flex flex-col sm:flex-row items-center gap-2 relative" ref={dropdownRef}>
 
                     {/* Dropdown - Fixed Click Issue */}
-                    <div className="relative z-[100] w-full sm:w-auto">
+                    <div className="relative z-30 w-full sm:w-auto">
                       <button
                         type="button"
                         onClick={(e) => {
@@ -452,11 +452,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
                       <AnimatePresence>
                         {isDropdownOpen && (
                           <motion.div
-                            initial={{ opacity: 0, y: 8 }}
-                            animate={{ opacity: 1, y: 4 }}
-                            exit={{ opacity: 0, y: 8 }}
-                           className="absolute left-0 right-0 sm:left-auto z-[9999] mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
-                          >
+  initial={{ opacity: 0, y: 8 }}
+  animate={{ opacity: 1, y: 4 }}
+  exit={{ opacity: 0, y: 8 }}
+  className="absolute left-0 right-0 sm:left-auto z-40 mt-1 w-full sm:w-[170px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl overflow-hidden p-1"
+>
                             {filterOptions.map((option) => (
                               <button
                                 key={option.id}
