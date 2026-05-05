@@ -453,7 +453,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <div className="relative">
         <button
           type="button"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+          onClick={(e) => {
+  e.stopPropagation();
+  setIsDropdownOpen(!isDropdownOpen);
+}}
           className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
         >
           <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
