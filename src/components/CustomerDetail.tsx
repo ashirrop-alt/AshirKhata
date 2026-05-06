@@ -435,19 +435,23 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   <div className="flex items-center gap-3 relative" ref={dropdownRef}>
                     {/* Desktop Date Inputs */}
                     {/* LAPTOP HEADER WALA BUTTON UPDATE */}
+{/* LAPTOP HEADER - FIXED UI */}
 {filterType === 'custom' && (
   <motion.div
     initial={{ opacity: 0, x: 10 }} 
     animate={{ opacity: 1, x: 0 }}
-    className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
+    className="flex items-center gap-2" // Container ko gap diya hai
   >
-    <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
-    <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-    
-    {/* YE WALA BUTTON UPDATE KIYA HAI */}
+    {/* Inputs wala box alag */}
+    <div className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+      <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
+      <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+    </div>
+
+    {/* Refresh Button ab inputs se bahar hai, bilkul mobile ki tarah */}
     <button 
       onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} 
-      className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-l border-slate-200 dark:border-white/10 transition-all active:scale-95"
+      className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm transition-all active:scale-95"
     >
       <RotateCcw size={16} />
     </button>
