@@ -704,11 +704,8 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             onChange(val);
 
             // Auto jump to next field when complete
-            if (val.length === 10 && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
-              setTimeout(() => {
-                nextRef?.current?.focus();
-                nextRef?.current?.click(); // 👈 ye add karo
-              }, 50);
+            if (val.length === 10 && nextRef?.current) {
+              nextRef.current.focus();
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
@@ -721,7 +718,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
             value={toISO(value)}
             onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute right-0 w-6 h-full opacity-0 pointer-events-none"
+            className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
           />
         )}
 
@@ -740,3 +737,4 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     </div>
   );
 }
+
