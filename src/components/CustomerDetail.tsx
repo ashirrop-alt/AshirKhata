@@ -729,7 +729,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
             value={toISO(value)}
             onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute inset-0 opacity-0"
+            className="absolute right-0 w-6 h-full opacity-0"
           />
         )}
 
