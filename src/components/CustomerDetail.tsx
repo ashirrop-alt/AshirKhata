@@ -650,7 +650,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 // FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
 
-function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
+function DatePickerInput({ label, value, onChange, inputRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -680,11 +680,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          // ✅ FIX 1: Har input ka name unique hona chahiye (label use kiya hai)
-          name={`input-${label}`} 
-          id={`input-${label}`}
-          // ✅ FIX 2: Laptop browsers ko autofill se rokne ke liye
-          autoComplete="off" 
+          autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
@@ -692,6 +688,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             let val = e.target.value.replace(/[^0-9]/g, '');
 
             if (val.length <= 2) {
+              // dd
             } else if (val.length <= 4) {
               val = val.slice(0, 2) + '/' + val.slice(2);
             } else {
@@ -700,20 +697,22 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
             onChange(val);
 
-            // ✅ FIX 3: Laptop par render cycle ki wajah se 50ms ka delay behtar kaam karta hai
-            if (val.length === 10 && nextRef?.current) {
-              setTimeout(() => {
-                nextRef.current.focus();
-              }, 50); 
+            // --- UNIVERSAL JUMP LOGIC (Laptop + Mobile) ---
+            if (val.length === 10 && label === "FROM") {
+              // Apne container ke andar agla "TO" input dhundo
+              const parent = e.target.closest('.divide-x');
+              const inputs = parent?.querySelectorAll('input[type="text"]');
+              if (inputs && inputs[1]) {
+                (inputs[1] as HTMLInputElement).focus();
+              }
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Hidden Date Picker Logic */}
         <input
           type="date"
-          tabIndex={-1} 
+          tabIndex={-1}
           value={toISO(value)}
           onChange={(e) => onChange(fromISO(e.target.value))}
           className={`absolute right-0 w-6 h-full opacity-0 cursor-pointer ${isMobile ? 'inset-0' : ''}`}
