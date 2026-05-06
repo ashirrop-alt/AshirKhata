@@ -647,7 +647,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 }
 
 function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
-  // 1. Device check
+  // Check if it's mobile or laptop
   const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -669,56 +669,73 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
+        {/* Placeholder overlay jab text khali ho */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
           </span>
         )}
 
+        {/* MAIN TYPING INPUT */}
         <input
           type="text"
-          name={`ignore_${label}_${Math.random()}`} // Browser autocomplete ko rokne ke liye
           autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
+          placeholder=""
           onChange={(e) => {
             let val = e.target.value.replace(/[^0-9]/g, '');
             if (val.length <= 2) {
-              // dd
+              // sirf din
             } else if (val.length <= 4) {
               val = val.slice(0, 2) + '/' + val.slice(2);
             } else {
               val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
             }
-            
             onChange(val);
 
-            // ✅ LAPTOP AUTO-JUMP: Sirf Laptop par focus shift ho
-            if (!isMobile && val.length === 10 && nextRef?.current) {
+            // AUTO-SHIFT LOGIC: Jab 10 characters poore ho jayein aur nextRef majood ho
+            if (val.length === 10 && nextRef?.current && !isMobile) {
               nextRef.current.focus();
             }
           }}
-          // ✅ MOBILE CALENDAR: Mobile par click ho tw hidden date picker khule
-          onFocus={(e) => {
-            if (isMobile) {
-              const datePicker = e.target.parentElement?.querySelector('input[type="date"]') as HTMLInputElement;
-              datePicker?.showPicker();
-            }
-          }}
-          className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
+          className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200"
         />
 
-        {/* Hidden Date Picker for Icon (Laptop) and Overlay (Mobile) */}
-        <input
-          type="date"
-          tabIndex={-1}
-          value={toISO(value)}
-          onChange={(e) => onChange(fromISO(e.target.value))}
-          className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
-        />
+        {/* CALENDAR PICKER LOGIC */}
+        {isMobile ? (
+          /* Mobile: Poore input par invisible layer taake touch se calendar khule */
+          <input
+            type="date"
+            value={toISO(value)}
+            onChange={(e) => {
+              const formatted = fromISO(e.target.value);
+              onChange(formatted);
+            }}
+            className="absolute inset-0 opacity-0"
+          />
+        ) : (
+          /* Laptop: Sirf icon area par calendar picker (typing mein disturbance nahi hogi) */
+          <div className="absolute right-0 w-6 h-full flex items-center justify-end">
+            <input
+              type="date"
+              tabIndex={-1} 
+              value={toISO(value)}
+              onChange={(e) => {
+                const formatted = fromISO(e.target.value);
+                onChange(formatted);
+                // Laptop par calendar se date chunne ke baad bhi next field par shift karein
+                if (nextRef?.current) nextRef.current.focus();
+              }}
+              className="absolute w-full h-full opacity-0 cursor-pointer z-10"
+            />
+            <Calendar className="w-3.5 h-3.5 text-slate-400" />
+          </div>
+        )}
 
-        <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
+        {/* Mobile wala icon jo touchable nahi hai (sirf dikhane ke liye) */}
+        {isMobile && <Calendar className="w-3.5 h-3.5 text-slate-400 absolute right-0 pointer-events-none" />}
       </div>
     </div>
   );
