@@ -704,8 +704,10 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             onChange(val);
 
             // Auto jump to next field when complete
-            if (val.length === 10 && nextRef?.current) {
-              nextRef.current.focus();
+            if (val.length === 10 && /^\d{2}\/\d{2}\/\d{4}$/.test(val)) {
+              setTimeout(() => {
+                nextRef?.current?.focus();
+              }, 0);
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
