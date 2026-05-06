@@ -672,8 +672,6 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
-
-        {/* Placeholder overlay */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
@@ -682,15 +680,16 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          name="random_field_123"
-          autoComplete="new-password"
+          // ✅ FIX 1: Har input ka name unique hona chahiye (label use kiya hai)
+          name={`input-${label}`} 
+          id={`input-${label}`}
+          // ✅ FIX 2: Laptop browsers ko autofill se rokne ke liye
+          autoComplete="off" 
           inputMode="numeric"
           ref={inputRef}
           value={value}
           onChange={(e) => {
-            let val = e.target.value;
-
-            val = val.replace(/[^0-9]/g, '');
+            let val = e.target.value.replace(/[^0-9]/g, '');
 
             if (val.length <= 2) {
             } else if (val.length <= 4) {
@@ -699,39 +698,26 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
               val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
             }
 
-            // 👇 PEHLE focus lagao
+            onChange(val);
+
+            // ✅ FIX 3: Laptop par render cycle ki wajah se 50ms ka delay behtar kaam karta hai
             if (val.length === 10 && nextRef?.current) {
               setTimeout(() => {
                 nextRef.current.focus();
-              }, 0);
+              }, 50); 
             }
-
-            // 👇 PHIR state update karo
-            onChange(val);
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Desktop calendar only on icon */}
-        {!isMobile && (
-          <input
-            type="date"
-            tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
-          />
-        )}
-
-        {isMobile && (
-          <input
-            type="date"
-            tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute right-0 w-6 h-full opacity-0"
-          />
-        )}
+        {/* Hidden Date Picker Logic */}
+        <input
+          type="date"
+          tabIndex={-1} 
+          value={toISO(value)}
+          onChange={(e) => onChange(fromISO(e.target.value))}
+          className={`absolute right-0 w-6 h-full opacity-0 cursor-pointer ${isMobile ? 'inset-0' : ''}`}
+        />
 
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
