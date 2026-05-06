@@ -71,7 +71,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       }
     };
     document.addEventListener("click", handleClickOutside);
-return () => document.removeEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -668,17 +668,14 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
-        {/* Placeholder overlay */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
           </span>
         )}
 
-        {/* MAIN INPUT */}
         <input
           type="text"
-          name={`date-input-${label}`}
           autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
@@ -697,17 +694,20 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
             onChange(val);
 
-            // ✅ FIX: setTimeout se focus jump confirm ho jayega
-            if (val.length === 10 && nextRef?.current) {
-              setTimeout(() => {
-                nextRef.current.focus();
-              }, 10);
+            // --- FIXED JUMP LOGIC ---
+            if (val.length === 10) {
+              // Apne hi container mein "TO" input ko dhundna
+              const container = e.target.closest('.divide-x, .flex-1');
+              const inputs = container?.querySelectorAll('input[type="text"]');
+              if (inputs && inputs.length > 1) {
+                // Agar ye "FROM" input hai (0 index), tw "TO" (1 index) par focus karo
+                (inputs[1] as HTMLInputElement).focus();
+              }
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Calendar Picker (Desktop) */}
         {!isMobile && (
           <input
             type="date"
@@ -718,7 +718,6 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           />
         )}
 
-        {/* Calendar Picker (Mobile) */}
         {isMobile && (
           <input
             type="date"
