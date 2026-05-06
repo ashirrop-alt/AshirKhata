@@ -65,16 +65,14 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   // 4. EFFECTS
   useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  document.addEventListener("click", handleClickOutside);
-
-  return () => document.removeEventListener("click", handleClickOutside);
-}, []);
+    const handleClickOutside = (event: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   useEffect(() => {
     if (data?.shopName) {
@@ -420,10 +418,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
-              {/* Unified Header - Matches Home Page Look */}
+
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
-              {/* --- Header Section (Heading + Filter) --- */}
               {/* --- Header Section (Heading + Filter) --- */}
               <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
 
