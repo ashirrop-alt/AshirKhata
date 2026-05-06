@@ -441,13 +441,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                         initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
                         className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
                       >
-                        <DatePickerInput
-                          label="FROM"
-                          value={startDate}
-                          onChange={setStartDate}
-                          inputRef={fromRef}
-                          nextRef={toRef}   // 👈 ye important hai
-                        />
+                        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
                         <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
                         <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="h-[44px] w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
                           <RotateCcw size={16} />
@@ -656,7 +650,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
 // FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
 
-function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
+function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
