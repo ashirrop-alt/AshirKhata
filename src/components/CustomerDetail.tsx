@@ -646,12 +646,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-// FINAL FIXED DatePickerInput (Proper typing + cursor + correct format)
-
-// FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
-
 function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  // 1. Device check
+  const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
     if (!val || val.length !== 10) return '';
@@ -672,27 +669,21 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
-
-        {/* Placeholder overlay */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
             dd/mm/yyyy
           </span>
         )}
 
-        {/* MAIN INPUT */}
         <input
           type="text"
-          name="random_field_123"   // 👈 IMPORTANT
-          autoComplete="new-password"  // 👈 MAIN FIX
+          name={`ignore_${label}_${Math.random()}`} // Browser autocomplete ko rokne ke liye
+          autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
           onChange={(e) => {
-            let val = e.target.value;
-
-            val = val.replace(/[^0-9]/g, '');
-
+            let val = e.target.value.replace(/[^0-9]/g, '');
             if (val.length <= 2) {
               // dd
             } else if (val.length <= 4) {
@@ -700,41 +691,35 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             } else {
               val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
             }
-
+            
             onChange(val);
 
-            // Auto jump to next field when complete
-            if (val.length === 10 && nextRef?.current) {
+            // ✅ LAPTOP AUTO-JUMP: Sirf Laptop par focus shift ho
+            if (!isMobile && val.length === 10 && nextRef?.current) {
               nextRef.current.focus();
+            }
+          }}
+          // ✅ MOBILE CALENDAR: Mobile par click ho tw hidden date picker khule
+          onFocus={(e) => {
+            if (isMobile) {
+              const datePicker = e.target.parentElement?.querySelector('input[type="date"]') as HTMLInputElement;
+              datePicker?.showPicker();
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Desktop calendar only on icon */}
-        {!isMobile && (
-          <input
-            type="date"
-            tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
-          />
-        )}
-
-        {isMobile && (
-          <input
-            type="date"
-            tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
-            value={toISO(value)}
-            onChange={(e) => onChange(fromISO(e.target.value))}
-            className="absolute inset-0 opacity-0"
-          />
-        )}
+        {/* Hidden Date Picker for Icon (Laptop) and Overlay (Mobile) */}
+        <input
+          type="date"
+          tabIndex={-1}
+          value={toISO(value)}
+          onChange={(e) => onChange(fromISO(e.target.value))}
+          className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
+        />
 
         <Calendar className="w-3 h-3 text-slate-400 absolute right-0 pointer-events-none" />
       </div>
     </div>
   );
 }
-
