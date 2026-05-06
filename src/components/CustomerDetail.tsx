@@ -65,14 +65,16 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
   // 4. EFFECTS
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsDropdownOpen(false);
-      }
-    };
-    document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  const handleClickOutside = (event: MouseEvent) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  document.addEventListener("click", handleClickOutside);
+
+  return () => document.removeEventListener("click", handleClickOutside);
+}, []);
 
   useEffect(() => {
     if (data?.shopName) {
