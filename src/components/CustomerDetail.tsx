@@ -683,6 +683,7 @@ function DatePickerInput({ label, value, onChange, nextRef, inputRef }: any) {
         {/* MAIN INPUT */}
         <input
           type="text"
+          autoComplete="off"
           ref={inputRef}
           value={value}
           onChange={(e) => {
