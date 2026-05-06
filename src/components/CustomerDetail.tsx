@@ -680,11 +680,10 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           </span>
         )}
 
-        {/* MAIN INPUT */}
         <input
           type="text"
-          name="random_field_123"   // 👈 IMPORTANT
-          autoComplete="new-password"  // 👈 MAIN FIX
+          name="random_field_123"
+          autoComplete="new-password"
           inputMode="numeric"
           ref={inputRef}
           value={value}
@@ -694,19 +693,21 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             val = val.replace(/[^0-9]/g, '');
 
             if (val.length <= 2) {
-              // dd
             } else if (val.length <= 4) {
               val = val.slice(0, 2) + '/' + val.slice(2);
             } else {
               val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
             }
 
-            onChange(val);
-
-            // Auto jump to next field when complete
+            // 👇 PEHLE focus lagao
             if (val.length === 10 && nextRef?.current) {
-              nextRef.current.focus();
+              setTimeout(() => {
+                nextRef.current.focus();
+              }, 0);
             }
+
+            // 👇 PHIR state update karo
+            onChange(val);
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
