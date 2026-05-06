@@ -71,7 +71,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       }
     };
     document.addEventListener("click", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+return () => document.removeEventListener("click", handleClickOutside);
   }, []);
 
   useEffect(() => {
@@ -646,10 +646,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-// FINAL FIXED DatePickerInput (Proper typing + cursor + correct format)
-
-// FINAL POLISHED DatePickerInput (placeholder overlay + auto focus jump)
-
 function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
   const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
@@ -672,7 +668,6 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
       </span>
 
       <div className="relative w-full flex items-center">
-
         {/* Placeholder overlay */}
         {!value && (
           <span className="absolute left-0 text-[11px] font-medium text-slate-400 pointer-events-none">
@@ -683,14 +678,13 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
         {/* MAIN INPUT */}
         <input
           type="text"
-          name="random_field_123"   // 👈 IMPORTANT
-          autoComplete="new-password"  // 👈 MAIN FIX
+          name={`date-input-${label}`}
+          autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
           onChange={(e) => {
             let val = e.target.value;
-
             val = val.replace(/[^0-9]/g, '');
 
             if (val.length <= 2) {
@@ -703,29 +697,32 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
             onChange(val);
 
-            // Auto jump to next field when complete
+            // ✅ FIX: setTimeout se focus jump confirm ho jayega
             if (val.length === 10 && nextRef?.current) {
-              nextRef.current.focus();
+              setTimeout(() => {
+                nextRef.current.focus();
+              }, 10);
             }
           }}
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Desktop calendar only on icon */}
+        {/* Calendar Picker (Desktop) */}
         {!isMobile && (
           <input
             type="date"
-            tabIndex={-1} // <-- Ye computer ko kahe ga ke is par Tab se mat ruko
+            tabIndex={-1}
             value={toISO(value)}
             onChange={(e) => onChange(fromISO(e.target.value))}
             className="absolute right-0 w-6 h-full opacity-0 cursor-pointer"
           />
         )}
 
+        {/* Calendar Picker (Mobile) */}
         {isMobile && (
           <input
             type="date"
-            tabIndex={-1} // <-- Mobile par bhi focus ki zaroorat nahi
+            tabIndex={-1}
             value={toISO(value)}
             onChange={(e) => onChange(fromISO(e.target.value))}
             className="absolute inset-0 opacity-0"
@@ -737,4 +734,3 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     </div>
   );
 }
-
