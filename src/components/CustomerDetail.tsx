@@ -418,10 +418,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               {/* Date Filter Header Section */}
-              {/* Unified Header - Matches Home Page Look */}
               {/* Native & Premium Filter Header */}
               {/* Final Premium Filter Header */}
-              {/* --- Header Section (Heading + Filter) --- */}
               {/* --- Header Section (Heading + Filter) --- */}
               <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
 
@@ -436,18 +434,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                   <div className="flex items-center gap-3 relative" ref={dropdownRef}>
                     {/* Desktop Date Inputs */}
-                    {filterType === 'custom' && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
-                      >
-                        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
-                        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-                        <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="h-[44px] w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
-                          <RotateCcw size={16} />
-                        </button>
-                      </motion.div>
-                    )}
+                    {/* LAPTOP HEADER WALA BUTTON UPDATE */}
+{filterType === 'custom' && (
+  <motion.div
+    initial={{ opacity: 0, x: 10 }} 
+    animate={{ opacity: 1, x: 0 }}
+    className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
+  >
+    <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
+    <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+    
+    {/* YE WALA BUTTON UPDATE KIYA HAI */}
+    <button 
+      onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} 
+      className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-l border-slate-200 dark:border-white/10 transition-all active:scale-95"
+    >
+      <RotateCcw size={16} />
+    </button>
+  </motion.div>
+)}
 
                     {/* Desktop Dropdown - Exact 150px and 12px text */}
                     <div className="relative">
@@ -723,4 +728,3 @@ function DatePickerInput({ label, value, onChange, inputRef }: any) {
     </div>
   );
 }
-
