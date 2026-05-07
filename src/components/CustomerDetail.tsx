@@ -440,65 +440,72 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                 {/* 1. LAPTOP HEADER (Exact Accuracy from your provided old code & image_01f43b.png) */}
                 <div className="hidden lg:flex items-center justify-between min-h-[48px]">
-                  <div className="flex items-center gap-2">
-                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-                    <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                      Transactions ({filteredTransactions.length})
-                    </span>
-                  </div>
+  <div className="flex items-center gap-2">
+    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+    <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+      Transactions ({filteredTransactions.length})
+    </span>
+  </div>
 
-                  <div className="flex items-center gap-3 relative" ref={dropdownRef}>
-                    {/* Desktop Date Inputs */}
-                    {filterType === 'custom' && (
-                      <motion.div
-                        initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
-                        className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
-                      >
-                        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
-                        <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-                        <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="h-[44px] w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
-                          <RotateCcw size={16} />
-                        </button>
-                      </motion.div>
-                    )}
+  <div className="flex items-center gap-3 relative" ref={dropdownRef}>
+    {/* Desktop Date Inputs - Separate Refresh Button */}
+    {filterType === 'custom' && (
+      <motion.div
+        initial={{ opacity: 0, x: 10 }}
+        animate={{ opacity: 1, x: 0 }}
+        className="flex items-center gap-2"
+      >
+        <div className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+          <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
+          <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+        </div>
 
-                    {/* Desktop Dropdown - Exact 150px and 12px text */}
-                    <div className="relative">
-                      <button
-                        type="button"
-                        onClick={(e) => {
-                          e.preventDefault(); // Laptop par double action rokne ke liye
-                          e.stopPropagation();
-                          setIsDropdownOpen((prev) => !prev); // Functional update se toggle confirm hota hai
-                        }}
-                        className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
-                      >
-                        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-                      </button>
+        <button 
+          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} 
+          className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm transition-all active:scale-95"
+        >
+          <RotateCcw size={16} />
+        </button>
+      </motion.div>
+    )}
 
-                      <AnimatePresence>
-                        {isDropdownOpen && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-                            className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
-                          >
-                            {filterOptions.map((option) => (
-                              <button
-                                key={option.id}
-                                onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
-                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
-                              >
-                                {option.label}
-                                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
-                              </button>
-                            ))}
-                          </motion.div>
-                        )}
-                      </AnimatePresence>
-                    </div>
-                  </div>
-                </div>
+    {/* Desktop Dropdown */}
+    <div className="relative">
+      <button
+        type="button"
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsDropdownOpen((prev) => !prev);
+        }}
+        className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
+      >
+        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+      </button>
+
+      <AnimatePresence>
+        {isDropdownOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
+            className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
+          >
+            {filterOptions.map((option) => (
+              <button
+                key={option.id}
+                onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
+              >
+                {option.label}
+                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+              </button>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
+  </div>
+</div>
 
                 {/* 2. MOBILE HEADER (Aapka "Perfect" layout - No changes here) */}
                 <div className="lg:hidden">
