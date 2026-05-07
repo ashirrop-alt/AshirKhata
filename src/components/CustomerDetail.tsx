@@ -689,9 +689,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          /* Autofill fix: Chrome isay address nahi samjhega */
+          /* AUTOFILL FIX: Browser ko confuse karne ke liye random name */
+          name={`date_input_${label}_${Math.random().toString(36).substring(7)}`}
           autoComplete="one-time-code"
-          name={`date-${label.toLowerCase()}`}
           inputMode="numeric"
           ref={inputRef}
           value={value}
@@ -703,9 +703,11 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
             onChange(val);
 
-            // --- JUMP LOGIC ---
+            /* --- THE CRITICAL FIX: setTimeout for Laptop --- */
             if (val.length === 10 && !isMobile && nextRef?.current) {
-              nextRef.current.focus();
+              setTimeout(() => {
+                nextRef.current.focus();
+              }, 10); 
             }
           }}
           onFocus={(e) => {
@@ -724,9 +726,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           onChange={(e) => {
             const newVal = fromISO(e.target.value);
             onChange(newVal);
-            /* Calendar se select karne par bhi jump karega */
+            /* Calendar selection ke baad bhi jump logic */
             if (newVal.length === 10 && !isMobile && nextRef?.current) {
-              nextRef.current.focus();
+              setTimeout(() => nextRef.current.focus(), 10);
             }
           }}
           className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
