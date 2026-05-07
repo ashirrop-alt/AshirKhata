@@ -76,11 +76,17 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
    <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
      Generated: {formattedDate}
    </div>
-   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase' }}>
-     {/* ✅ Behtar Logic: Agar fromDate hai toh Report/Period dikhao, warna Full History */}
+   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
      {fromDate ? (
        <span>
-         {toDate ? `Period: ${fromDate} - ${toDate}` : `Report: ${fromDate}`}
+         {/* Agar 'Aaj Ka' ho toh sirf Date dikhao, warna Period dikhao */}
+         {toDate ? (
+           `Period: ${fromDate} — ${toDate}`
+         ) : fromDate === 'Aaj Ka' ? (
+           `Transactions for Today (${formattedDate})`
+         ) : (
+           `Report: ${fromDate}`
+         )}
        </span>
      ) : (
        <span>Full Account History</span>
