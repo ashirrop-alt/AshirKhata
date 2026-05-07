@@ -50,17 +50,17 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const toRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-  const isMobile =
-    typeof window !== "undefined" &&
-    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    const isMobile =
+      typeof window !== "undefined" &&
+      /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  if (
-    !isMobile &&
-    startDate.replace(/\D/g, "").length === 8
-  ) {
-    toRef.current?.focus();
-  }
-}, [startDate]);
+    if (
+      !isMobile &&
+      startDate.replace(/\D/g, "").length === 8
+    ) {
+      toRef.current?.focus();
+    }
+  }, [startDate]);
 
 
 
@@ -224,7 +224,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const shareFullHistory = () => {
     // 1. filteredTransactions use kiya taake filter sync ho jaye
     let message = `*${displayShopName} - Hisaab Report* 📜\nCustomer: ${customer.name}\n--------------------------\n`;
-    
+
     filteredTransactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
       message += `${formatDate(t.date)}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
@@ -236,7 +236,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
     }, 0);
 
     message += `--------------------------\n*Selected Total: Rs ${filteredTotal.toLocaleString()}* 💰\n\n_Powered by Khatify_`;
-    
+
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
@@ -451,72 +451,72 @@ export function CustomerDetail({ customer, onBack }: Props) {
 
                 {/* 1. LAPTOP HEADER (Exact Accuracy from your provided old code & image_01f43b.png) */}
                 <div className="hidden lg:flex items-center justify-between min-h-[48px]">
-  <div className="flex items-center gap-2">
-    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
-    <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-      Transactions ({filteredTransactions.length})
-    </span>
-  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+                    <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Transactions ({filteredTransactions.length})
+                    </span>
+                  </div>
 
-  <div className="flex items-center gap-3 relative" ref={dropdownRef}>
-    {/* Desktop Date Inputs - Separate Refresh Button */}
-    {filterType === 'custom' && (
-      <motion.div
-        initial={{ opacity: 0, x: 10 }}
-        animate={{ opacity: 1, x: 0 }}
-        className="flex items-center gap-2"
-      >
-        <div className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
-          <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
-          <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
-        </div>
+                  <div className="flex items-center gap-3 relative" ref={dropdownRef}>
+                    {/* Desktop Date Inputs - Separate Refresh Button */}
+                    {filterType === 'custom' && (
+                      <motion.div
+                        initial={{ opacity: 0, x: 10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        className="flex items-center gap-2"
+                      >
+                        <div className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5">
+                          <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} />
+                          <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
+                        </div>
 
-        <button 
-          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} 
-          className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm transition-all active:scale-95"
-        >
-          <RotateCcw size={16} />
-        </button>
-      </motion.div>
-    )}
+                        <button
+                          onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }}
+                          className="h-[44px] w-[44px] flex items-center justify-center bg-white dark:bg-[#161625] text-slate-400 hover:text-red-500 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm transition-all active:scale-95"
+                        >
+                          <RotateCcw size={16} />
+                        </button>
+                      </motion.div>
+                    )}
 
-    {/* Desktop Dropdown */}
-    <div className="relative">
-      <button
-        type="button"
-        onClick={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          setIsDropdownOpen((prev) => !prev);
-        }}
-        className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
-      >
-        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
-        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
-      </button>
+                    {/* Desktop Dropdown */}
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setIsDropdownOpen((prev) => !prev);
+                        }}
+                        className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40"
+                      >
+                        <span className="truncate">{filterOptions.find(opt => opt.id === filterType)?.label}</span>
+                        <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
 
-      <AnimatePresence>
-        {isDropdownOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-            className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
-          >
-            {filterOptions.map((option) => (
-              <button
-                key={option.id}
-                onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
-              >
-                {option.label}
-                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
-              </button>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  </div>
-</div>
+                      <AnimatePresence>
+                        {isDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
+                            className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
+                          >
+                            {filterOptions.map((option) => (
+                              <button
+                                key={option.id}
+                                onClick={() => { setFilterType(option.id); setIsDropdownOpen(false); if (option.id !== 'custom') { setStartDate(''); setEndDate(''); } }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0 ${filterType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
+                              >
+                                {option.label}
+                                {filterType === option.id && <Check className="w-3.5 h-3.5" />}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
 
                 {/* 2. MOBILE HEADER (Aapka "Perfect" layout - No changes here) */}
                 <div className="lg:hidden">
@@ -663,24 +663,26 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
-  <div ref={invoiceRef}>
-    <InvoiceTemplate
-      customerName={customer.name}
-      customerPhone={customer.phone || ""}
-      shopName={displayShopName}
-      /* Transactions ko 'filteredTransactions' se badal diya */
-      transactions={filteredTransactions.map((t: any) => ({ 
-        id: t.id, 
-        date: formatDate(t.date), 
-        amount: t.amount, 
-        type: t.type === 'udhar' ? 'dr' : 'cr', 
-        remarks: t.remarks 
-      }))}
-      /* Balance bhi filtered wala pass kiya */
-      totalBalance={filteredTransactions.reduce((acc, tx) => tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0)}
-    />
-  </div>
-</div>
+        <div ref={invoiceRef}>
+          <InvoiceTemplate
+            customerName={customer.name}
+            customerPhone={customer.phone || ""}
+            shopName={displayShopName}
+            /* Transactions ko 'filteredTransactions' se badal diya */
+            transactions={filteredTransactions.map((t: any) => ({
+              id: t.id,
+              date: formatDate(t.date),
+              amount: t.amount,
+              type: t.type === 'udhar' ? 'dr' : 'cr',
+              remarks: t.remarks
+            }))}
+            /* Balance bhi filtered wala pass kiya */
+            totalBalance={filteredTransactions.reduce((acc, tx) => tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0)}
+            fromDate={startDate}
+            toDate={endDate}
+          />
+        </div>
+      </div>
     </div>
   );
 }
