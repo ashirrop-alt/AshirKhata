@@ -441,7 +441,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                         initial={{ opacity: 0, x: 10 }} animate={{ opacity: 1, x: 0 }}
                         className="flex items-center bg-white dark:bg-[#161625] h-[44px] px-1 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm divide-x divide-slate-100 dark:divide-white/5"
                       >
-                        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef}/>
+                        <DatePickerInput label="FROM" value={startDate} onChange={setStartDate} inputRef={fromRef} nextRef={toRef} />
                         <DatePickerInput label="TO" value={endDate} onChange={setEndDate} inputRef={toRef} />
                         <button onClick={() => { setStartDate(''); setEndDate(''); setFilterType('all'); }} className="h-[44px] w-[44px] flex items-center justify-center text-slate-400 hover:text-red-500 transition-colors">
                           <RotateCcw size={16} />
@@ -683,17 +683,17 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          name={`field_${Math.random()}`}
+          name={`field_${Math.random()}`} 
           autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
           onChange={(e) => {
             let val = e.target.value.replace(/[^0-9]/g, '');
-            if (val.length <= 2) { }
-            else if (val.length <= 4) { val = val.slice(0, 2) + '/' + val.slice(2); }
+            if (val.length <= 2) { } 
+            else if (val.length <= 4) { val = val.slice(0, 2) + '/' + val.slice(2); } 
             else { val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8); }
-
+            
             onChange(val);
             handleJump(val); // ✅ Text typing par jump
           }}
