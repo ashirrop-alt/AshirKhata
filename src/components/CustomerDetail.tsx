@@ -222,24 +222,41 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
-    // 1. filteredTransactions use kiya taake filter sync ho jaye
-    let message = `*${displayShopName} - Hisaab Report* 📜\nCustomer: ${customer.name}\n--------------------------\n`;
+  // 1. Label decide karein (Bilkul Invoice ki tarah)
+  const reportLabel = 
+    filterType === 'today' ? "Today's Summary" :
+    filterType === 'thisMonth' ? "Monthly Statement" :
+    filterType === 'custom' ? `Period: ${startDate} — ${endDate}` :
+    "Account Statement";
 
-    filteredTransactions.forEach((t) => {
-      const note = t.remarks ? ` (${t.remarks})` : "";
-      message += `${formatDate(t.date)}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
-    });
+  // 2. Header aur Customer info
+  let message = `*${displayShopName}* 📜\n*${reportLabel.toUpperCase()}*\n\n`;
+  message += `Customer: *${customer.name}*\n`;
+  message += `--------------------------\n`;
 
-    // 2. Filtered transactions ka total balance calculate karna
-    const filteredTotal = filteredTransactions.reduce((acc, tx) => {
-      return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
-    }, 0);
+  // 3. Transactions List (Filtered)
+  filteredTransactions.forEach((t) => {
+    const note = t.remarks ? ` _(${t.remarks})_` : "";
+    const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
+    const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
+    
+    // Amount ko .toLocaleString() kiya taake commas (,) aayein
+    message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
+  });
 
-    message += `--------------------------\n*Selected Total: Rs ${filteredTotal.toLocaleString()}* 💰\n\n_Powered by Khatify_`;
+  // 4. Balance Calculation
+  const filteredTotal = filteredTransactions.reduce((acc, tx) => {
+    return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
+  }, 0);
 
-    const cleanPhone = customer.phone.replace(/^0/, "92");
-    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-  };
+  message += `--------------------------\n`;
+  message += `*Net Balance: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
+  message += `_Powered by Khatify.app_`;
+
+  // 5. WhatsApp Redirect
+  const cleanPhone = customer.phone.replace(/^0/, "92");
+  window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+};
 
   // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
   const sendReminder = async () => {

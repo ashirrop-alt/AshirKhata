@@ -85,7 +85,7 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           {toDate ? `Period: ${fromDate} — ${toDate}` : fromDate}
         </span>
       ) : (
-        <span>Full Account History</span>
+        <span>Account Statement</span>
       )}
     </div>
   </div>
