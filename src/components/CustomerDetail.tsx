@@ -668,7 +668,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     currentVal.replace(/\D/g, '').length === 8 &&
     nextRef?.current
   ) {
-    setTimeout(() => nextRef.current.focus(), 10);
+    requestAnimationFrame(() => {
+      nextRef.current?.focus();
+    });
   }
 };
 
