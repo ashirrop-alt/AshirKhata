@@ -49,6 +49,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const fromRef = useRef<HTMLInputElement>(null);
   const toRef = useRef<HTMLInputElement>(null);
 
+  useEffect(() => {
+  const isMobile =
+    typeof window !== "undefined" &&
+    /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+  if (
+    !isMobile &&
+    startDate.replace(/\D/g, "").length === 8
+  ) {
+    toRef.current?.focus();
+  }
+}, [startDate]);
+
 
 
   // 3. HOOKS & DATA
@@ -661,19 +674,6 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     return `${d}/${m}/${y}`;
   };
 
-  // ✅ Common Jump Logic
-  const handleJump = (currentVal: string) => {
-  if (
-    !isMobile &&
-    currentVal.replace(/\D/g, '').length === 8 &&
-    nextRef?.current
-  ) {
-    setTimeout(() => {
-      nextRef.current.focus();
-    }, 0);
-  }
-};
-
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
       <span className="text-[8px] font-bold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase leading-none shrink-0">
@@ -689,8 +689,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          name={`field_${Math.random()}`}
-          autoComplete="off"
+          /* Autofill fix: Chrome isay address nahi samjhega */
+          autoComplete="one-time-code"
+          name={`date-${label.toLowerCase()}`}
           inputMode="numeric"
           ref={inputRef}
           value={value}
@@ -701,7 +702,11 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
             else { val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8); }
 
             onChange(val);
-            handleJump(val); // ✅ Text typing par jump
+
+            // --- JUMP LOGIC ---
+            if (val.length === 10 && !isMobile && nextRef?.current) {
+              nextRef.current.focus();
+            }
           }}
           onFocus={(e) => {
             if (isMobile) {
@@ -712,7 +717,6 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Hidden Date Picker (Laptop Calendar Icon) */}
         <input
           type="date"
           tabIndex={-1}
@@ -720,7 +724,10 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           onChange={(e) => {
             const newVal = fromISO(e.target.value);
             onChange(newVal);
-            handleJump(newVal); // ✅ Calendar se date select karne par bhi jump
+            /* Calendar se select karne par bhi jump karega */
+            if (newVal.length === 10 && !isMobile && nextRef?.current) {
+              nextRef.current.focus();
+            }
           }}
           className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
         />
