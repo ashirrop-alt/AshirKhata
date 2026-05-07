@@ -665,27 +665,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
         <div ref={invoiceRef}>
           <InvoiceTemplate
-  customerName={customer.name}
-  customerPhone={customer.phone || ""}
-  shopName={displayShopName}
-  transactions={filteredTransactions.map((t: any) => ({ 
-    id: t.id, 
-    date: formatDate(t.date), 
-    amount: t.amount, 
-    type: t.type === 'udhar' ? 'dr' : 'cr', 
-    remarks: t.remarks 
-  }))}
-  totalBalance={filteredTransactions.reduce((acc, tx) => 
-    tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0
-  )}
-  // ✅ Ye logic update ki hai taake "Aaj Ka" aur baqi filters bhi sahi dikhein
-  fromDate={
-    filterType === 'custom' ? startDate : 
-    filterType !== 'all' ? filterOptions.find(o => o.id === filterType)?.label : 
-    ''
-  }
-  toDate={filterType === 'custom' ? endDate : ''}
-/>
+            customerName={customer.name}
+            customerPhone={customer.phone || ""}
+            shopName={displayShopName}
+            transactions={filteredTransactions.map((t: any) => ({
+              id: t.id,
+              date: formatDate(t.date),
+              amount: t.amount,
+              type: t.type === 'udhar' ? 'dr' : 'cr',
+              remarks: t.remarks
+            }))}
+            totalBalance={filteredTransactions.reduce((acc, tx) =>
+              tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0
+            )}
+            // ✅ Ye logic update ki hai taake "Aaj Ka" aur baqi filters bhi sahi dikhein
+            fromDate={
+              filterType === 'today' ? "Today's Summary" :
+                filterType === 'thisMonth' ? "Monthly Statement" :
+                  filterType === 'custom' ? startDate :
+                    filterOptions.find(o => o.id === filterType)?.label || ''
+            }
+            toDate={filterType === 'custom' ? endDate : ''}
+          />
         </div>
       </div>
     </div>
