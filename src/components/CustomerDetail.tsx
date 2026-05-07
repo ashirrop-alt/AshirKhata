@@ -659,7 +659,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   );
 }
 
-function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
+function DatePickerInput({ label, value, onChange, inputRef }: any) {
   const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
   const toISO = (val: string) => {
@@ -689,9 +689,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          /* AUTOFILL FIX: Browser ko confuse karne ke liye random name */
-          name={`date_input_${label}_${Math.random().toString(36).substring(7)}`}
+          /* Autofill Fix: Chrome ko address suggest karne se rokne ke liye */
           autoComplete="one-time-code"
+          name={`input-${label}-${Math.random().toString(36).substring(7)}`}
           inputMode="numeric"
           ref={inputRef}
           value={value}
@@ -703,11 +703,14 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
             onChange(val);
 
-            /* --- THE CRITICAL FIX: setTimeout for Laptop --- */
-            if (val.length === 10 && !isMobile && nextRef?.current) {
-              setTimeout(() => {
-                nextRef.current.focus();
-              }, 10); 
+            // --- UNIVERSAL JUMP LOGIC (Laptop) ---
+            if (val.length === 10 && label === "FROM" && !isMobile) {
+              // Apne container ke andar agla input dhund kar focus karna
+              const parent = e.target.closest('.divide-x');
+              const inputs = parent?.querySelectorAll('input[type="text"]');
+              if (inputs && inputs[1]) {
+                setTimeout(() => (inputs[1] as HTMLInputElement).focus(), 10);
+              }
             }
           }}
           onFocus={(e) => {
@@ -726,9 +729,11 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           onChange={(e) => {
             const newVal = fromISO(e.target.value);
             onChange(newVal);
-            /* Calendar selection ke baad bhi jump logic */
-            if (newVal.length === 10 && !isMobile && nextRef?.current) {
-              setTimeout(() => nextRef.current.focus(), 10);
+            // Calendar selection ke baad bhi jump
+            if (newVal.length === 10 && label === "FROM" && !isMobile) {
+              const parent = e.target.closest('.divide-x');
+              const inputs = parent?.querySelectorAll('input[type="text"]');
+              if (inputs && inputs[1]) (inputs[1] as HTMLInputElement).focus();
             }
           }}
           className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
