@@ -222,23 +222,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
+  // 1. Report ka naam decide karein (Roman Urdu with context)
   const reportLabel = 
     filterType === 'today' ? "Aaj ka Hisaab (Today's Summary)" :
     filterType === 'thisMonth' ? "Is Mahine ki Report (Monthly)" :
     filterType === 'custom' ? `Hisaab Period: ${startDate} — ${endDate}` :
-    "Poora Hisaab (Account Statement)";
+    "Pura Hisaab (Account Statement)";
 
+  // 2. Message Header
   let message = `*${displayShopName}* 📜\n*${reportLabel}*\n\n`;
   message += `Customer: *${customer.name}*\n`;
   message += `--------------------------\n`;
 
+  // 3. Transactions List
   filteredTransactions.forEach((t) => {
     const note = t.remarks ? ` _(${t.remarks})_` : "";
     const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
     const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
+    
     message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
   });
 
+  // 4. Net Balance Calculation
   const filteredTotal = filteredTransactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
   }, 0);
@@ -246,10 +251,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   message += `--------------------------\n`;
   message += `*Baqaya Rakam: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
   
-  // Clean branding with clickable link
-  message += `✨ *Powered by Khatify*\n`;
-  message += `https://ashir-khata.vercel.app`;
+  // 5. Aapka Site Link (Vercel wala link yahan add kiya hai)
+  message += `_Powered by ashir-khata.vercel.app_`;
 
+  // 6. WhatsApp Redirect
   const cleanPhone = customer.phone.replace(/^0/, "92");
   window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
 };
