@@ -669,7 +669,9 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     nextRef?.current
   ) {
     requestAnimationFrame(() => {
-      nextRef.current?.focus();
+      nextRef.current
+        ?.querySelector('input')
+        ?.focus();
     });
   }
 };
