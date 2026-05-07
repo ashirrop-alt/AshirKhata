@@ -79,16 +79,16 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
    <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
      {fromDate ? (
        <span>
-         {/* Agar 'Aaj Ka' ho toh sirf Date dikhao, warna Period dikhao */}
+         {/* 1. Agar Custom Date Range hai (Dono dates hain) */}
          {toDate ? (
            `Period: ${fromDate} — ${toDate}`
-         ) : fromDate === 'Aaj Ka' ? (
-           `Transactions for Today (${formattedDate})`
          ) : (
+           /* 2. Agar pre-defined filter hai (Aaj Ka, Is Mahine, etc.) */
            `Report: ${fromDate}`
          )}
        </span>
      ) : (
+       /* 3. Agar koi filter nahi hai */
        <span>Full Account History</span>
      )}
    </div>
