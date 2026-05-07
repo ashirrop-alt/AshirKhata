@@ -682,8 +682,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
             fromDate={
               filterType === 'today' ? "Today's Summary" :
                 filterType === 'thisMonth' ? "Monthly Statement" :
-                  filterType === 'custom' ? startDate :
-                    filterOptions.find(o => o.id === filterType)?.label || ''
+                  filterType === 'lastWeek' ? "Last 7 Days" :
+                    filterType === 'custom' ? startDate :
+                      filterType === 'all' ? "" : // All ke liye empty taake niche 'Full History' chale
+                        filterOptions.find(o => o.id === filterType)?.label || ''
             }
             toDate={filterType === 'custom' ? endDate : ''}
           />

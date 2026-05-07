@@ -66,34 +66,28 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
             <>
               {/* HEADER SECTION */}
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
-                <div>
-                  <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
-                  <p style={{ fontSize: '11px', color: '#6366f1', fontWeight: '800', margin: '6px 0 0 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
-                    Report Powered by Khatify
-                  </p>
-                </div>
-                <div style={{ textAlign: 'right' }}>
-   <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
-     Generated: {formattedDate}
-   </div>
-   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-     {fromDate ? (
-       <span>
-         {/* 1. Agar Custom Date Range hai (Dono dates hain) */}
-         {toDate ? (
-           `Period: ${fromDate} — ${toDate}`
-         ) : (
-           /* 2. Agar pre-defined filter hai (Aaj Ka, Is Mahine, etc.) */
-           `Report: ${fromDate}`
-         )}
-       </span>
-     ) : (
-       /* 3. Agar koi filter nahi hai */
-       <span>Full Account History</span>
-     )}
-   </div>
+  <div>
+    <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
+    <p style={{ fontSize: '11px', color: '#6366f1', fontWeight: '800', margin: '6px 0 0 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
+      Report Powered by Khatify
+    </p>
+  </div>
+  <div style={{ textAlign: 'right' }}>
+    <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
+      Generated: {formattedDate}
+    </div>
+    <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+      {fromDate ? (
+        <span>
+          {/* ✅ Clean Logic: Extra "Report:" hata diya hai */}
+          {toDate ? `Period: ${fromDate} — ${toDate}` : fromDate}
+        </span>
+      ) : (
+        <span>Full Account History</span>
+      )}
+    </div>
+  </div>
 </div>
-              </div>
 
               <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
                 <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
