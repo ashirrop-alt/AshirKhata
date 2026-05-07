@@ -222,19 +222,30 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
+    // 1. filteredTransactions use kiya taake filter sync ho jaye
     let message = `*${displayShopName} - Hisaab Report* 📜\nCustomer: ${customer.name}\n--------------------------\n`;
-    transactions.forEach((t) => {
+    
+    filteredTransactions.forEach((t) => {
       const note = t.remarks ? ` (${t.remarks})` : "";
       message += `${formatDate(t.date)}: Rs ${t.amount} ${t.type === 'udhar' ? 'Udhar 🟥' : 'Mila 🟩'}${note}\n`;
     });
-    message += `--------------------------\n*Total Baqaya: Rs ${total}* 💰\n\n_Powered by Khatify_`;
+
+    // 2. Filtered transactions ka total balance calculate karna
+    const filteredTotal = filteredTransactions.reduce((acc, tx) => {
+      return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
+    }, 0);
+
+    message += `--------------------------\n*Selected Total: Rs ${filteredTotal.toLocaleString()}* 💰\n\n_Powered by Khatify_`;
+    
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
+  // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
   const sendReminder = async () => {
     if (!customer.phone) return;
     const cleanPhone = customer.phone.replace(/^0/, "92");
+    // Reminder hamesha total balance bhejega (all-time history)
     const message = `*Assalam o Alaikum!* ✨\n\nAapka udhar *Rs ${total.toLocaleString()}* baqi hai. Meharbani kar ke jald ada kar dein.\n\n*Shukriya,*\n*${displayShopName}*\n\n_Sent via Khatify_`;
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
@@ -652,16 +663,24 @@ export function CustomerDetail({ customer, onBack }: Props) {
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
       <div style={{ position: 'absolute', top: '-9999px', left: '-9999px', pointerEvents: 'none' }}>
-        <div ref={invoiceRef}>
-          <InvoiceTemplate
-            customerName={customer.name}
-            customerPhone={customer.phone || ""}
-            shopName={displayShopName}
-            transactions={transactions.map((t: any) => ({ id: t.id, date: formatDate(t.date), amount: t.amount, type: t.type === 'udhar' ? 'dr' : 'cr', remarks: t.remarks }))}
-            totalBalance={total}
-          />
-        </div>
-      </div>
+  <div ref={invoiceRef}>
+    <InvoiceTemplate
+      customerName={customer.name}
+      customerPhone={customer.phone || ""}
+      shopName={displayShopName}
+      /* Transactions ko 'filteredTransactions' se badal diya */
+      transactions={filteredTransactions.map((t: any) => ({ 
+        id: t.id, 
+        date: formatDate(t.date), 
+        amount: t.amount, 
+        type: t.type === 'udhar' ? 'dr' : 'cr', 
+        remarks: t.remarks 
+      }))}
+      /* Balance bhi filtered wala pass kiya */
+      totalBalance={filteredTransactions.reduce((acc, tx) => tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0)}
+    />
+  </div>
+</div>
     </div>
   );
 }
