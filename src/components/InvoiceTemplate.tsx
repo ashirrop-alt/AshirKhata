@@ -73,14 +73,20 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                   </p>
                 </div>
                 <div style={{ textAlign: 'right' }}>
-                   <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
-                     Generated: {formattedDate}
-                   </div>
-                   {/* 2. DATE RANGE DISPLAY */}
-                   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase' }}>
-                     {fromDate && toDate ? `Period: ${fromDate} - ${toDate}` : 'Full Account History'}
-                   </div>
-                </div>
+   <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
+     Generated: {formattedDate}
+   </div>
+   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase' }}>
+     {/* ✅ Behtar Logic: Agar fromDate hai toh Report/Period dikhao, warna Full History */}
+     {fromDate ? (
+       <span>
+         {toDate ? `Period: ${fromDate} - ${toDate}` : `Report: ${fromDate}`}
+       </span>
+     ) : (
+       <span>Full Account History</span>
+     )}
+   </div>
+</div>
               </div>
 
               <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
