@@ -222,38 +222,39 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
-  // 1. Label decide karein (Bilkul Invoice ki tarah)
+  // 1. Report ka naam decide karein (Roman Urdu with context)
   const reportLabel = 
-    filterType === 'today' ? "Today's Summary" :
-    filterType === 'thisMonth' ? "Monthly Statement" :
-    filterType === 'custom' ? `Period: ${startDate} — ${endDate}` :
-    "Account Statement";
+    filterType === 'today' ? "Aaj ka Hisaab (Today's Summary)" :
+    filterType === 'thisMonth' ? "Is Mahine ki Report (Monthly)" :
+    filterType === 'custom' ? `Hisaab Period: ${startDate} — ${endDate}` :
+    "Pura Hisaab (Account Statement)";
 
-  // 2. Header aur Customer info
-  let message = `*${displayShopName}* 📜\n*${reportLabel.toUpperCase()}*\n\n`;
+  // 2. Message Header
+  let message = `*${displayShopName}* 📜\n*${reportLabel}*\n\n`;
   message += `Customer: *${customer.name}*\n`;
   message += `--------------------------\n`;
 
-  // 3. Transactions List (Filtered)
+  // 3. Transactions List
   filteredTransactions.forEach((t) => {
     const note = t.remarks ? ` _(${t.remarks})_` : "";
     const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
     const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
     
-    // Amount ko .toLocaleString() kiya taake commas (,) aayein
     message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
   });
 
-  // 4. Balance Calculation
+  // 4. Net Balance Calculation
   const filteredTotal = filteredTransactions.reduce((acc, tx) => {
     return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
   }, 0);
 
   message += `--------------------------\n`;
-  message += `*Net Balance: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
-  message += `_Powered by Khatify.app_`;
+  message += `*Baqaya Rakam: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
+  
+  // 5. Aapka Site Link (Vercel wala link yahan add kiya hai)
+  message += `_Powered by ashir-khata.vercel.app_`;
 
-  // 5. WhatsApp Redirect
+  // 6. WhatsApp Redirect
   const cleanPhone = customer.phone.replace(/^0/, "92");
   window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
 };
