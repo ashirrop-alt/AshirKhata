@@ -65,25 +65,28 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
           {pageIndex === 0 && (
             <>
               {/* HEADER SECTION */}
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '40px', borderBottom: '2px solid #f1f5f9', paddingBottom: '20px' }}>
+  {/* Left Side: Shop Info */}
   <div>
-    <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
-    <p style={{ fontSize: '11px', color: '#6366f1', fontWeight: '800', margin: '6px 0 0 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
+    <h1 style={{ fontSize: '32px', fontWeight: '900', color: '#1e293b', margin: 0, lineHeight: 1, letterSpacing: '-0.5px' }}>{shopName}</h1>
+    <p style={{ fontSize: '12px', color: '#6366f1', fontWeight: '800', margin: '8px 0 0 0', textTransform: 'uppercase', letterSpacing: '1.5px' }}>
       Report Powered by Khatify
     </p>
   </div>
+
+  {/* Right Side: Date & Period (Aligned to bottom of Shop Name) */}
   <div style={{ textAlign: 'right' }}>
-    <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
-      Generated: {formattedDate}
+    <div style={{ fontSize: '13px', color: '#475569', fontWeight: '700', marginBottom: '4px' }}>
+      <span style={{ color: '#94a3b8', fontWeight: '600', marginRight: '5px' }}>Generated:</span> 
+      {formattedDate}
     </div>
-    <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+    <div style={{ fontSize: '12px', color: '#1e293b', fontWeight: '800', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
       {fromDate ? (
-        <span>
-          {/* ✅ Clean Logic: Extra "Report:" hata diya hai */}
+        <span style={{ backgroundColor: '#eef2ff', color: '#6366f1', padding: '4px 8px', borderRadius: '4px' }}>
           {toDate ? `Period: ${fromDate} — ${toDate}` : fromDate}
         </span>
       ) : (
-        <span>Full Account History</span>
+        <span style={{ color: '#6366f1' }}>Full Account History</span>
       )}
     </div>
   </div>
