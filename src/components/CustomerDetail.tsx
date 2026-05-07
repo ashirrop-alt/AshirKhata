@@ -649,16 +649,6 @@ export function CustomerDetail({ customer, onBack }: Props) {
 function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
   const isMobile = typeof window !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
 
-  // ✅ LAPTOP SPECIFIC JUMP: Jab value 10 ho jaye, tab focus agle par jaye
-  useEffect(() => {
-    if (!isMobile && value && value.length === 10 && nextRef?.current) {
-      const timer = setTimeout(() => {
-        nextRef.current.focus();
-      }, 50); // 50ms ka delay browser ko focus set karne mein madad karta hai
-      return () => clearTimeout(timer);
-    }
-  }, [value, nextRef, isMobile]);
-
   const toISO = (val: string) => {
     if (!val || val.length !== 10) return '';
     const [d, m, y] = val.split('/');
@@ -670,6 +660,17 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
     const [y, m, d] = val.split('-');
     return `${d}/${m}/${y}`;
   };
+
+  // ✅ Common Jump Logic
+  const handleJump = (currentVal: string) => {
+  if (
+    !isMobile &&
+    currentVal.replace(/\D/g, '').length === 8 &&
+    nextRef?.current
+  ) {
+    setTimeout(() => nextRef.current.focus(), 10);
+  }
+};
 
   return (
     <div className="flex flex-col flex-1 px-2 py-1 min-w-0 gap-0.5">
@@ -686,21 +687,19 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
 
         <input
           type="text"
-          // Unique name taake Ali Ahmed wala address na aaye
-          name={`date-field-${label}-${isMobile ? 'm' : 'l'}`}
+          name={`field_${Math.random()}`}
           autoComplete="off"
           inputMode="numeric"
           ref={inputRef}
           value={value}
           onChange={(e) => {
             let val = e.target.value.replace(/[^0-9]/g, '');
-            if (val.length <= 2) {
-            } else if (val.length <= 4) {
-              val = val.slice(0, 2) + '/' + val.slice(2);
-            } else {
-              val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8);
-            }
+            if (val.length <= 2) { }
+            else if (val.length <= 4) { val = val.slice(0, 2) + '/' + val.slice(2); }
+            else { val = val.slice(0, 2) + '/' + val.slice(2, 4) + '/' + val.slice(4, 8); }
+
             onChange(val);
+            handleJump(val); // ✅ Text typing par jump
           }}
           onFocus={(e) => {
             if (isMobile) {
@@ -711,7 +710,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           className="w-full bg-transparent text-[11px] font-bold outline-none border-none p-0 focus:ring-0 text-slate-700 dark:text-slate-200 caret-black dark:caret-white"
         />
 
-        {/* Calendar Icon functionality for Laptop */}
+        {/* Hidden Date Picker (Laptop Calendar Icon) */}
         <input
           type="date"
           tabIndex={-1}
@@ -719,6 +718,7 @@ function DatePickerInput({ label, value, onChange, inputRef, nextRef }: any) {
           onChange={(e) => {
             const newVal = fromISO(e.target.value);
             onChange(newVal);
+            handleJump(newVal); // ✅ Calendar se date select karne par bhi jump
           }}
           className={`absolute opacity-0 ${isMobile ? "inset-0 w-full h-full" : "right-0 w-6 h-full cursor-pointer"}`}
         />
