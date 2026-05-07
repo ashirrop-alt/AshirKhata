@@ -14,10 +14,12 @@ interface InvoiceProps {
   shopName: string;
   transactions: Transaction[];
   totalBalance: number;
+  fromDate?: string; // Naya prop
+  toDate?: string;   // Naya prop
 }
 
 const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
-  customerName, customerPhone, shopName, transactions, totalBalance
+  customerName, customerPhone, shopName, transactions, totalBalance, fromDate, toDate // 1. Yahan props receive kar liye
 }, ref) => {
 
   const itemsPerPage = 9;
@@ -62,17 +64,25 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
         >
           {pageIndex === 0 && (
             <>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: '30px' }}>
+              {/* HEADER SECTION */}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '30px' }}>
                 <div>
                   <h1 style={{ fontSize: '28px', fontWeight: '800', color: '#1e293b', margin: 0, lineHeight: 1 }}>{shopName}</h1>
                   <p style={{ fontSize: '11px', color: '#6366f1', fontWeight: '800', margin: '6px 0 0 0', textTransform: 'uppercase', letterSpacing: '1px' }}>
                     Report Powered by Khatify
                   </p>
                 </div>
-                <div style={{ textAlign: 'right', fontSize: '13px', color: '#475569', paddingBottom: '5px' }}>
-                  <strong style={{ color: '#1e293b' }}>Date:</strong> {formattedDate}
+                <div style={{ textAlign: 'right' }}>
+                   <div style={{ fontSize: '13px', color: '#475569', fontWeight: '600' }}>
+                     Generated: {formattedDate}
+                   </div>
+                   {/* 2. DATE RANGE DISPLAY */}
+                   <div style={{ fontSize: '11px', color: '#6366f1', marginTop: '4px', fontWeight: '700', textTransform: 'uppercase' }}>
+                     {fromDate && toDate ? `Period: ${fromDate} - ${toDate}` : 'Full Account History'}
+                   </div>
                 </div>
               </div>
+
               <div style={{ backgroundColor: '#f8fafc', padding: '18px', borderRadius: '10px', marginBottom: '30px', border: '1px solid #e2e8f0' }}>
                 <p style={{ fontSize: '10px', color: '#64748b', fontWeight: 'bold', textTransform: 'uppercase', margin: '0 0 5px 0' }}>Billed To:</p>
                 <p style={{ fontSize: '20px', fontWeight: '800', margin: 0, color: '#1e293b' }}>{customerName}</p>
@@ -83,7 +93,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
 
           {pageIndex > 0 && <div style={{ height: '40px' }}></div>}
 
-          {/* Fixed: Removed flex: 1 from here to let content stay together */}
           <div style={{ width: '100%' }}>
             <table style={{ width: '100%', borderCollapse: 'collapse', tableLayout: 'fixed' }}>
               <thead>
@@ -151,7 +160,6 @@ const InvoiceTemplate = React.forwardRef<HTMLDivElement, InvoiceProps>(({
                 </div>
               </div>
 
-              {/* Footer always at the absolute bottom */}
               <div style={{
                 position: 'absolute',
                 bottom: '40px',
