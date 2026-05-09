@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface Props {
   shopName: string;
@@ -26,7 +27,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [editingShop, setEditingShop] = useState(false);
   const [tempName, setTempName] = useState(shopName);
   const [search, setSearch] = useState("");
-  
+  const [logoutDialogOpen, setLogoutDialogOpen] = useState(false);
+
   const [sortType, setSortType] = useState("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
@@ -96,13 +98,13 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const filtered = customers
     .filter(c => {
       const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
-      
+
       if (sortType === 'stale') {
         const thirtyDaysAgo = new Date().getTime() - (30 * 24 * 60 * 60 * 1000);
         const lastActivity = getLastActivityDate(c);
         return matchesSearch && lastActivity < thirtyDaysAgo && getCustomerTotal(c) > 0;
       }
-      
+
       return matchesSearch;
     })
     .sort((a, b) => {
@@ -114,10 +116,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-  // Ye logic hamesha list mein niche wale bande ko upar dikhayegi
-  // Bina kisi date ya database column ke
-  return customers.indexOf(b) - customers.indexOf(a);
-}
+        // Ye logic hamesha list mein niche wale bande ko upar dikhayegi
+        // Bina kisi date ya database column ke
+        return customers.indexOf(b) - customers.indexOf(a);
+      }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
       }
@@ -160,7 +162,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             <div className="flex items-center gap-1">
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="flex items-center justify-center cursor-pointer"> 
+                  <div className="flex items-center justify-center cursor-pointer">
                     <ModeToggle />
                   </div>
                 </TooltipTrigger>
@@ -171,7 +173,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={handleLogout} className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
+                  <button onClick={() => setLogoutDialogOpen(true)} className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
                     <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
                   </button>
                 </TooltipTrigger>
@@ -232,9 +234,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
-              
+
               <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
-                
+
                 <div className="hidden lg:flex items-center justify-between min-h-[48px]">
                   <div className="flex items-center gap-2">
                     <div className="w-1 h-4 bg-indigo-600 rounded-full" />
@@ -326,8 +328,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     </div>
                     {/* ✅ Empty State Message Update */}
                     <p className="text-slate-500 dark:text-slate-400 text-[13px] font-bold leading-relaxed max-w-[200px]">
-                      {sortType === 'stale' 
-                        ? "Sab customers active hain! Kisi ka udhar 30 din se purana nahi hai." 
+                      {sortType === 'stale'
+                        ? "Sab customers active hain! Kisi ka udhar 30 din se purana nahi hai."
                         : "Koi customer nahi mila"}
                     </p>
                   </div>
@@ -341,11 +343,11 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       return (
                         <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300/70 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm relative overflow-hidden">
                           {isStale && (
-                             <div className="absolute top-0 left-0 bg-rose-500 text-white text-[7px] font-black px-2 py-0.5 rounded-br-lg uppercase tracking-tighter">
-                               Inactive
-                             </div>
+                            <div className="absolute top-0 left-0 bg-rose-500 text-white text-[7px] font-black px-2 py-0.5 rounded-br-lg uppercase tracking-tighter">
+                              Inactive
+                            </div>
                           )}
-                          
+
                           <div className="flex items-center gap-3 md:gap-4 text-left">
                             <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-indigo-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-indigo-600 transition-all shadow-sm">
                               <span className="text-base md:text-lg font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
@@ -383,6 +385,46 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       <button onClick={onAddCustomer} className="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-indigo-600 text-white rounded-xl shadow-2xl flex items-center justify-center active:scale-90 transition-all z-50 border border-white/20">
         <Plus className="w-6 h-6" />
       </button>
+
+
+      {/* --- Logout Confirmation Dialog --- */}
+      <Dialog open={logoutDialogOpen} onOpenChange={setLogoutDialogOpen}>
+        <DialogContent className="w-[90%] max-w-[320px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/10 shadow-2xl rounded-[2rem] p-6 outline-none gap-0">
+          <div className="flex flex-col items-center text-center space-y-4">
+            {/* Icon Area */}
+            <div className="w-14 h-14 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl flex items-center justify-center mb-2">
+              <LogOut className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
+            </div>
+
+            <div className="space-y-1">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white">
+                Logout Karein?
+              </h2>
+              <p className="text-[12px] text-slate-500 dark:text-slate-400 font-bold leading-tight">
+                Kya aap waqayi account se <br /> bahar nikalna chahte hain?
+              </p>
+            </div>
+
+            <div className="w-full space-y-2 pt-4">
+              <Button
+                onClick={handleLogout}
+                className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all"
+              >
+                Haan, Bahar Niklein
+              </Button>
+              <Button
+                onClick={() => setLogoutDialogOpen(false)}
+                variant="ghost"
+                className="w-full h-12 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all"
+              >
+                Nahi, Wapas Jayein
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+
     </div>
   );
 }
