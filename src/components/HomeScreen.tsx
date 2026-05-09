@@ -44,10 +44,11 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   // Helper to get last transaction date
   const getLastActivityDate = (customer: Customer) => {
-    if (customer.transactions.length === 0) return new Date(customer.created_at || 0).getTime();
-    const dates = customer.transactions.map(t => new Date(t.date).getTime());
-    return Math.max(...dates);
-  };
+  // ✅ (customer as any).created_at use kiya error khatam karne ke liye
+  if (customer.transactions.length === 0) return new Date((customer as any).created_at || 0).getTime();
+  const dates = customer.transactions.map(t => new Date(t.date).getTime());
+  return Math.max(...dates);
+};
 
   const thisMonthTotal = customers.reduce((acc, customer) => {
     const monthSum = customer.transactions
@@ -115,9 +116,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        // Account creation date using Supabase 'created_at'
-        return new Date(b.created_at || 0).getTime() - new Date(a.created_at || 0).getTime();
-      }
+  // ✅ (a as any) aur (b as any) kar diya taake TypeScript error na de
+  return new Date((b as any).created_at || 0).getTime() - new Date((a as any).created_at || 0).getTime();
+}
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
       }
