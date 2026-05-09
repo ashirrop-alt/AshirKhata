@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Clock } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
@@ -27,28 +27,27 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [tempName, setTempName] = useState(shopName);
   const [search, setSearch] = useState("");
   
-  // ✅ Targeted State for Sorting
   const [sortType, setSortType] = useState("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
+  // ✅ Labels ko short kar diya hai
   const sortOptions = [
-    { id: 'all', label: 'Sab Dekhein (Recent Activity)' },
+    { id: 'all', label: 'Sab Dekhein' },
     { id: 'high_balance', label: 'Zada Udhar' },
     { id: 'recent', label: 'Naye Customers' },
-    { id: 'stale', label: 'Purana Udhar (30 Din+)' },
+    { id: 'stale', label: 'Purana Udhar' },
     { id: 'alphabetical', label: 'A to Z' },
   ];
 
   const totalUdhar = getTotalUdhar(customers);
   const now = new Date();
 
-  // Helper to get last transaction date
+  // Helper to get last activity date
   const getLastActivityDate = (customer: Customer) => {
-  // ✅ (customer as any).created_at use kiya error khatam karne ke liye
-  if (customer.transactions.length === 0) return new Date((customer as any).created_at || 0).getTime();
-  const dates = customer.transactions.map(t => new Date(t.date).getTime());
-  return Math.max(...dates);
-};
+    if (customer.transactions.length === 0) return new Date((customer as any).created_at || 0).getTime();
+    const dates = customer.transactions.map(t => new Date(t.date).getTime());
+    return Math.max(...dates);
+  };
 
   const thisMonthTotal = customers.reduce((acc, customer) => {
     const monthSum = customer.transactions
@@ -93,12 +92,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  // ✅ PROFESSIONAL SORTING & FILTERING LOGIC
   const filtered = customers
     .filter(c => {
       const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
       
-      // "Purana Udhar" Filter: Inactive for 30+ days AND has balance
       if (sortType === 'stale') {
         const thirtyDaysAgo = new Date().getTime() - (30 * 24 * 60 * 60 * 1000);
         const lastActivity = getLastActivityDate(c);
@@ -109,16 +106,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     })
     .sort((a, b) => {
       if (sortType === 'all') {
-        // Default: Recently Updated (Last Transaction)
         return getLastActivityDate(b) - getLastActivityDate(a);
       }
       if (sortType === 'high_balance') {
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-  // ✅ (a as any) aur (b as any) kar diya taake TypeScript error na de
-  return new Date((b as any).created_at || 0).getTime() - new Date((a as any).created_at || 0).getTime();
-}
+        return new Date((b as any).created_at || 0).getTime() - new Date((a as any).created_at || 0).getTime();
+      }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
       }
@@ -136,7 +131,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   return (
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
-      {/* --- NAVBAR --- */}
       <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
           {editingShop ? (
@@ -186,11 +180,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         </div>
       </header>
 
-      {/* --- MAIN --- */}
       <main className="flex-1 overflow-hidden">
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
-          {/* LEFT SIDE (Stat Cards) */}
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
@@ -234,14 +226,11 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
             </div>
           </div>
 
-          {/* RIGHT SIDE (Customer List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
               
-              {/* HEADER SECTION */}
               <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
                 
-                {/* LAPTOP VIEW */}
                 <div className="hidden lg:flex items-center justify-between min-h-[48px]">
                   <div className="flex items-center gap-2">
                     <div className="w-1 h-4 bg-indigo-600 rounded-full" />
@@ -254,7 +243,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                     <button
                       type="button"
                       onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                      className="w-[200px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40 transition-all"
+                      className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40 transition-all"
                     >
                       <span className="truncate">{sortOptions.find(opt => opt.id === sortType)?.label}</span>
                       <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
@@ -264,7 +253,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       {isDropdownOpen && (
                         <motion.div
                           initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-                          className="absolute right-0 z-40 mt-1 w-[220px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
+                          className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
                         >
                           {sortOptions.map((option) => (
                             <button
@@ -282,7 +271,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   </div>
                 </div>
 
-                {/* MOBILE VIEW */}
                 <div className="lg:hidden">
                   <div className="flex flex-row items-center justify-between gap-2">
                     <div className="flex items-center gap-2">
@@ -298,7 +286,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm active:scale-95"
                       >
-                        <span className="max-w-[120px] truncate">{sortOptions.find(opt => opt.id === sortType)?.label}</span>
+                        <span className="max-w-[90px] truncate">{sortOptions.find(opt => opt.id === sortType)?.label}</span>
                         <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
                       </button>
 
@@ -306,7 +294,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                         {isDropdownOpen && (
                           <motion.div
                             initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
-                            className="absolute right-0 z-40 mt-1 w-[180px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
+                            className="absolute right-0 z-40 mt-1 w-[150px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
                           >
                             {sortOptions.map((option) => (
                               <button
@@ -328,19 +316,21 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
                 {filtered.length === 0 ? (
-                  <div className="h-64 flex flex-col items-center justify-center bg-white/30 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200/60 dark:border-white/5">
+                  <div className="h-64 flex flex-col items-center justify-center bg-white/30 dark:bg-slate-900/40 rounded-3xl border-2 border-dashed border-slate-200/60 dark:border-white/5 p-6 text-center">
                     <div className="bg-slate-100 dark:bg-slate-800 p-4 rounded-full mb-4 shadow-inner">
                       <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
                     </div>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm font-semibold italic tracking-wide">
-                      {sortType === 'stale' ? "Koi purana udhar baki nahi hai!" : "Koi customer nahi mila"}
+                    {/* ✅ Empty State Message Update */}
+                    <p className="text-slate-500 dark:text-slate-400 text-[13px] font-bold leading-relaxed max-w-[200px]">
+                      {sortType === 'stale' 
+                        ? "Sab customers active hain! Kisi ka udhar 30 din se purana nahi hai." 
+                        : "Koi customer nahi mila"}
                     </p>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
                     {filtered.map(c => {
                       const total = getCustomerTotal(c);
-                      // Check if account is stale for badge
                       const thirtyDaysAgo = new Date().getTime() - (30 * 24 * 60 * 60 * 1000);
                       const isStale = getLastActivityDate(c) < thirtyDaysAgo && total > 0;
 
@@ -348,7 +338,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                         <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300/70 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm relative overflow-hidden">
                           {isStale && (
                              <div className="absolute top-0 left-0 bg-rose-500 text-white text-[7px] font-black px-2 py-0.5 rounded-br-lg uppercase tracking-tighter">
-                               Inactive (30d+)
+                               Inactive
                              </div>
                           )}
                           
@@ -358,13 +348,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                             </div>
                             <div>
                               <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover:text-indigo-600 transition-colors">{c.name}</p>
+                              {/* ✅ Transaction dates mobile/laptop dono se hata di hain */}
                               <div className="flex items-center gap-1.5 mt-0.5">
                                 <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{c.transactions.length} entries</p>
-                                <span className="w-1 h-1 bg-slate-300 rounded-full" />
-                                <div className="flex items-center gap-1 text-[9px] text-slate-400">
-                                  <Clock className="w-2.5 h-2.5" />
-                                  <span>{new Date(getLastActivityDate(c)).toLocaleDateString()}</span>
-                                </div>
                               </div>
                             </div>
                           </div>
