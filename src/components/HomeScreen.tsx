@@ -401,7 +401,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 Logout Karein?
               </h2>
               <p className="text-[12px] text-slate-500 dark:text-slate-400 font-bold leading-tight">
-                Kya aap waqayi account se <br /> bahar nikalna chahte hain?
+                Kya aap account se bahar <br /> nikalna chahte hain?
               </p>
             </div>
 
@@ -410,14 +410,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 onClick={handleLogout}
                 className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-black shadow-lg shadow-indigo-500/20 active:scale-95 transition-all"
               >
-                Haan, Bahar Niklein
+                Haan
               </Button>
               <Button
                 onClick={() => setLogoutDialogOpen(false)}
                 variant="ghost"
                 className="w-full h-12 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all"
               >
-                Nahi, Wapas Jayein
+                Nahi
               </Button>
             </div>
           </div>
