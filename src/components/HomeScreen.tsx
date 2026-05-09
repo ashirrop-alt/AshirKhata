@@ -92,6 +92,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     return () => { supabase.removeChannel(channel); };
   }, []);
 
+  // ✅ PROFESSIONAL SORTING LOGIC (Fixed for New Customers)
   const filtered = customers
     .filter(c => {
       const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
@@ -106,13 +107,17 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     })
     .sort((a, b) => {
       if (sortType === 'all') {
+        // Default: Akhri transaction ki date par
         return getLastActivityDate(b) - getLastActivityDate(a);
       }
       if (sortType === 'high_balance') {
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        return new Date((b as any).created_at || 0).getTime() - new Date((a as any).created_at || 0).getTime();
+        // ✅ FIX: Hamesha account creation date use hogi (Transaction se farq nahi parega)
+        const dateA = new Date((a as any).created_at || 0).getTime();
+        const dateB = new Date((b as any).created_at || 0).getTime();
+        return dateB - dateA; 
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
