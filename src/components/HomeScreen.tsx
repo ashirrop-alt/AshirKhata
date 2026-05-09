@@ -114,11 +114,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        // ✅ FIX: Hamesha account creation date use hogi (Transaction se farq nahi parega)
-        const dateA = new Date((a as any).created_at || 0).getTime();
-        const dateB = new Date((b as any).created_at || 0).getTime();
-        return dateB - dateA; 
-      }
+  // Ye logic hamesha list mein niche wale bande ko upar dikhayegi
+  // Bina kisi date ya database column ke
+  return customers.indexOf(b) - customers.indexOf(a);
+}
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
       }
