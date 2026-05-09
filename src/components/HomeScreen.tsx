@@ -10,7 +10,8 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface Props {
   shopName: string;
@@ -25,6 +26,18 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [editingShop, setEditingShop] = useState(false);
   const [tempName, setTempName] = useState(shopName);
   const [search, setSearch] = useState("");
+  
+  // ✅ Targeted State for Sorting (Same as CustomerDetail)
+  const [sortType, setSortType] = useState("all");
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+ const sortOptions = [
+  { id: 'all', label: 'Sub Dekhein' },
+  { id: 'high_balance', label: 'Zada Udhar' },
+  { id: 'recent', label: 'Naye Customers' }, // ✅ Wapas add kar diya
+  { id: 'alphabetical', label: 'A to Z' },
+];
+
   const totalUdhar = getTotalUdhar(customers);
   const now = new Date();
 
@@ -71,7 +84,18 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     return () => { supabase.removeChannel(channel); };
   }, []);
 
-  const filtered = customers.filter(c => c.name.toLowerCase().includes(search.toLowerCase()));
+  // ✅ Updated Sorting Logic
+  const filtered = customers
+  .filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+  .sort((a, b) => {
+    if (sortType === 'high_balance') {
+      return getCustomerTotal(b) - getCustomerTotal(a);
+    }
+    if (sortType === 'alphabetical') {
+      return a.name.localeCompare(b.name);
+    }
+    return 0;
+  });
 
   if (isLoading) {
     return (
@@ -107,44 +131,30 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           )}
 
           <TooltipProvider delayDuration={100}>
-  <div className="flex items-center gap-1">
-    
-    {/* Theme Toggle Tooltip */}
-    <Tooltip>
-      <TooltipTrigger asChild>
-        {/* div isliye taake size distrub na ho */}
-        <div className="flex items-center justify-center cursor-pointer"> 
-          <ModeToggle />
-        </div>
-      </TooltipTrigger>
-      <TooltipContent 
-        side="bottom" 
-        className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl"
-      >
-        <p>Theme Badlein</p>
-      </TooltipContent>
-    </Tooltip>
+            <div className="flex items-center gap-1">
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="flex items-center justify-center cursor-pointer"> 
+                    <ModeToggle />
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                  <p>Theme Badlein</p>
+                </TooltipContent>
+              </Tooltip>
 
-    {/* LogOut Button - Exact Same Size as Before */}
-    <Tooltip>
-      <TooltipTrigger asChild>
-        <button
-          onClick={handleLogout}
-          className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center"
-        >
-          <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
-        </button>
-      </TooltipTrigger>
-      <TooltipContent 
-        side="bottom" 
-        className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl"
-      >
-        <p>Logout Karein</p>
-      </TooltipContent>
-    </Tooltip>
-
-  </div>
-</TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button onClick={handleLogout} className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
+                    <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                  <p>Logout Karein</p>
+                </TooltipContent>
+              </Tooltip>
+            </div>
+          </TooltipProvider>
         </div>
       </header>
 
@@ -199,9 +209,93 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           {/* RIGHT SIDE (Customer List Container) */}
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
             <div className="flex flex-col h-full">
-              <div className="px-6 py-5 border-b border-slate-100 dark:border-white/[0.05] flex items-center gap-2 bg-slate-50/50 dark:bg-white/[0.02]">
-                <Users className="w-4 h-4 text-slate-400" />
-                <span className="text-[10px] md:text-[10.5px] font-black uppercase tracking-widest text-slate-400">Total Customers ({filtered.length})</span>
+              
+              {/* ✅ TARGETED HEADER: Matches CustomerDetail PIN-POINT Accuracy */}
+              <div className="px-3 pt-5 pb-2 md:px-6 md:py-2 border-b border-slate-100 dark:border-white/[0.05] bg-transparent">
+                
+                {/* LAPTOP VIEW */}
+                <div className="hidden lg:flex items-center justify-between min-h-[48px]">
+                  <div className="flex items-center gap-2">
+                    <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+                    <span className="text-[12px] font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                      Total Customers ({filtered.length})
+                    </span>
+                  </div>
+
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                      className="w-[150px] flex items-center justify-between gap-2 bg-white dark:bg-[#161625] text-slate-800 dark:text-slate-200 text-[12px] font-semibold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm hover:border-indigo-500/40 transition-all"
+                    >
+                      <span className="truncate">{sortOptions.find(opt => opt.id === sortType)?.label}</span>
+                      <ChevronDown className={`w-3.5 h-3.5 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </button>
+
+                    <AnimatePresence>
+                      {isDropdownOpen && (
+                        <motion.div
+                          initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
+                          className="absolute right-0 z-40 mt-1 w-[170px] bg-white dark:bg-[#11111d] border border-slate-200 dark:border-white/[0.15] rounded-xl shadow-xl p-1"
+                        >
+                          {sortOptions.map((option) => (
+                            <button
+                              key={option.id}
+                              onClick={() => { setSortType(option.id); setIsDropdownOpen(false); }}
+                              className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[12px] font-medium transition-all mb-0.5 last:mb-0 ${sortType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400 hover:bg-indigo-500/10'}`}
+                            >
+                              {option.label}
+                              {sortType === option.id && <Check className="w-3.5 h-3.5" />}
+                            </button>
+                          ))}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
+                  </div>
+                </div>
+
+                {/* MOBILE VIEW */}
+                <div className="lg:hidden">
+                  <div className="flex flex-row items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <div className="w-1 h-4 bg-indigo-600 rounded-full" />
+                      <span className="text-[11px] font-black uppercase tracking-wider text-slate-500 dark:text-slate-400">
+                        ACCOUNTS ({filtered.length})
+                      </span>
+                    </div>
+
+                    <div className="relative">
+                      <button
+                        type="button"
+                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                        className="flex items-center gap-2 bg-white dark:bg-[#1e1e2d] text-slate-800 dark:text-slate-200 text-[11px] font-bold px-3 py-2 rounded-xl border border-slate-200 dark:border-white/10 shadow-sm active:scale-95"
+                      >
+                        <span className="max-w-[90px] truncate">{sortOptions.find(opt => opt.id === sortType)?.label}</span>
+                        <ChevronDown className={`w-3 h-3 text-slate-400 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                      </button>
+
+                      <AnimatePresence>
+                        {isDropdownOpen && (
+                          <motion.div
+                            initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 4 }} exit={{ opacity: 0, y: 8 }}
+                            className="absolute right-0 z-40 mt-1 w-[150px] bg-white dark:bg-[#1a1a25] border border-slate-200 dark:border-white/10 rounded-xl shadow-xl p-1"
+                          >
+                            {sortOptions.map((option) => (
+                              <button
+                                key={option.id}
+                                onClick={() => { setSortType(option.id); setIsDropdownOpen(false); }}
+                                className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-[11px] font-bold mb-0.5 ${sortType === option.id ? 'bg-indigo-600 text-white' : 'text-slate-600 dark:text-slate-400'}`}
+                              >
+                                {option.label}
+                                {sortType === option.id && <Check className="w-3 h-3" />}
+                              </button>
+                            ))}
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto custom-scrollbar pb-24 md:pb-4 p-4 space-y-3">
