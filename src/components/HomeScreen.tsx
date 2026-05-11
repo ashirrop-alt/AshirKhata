@@ -414,8 +414,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               </Button>
               <Button
                 onClick={() => setLogoutDialogOpen(false)}
-                variant="ghost"
-                className="w-full h-12 text-slate-500 dark:text-slate-400 font-bold hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl transition-all"
+                variant="outline"
+                className="w-full h-12 rounded-xl font-bold transition-all active:scale-95 border-slate-200 text-slate-600 hover:bg-slate-50 dark:border-white/10 dark:bg-[#1a1a2e] dark:text-slate-300 dark:hover:bg-white/5"
               >
                 Nahi
               </Button>
