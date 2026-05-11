@@ -34,35 +34,38 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // --- Backup Function ---
-  const handleExportBackup = () => {
+ const handleExportBackup = () => {
     try {
-      // 1. Data ko Excel ke liye set karna
-      const worksheetData = customers.flatMap(customer =>
+      const worksheetData = customers.flatMap(customer => 
         (customer.transactions || []).map((t: any) => ({
           'Customer Name': customer.name,
-          'Phone': customer.phone || '-',
-          'Tareekh': new Date(t.created_at).toLocaleDateString('en-GB'),
-          'Type': t.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila',
-          'Raqam': t.amount,
-          'Tafseel': t.remarks || '-'
+          'Phone Number': customer.phone || '-',
+          // Database mein column ka naam 'date' hai, isliye direct t.date use karenge
+          'Tareekh': t.date || '-', 
+          'Transaction Type': t.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila',
+          'Amount (Rs)': t.amount,
+          'Details (Remarks)': t.remarks || '-'
         }))
       );
 
-      // Agar koi data na ho
       if (worksheetData.length === 0) {
-        alert("Abhi koi transactions mojud nahi hain!");
+        alert("Abhi koi data mojud nahi hai!");
         return;
       }
 
-      // 2. Excel Sheet banana
+      // Excel Sheet banana aur column width set karna
       const worksheet = XLSX.utils.json_to_sheet(worksheetData);
-      const workbook = XLSX.utils.book_new();
-      XLSX.utils.book_append_sheet(workbook, worksheet, "Khatify Backup");
+      worksheet['!cols'] = [
+        {wch: 22}, {wch: 15}, {wch: 15}, {wch: 18}, {wch: 12}, {wch: 30}
+      ];
 
-      // 3. File Download karwana
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Full Backup");
+      
       XLSX.writeFile(workbook, `Khatify_Backup_${new Date().toLocaleDateString()}.xlsx`);
     } catch (error) {
-      console.error("Export mein masla aya:", error);
+      console.error("Export Error:", error);
+      alert("Backup download nahi ho saka!");
     }
   };
 
