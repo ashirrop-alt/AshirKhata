@@ -10,9 +10,10 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Download } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import * as XLSX from 'xlsx';
 
 interface Props {
   shopName: string;
@@ -31,6 +32,39 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   const [sortType, setSortType] = useState("all");
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+
+  // --- Backup Function ---
+  const handleExportBackup = () => {
+    try {
+      // 1. Data ko Excel ke liye set karna
+      const worksheetData = customers.flatMap(customer =>
+        (customer.transactions || []).map((t: any) => ({
+          'Customer Name': customer.name,
+          'Phone': customer.phone || '-',
+          'Tareekh': new Date(t.created_at).toLocaleDateString('en-GB'),
+          'Type': t.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila',
+          'Raqam': t.amount,
+          'Tafseel': t.remarks || '-'
+        }))
+      );
+
+      // Agar koi data na ho
+      if (worksheetData.length === 0) {
+        alert("Abhi koi transactions mojud nahi hain!");
+        return;
+      }
+
+      // 2. Excel Sheet banana
+      const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+      const workbook = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(workbook, worksheet, "Khatify Backup");
+
+      // 3. File Download karwana
+      XLSX.writeFile(workbook, `Khatify_Backup_${new Date().toLocaleDateString()}.xlsx`);
+    } catch (error) {
+      console.error("Export mein masla aya:", error);
+    }
+  };
 
   // ✅ Labels ko short kar diya hai
   const sortOptions = [
@@ -170,7 +204,20 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   <p>Theme Badlein</p>
                 </TooltipContent>
               </Tooltip>
-
+              {/* --- Backup Button Tooltip --- */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={handleExportBackup}
+                    className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
+                  >
+                    <Download className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                  <p>Backup Download Karein</p>
+                </TooltipContent>
+              </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
                   <button onClick={() => setLogoutDialogOpen(true)} className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
