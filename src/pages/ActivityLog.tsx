@@ -19,76 +19,81 @@ const ActivityLog = () => {
         .from('audit_logs')
         .select('*')
         .order('created_at', { ascending: false });
-
       if (error) throw error;
       setLogs(data || []);
     } catch (error) {
-      console.error('Error fetching logs:', error);
+      console.error(error);
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="p-4 max-w-4xl mx-auto min-h-screen">
-      {/* Header with Back Button */}
-      <div className="flex items-center gap-3 mb-6">
-        <button
-          onClick={() => navigate('/')}
-          className="p-2 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-        >
-          <ArrowLeft className="w-5 h-5 text-slate-600 dark:text-slate-400" />
-        </button>
-        <History className="w-6 h-6 text-indigo-600" />
-        <h1 className="text-2xl font-bold">Activity History</h1>
+    <div className="min-h-screen bg-white dark:bg-[#0f172a]">
+      {/* Standard Header */}
+      <div className="sticky top-0 z-10 bg-white/80 dark:bg-[#0f172a]/80 backdrop-blur-md border-b border-slate-100 dark:border-slate-800">
+        <div className="max-w-3xl mx-auto px-4 h-16 flex items-center gap-4">
+          <button onClick={() => navigate('/')} className="p-2 -ml-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full transition-colors">
+            <ArrowLeft className="w-5 h-5 text-slate-500" />
+          </button>
+          <h1 className="text-lg font-semibold text-slate-900 dark:text-slate-100">Activity History</h1>
+        </div>
       </div>
 
-      {loading ? (
-        <p className="text-center py-10 font-medium">Loading records...</p>
-      ) : logs.length === 0 ? (
-        <p className="text-slate-500 text-center py-10 italic">Abhi tak koi activity record nahi hui.</p>
-      ) : (
-        <div className="space-y-4">
-          // ActivityLog.tsx ka updated part (Mapping ke andar)
-          {logs.map((log) => (
-            <div key={log.id} className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-3 rounded-xl shadow-sm">
-              <div className="flex justify-between items-center mb-2">
-                <div className="flex items-center gap-2">
-                  {log.action_type === 'DELETE' ? (
-                    <span className="bg-red-50 text-red-500 p-1 rounded-md"><Trash2 size={14} /></span>
-                  ) : (
-                    <span className="bg-amber-50 text-amber-500 p-1 rounded-md"><Edit3 size={14} /></span>
-                  )}
-                  <span className="font-bold text-slate-800 dark:text-slate-200 text-sm">{log.customer_name}</span>
+      <div className="max-w-3xl mx-auto px-4 py-6">
+        {loading ? (
+          <div className="flex justify-center py-20"><div className="w-6 h-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin"></div></div>
+        ) : logs.length === 0 ? (
+          <div className="text-center py-20 text-slate-400 text-sm">No activity recorded yet.</div>
+        ) : (
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
+            {logs.map((log) => (
+              <div key={log.id} className="py-5 first:pt-0 last:pb-0">
+                <div className="flex items-start justify-between gap-4">
+                  <div className="flex items-start gap-4">
+                    {/* Minimal Icon Indicator */}
+                    <div className={`mt-1 p-2 rounded-lg flex-shrink-0 ${log.action_type === 'DELETE' ? 'bg-red-50 dark:bg-red-500/10 text-red-500' : 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-500'}`}>
+                      {log.action_type === 'DELETE' ? <Trash2 size={16} /> : <Edit3 size={16} />}
+                    </div>
+                    
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="font-medium text-slate-900 dark:text-slate-100">{log.customer_name}</span>
+                        <span className="text-[10px] text-slate-400 uppercase tracking-wider font-medium">• {format(new Date(log.created_at), 'hh:mm a')}</span>
+                      </div>
+
+                      {/* Action Detail */}
+                      <div className="text-sm text-slate-500 dark:text-slate-400">
+                        {log.action_type === 'DELETE' ? (
+                          <span>Deleted a transaction of <span className="text-slate-900 dark:text-slate-200 font-medium">Rs {log.old_data?.amount}</span></span>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <span>Updated amount:</span>
+                            <span className="line-through text-slate-300 dark:text-slate-600">Rs {log.old_data?.amount}</span>
+                            <ArrowRight size={12} className="text-slate-300" />
+                            <span className="text-emerald-600 dark:text-emerald-400 font-semibold">Rs {log.new_data?.amount}</span>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Minimal Remarks */}
+                      {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
+                        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500 border-l-2 border-slate-100 dark:border-slate-800 pl-3 italic">
+                          "{log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}"
+                        </p>
+                      )}
+                    </div>
+                  </div>
+                  
+                  <div className="text-right flex-shrink-0">
+                    <span className="text-[11px] font-bold text-slate-400">{format(new Date(log.created_at), 'dd MMM')}</span>
+                  </div>
                 </div>
-                <span className="text-[10px] font-medium text-slate-400">{format(new Date(log.created_at), 'dd MMM, hh:mm a')}</span>
               </div>
-
-              <div className="text-xs text-slate-600 dark:text-slate-400">
-                {log.action_type === 'DELETE' ? (
-                  <p>Transaction of <span className="font-bold text-red-500">Rs {log.old_data?.amount}</span> was deleted.</p>
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <span className="opacity-60">Rs {log.old_data?.amount}</span>
-                    <ArrowRight size={12} className="text-slate-300" />
-                    <span className="font-bold text-emerald-600">Rs {log.new_data?.amount}</span>
-                    <span className="text-[9px] bg-indigo-50 text-indigo-500 px-1 rounded font-bold uppercase ml-1">Edited</span>
-                  </div>
-                )}
-
-                {/* Smart Remarks Section: Sirf tab dikhayen jab Remarks mojud hon */}
-                {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
-                  <div className="mt-2 p-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border-l-2 border-indigo-400">
-                    <p className="text-[11px] text-slate-600 italic">
-                      {log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}
-                    </p>
-                  </div>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 };
