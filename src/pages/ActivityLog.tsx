@@ -29,43 +29,37 @@ const ActivityLog = () => {
   };
 
   return (
-    <div className="h-screen flex flex-col bg-white dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden">
+    <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden">
       
-      {/* Optimized Header for Alignment */}
-      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] z-30 shadow-sm px-2">
+      {/* PERFECTLY ALIGNED HEADER */}
+      <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto h-full flex items-center">
           
-          {/* Back Button - Pushed to the very left */}
+          {/* Back Button integrated into Indigo Box for Alignment */}
           <button 
             onClick={() => navigate('/')} 
-            className="p-2 mr-1 rounded-xl hover:bg-slate-100 dark:hover:bg-white/5 transition-all active:scale-95"
+            className="flex items-center gap-2.5 group active:scale-95 transition-all text-left"
           >
-            <ArrowLeft className="w-5 h-5 text-slate-400" />
-          </button>
-          
-          {/* Title Aligned with Shop Name Position */}
-          <div className="flex items-center gap-2.5">
-            <div className="bg-indigo-600 p-1.5 rounded-lg shadow-lg shadow-indigo-500/30">
-              <History className="w-4 h-4 text-white" />
+            <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30 group-hover:bg-indigo-700 transition-colors">
+              <ArrowLeft className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
             </div>
-            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">
+            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors uppercase">
               Activity History
             </h1>
-          </div>
+          </button>
         </div>
       </header>
 
       {/* Content Area */}
-      <main className="flex-1 overflow-y-auto p-4 md:p-6 bg-slate-50 dark:bg-[#020617]">
+      <main className="flex-1 overflow-y-auto p-4 md:p-6 custom-scrollbar bg-slate-50 dark:bg-[#020617]">
         <div className="max-w-4xl mx-auto space-y-3">
           {loading ? (
-            /* Home Style Loading */
-            <div className="flex flex-col items-center justify-center py-20 space-y-4">
-              <Loader2 className="w-8 h-8 text-indigo-600 animate-spin" />
-              <p className="text-sm font-black text-slate-400 uppercase tracking-widest">Loading Records...</p>
+            <div className="flex flex-col items-center justify-center py-20 space-y-3">
+               <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
+               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Hisaab Load Ho Raha Hai...</p>
             </div>
           ) : logs.length === 0 ? (
-            <div className="text-center py-20 text-slate-400 font-black uppercase tracking-widest">
+            <div className="text-center py-20 text-slate-400 font-black uppercase tracking-widest text-[12px]">
               Abhi tak koi activity record nahi hui.
             </div>
           ) : (
@@ -90,9 +84,9 @@ const ActivityLog = () => {
                   <div className="pl-[52px]">
                     <div className="text-sm font-black tracking-tight">
                       {log.action_type === 'DELETE' ? (
-                        <p className="text-slate-500 dark:text-white/40 uppercase">Deleted <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span></p>
+                        <p className="text-slate-500 dark:text-white/40 uppercase">Hisaab Delete Kiya: <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span></p>
                       ) : (
-                        <div className="flex items-center gap-2 text-slate-500 dark:text-white/40">
+                        <div className="flex items-center gap-2 text-slate-500 dark:text-white/40 uppercase">
                           <span className="opacity-40 line-through text-xs italic">Rs {log.old_data?.amount.toLocaleString()}</span>
                           <ArrowRight size={12} className="text-slate-300" />
                           <span className="text-emerald-600 dark:text-emerald-400 text-base font-black">Rs {log.new_data?.amount.toLocaleString()}</span>
@@ -100,11 +94,14 @@ const ActivityLog = () => {
                       )}
                     </div>
 
-                    {/* Compact Remarks Text Line */}
+                    {/* Remarks with Label */}
                     {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
-                      <p className="mt-1 text-[10px] font-bold italic text-slate-400 dark:text-white/20 border-l-2 border-slate-200 dark:border-white/5 pl-2 leading-tight">
-                        "{log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}"
-                      </p>
+                      <div className="mt-2 space-y-1">
+                        <p className="text-[8px] font-black text-indigo-500 uppercase tracking-tighter">Tafseel:</p>
+                        <p className="text-[11px] font-bold italic text-slate-400 dark:text-white/20 border-l-2 border-indigo-500/20 pl-2 leading-tight">
+                          "{log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}"
+                        </p>
+                      </div>
                     )}
                   </div>
                 </div>
