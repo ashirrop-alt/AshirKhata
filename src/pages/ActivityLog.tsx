@@ -91,7 +91,7 @@ const ActivityLog = () => {
                           <span className="text-emerald-600 dark:text-emerald-400 text-base font-black">Rs {log.new_data?.amount.toLocaleString()}</span>
                           {/* Spaced Edited Label */}
                           {/* px-1.5 ko badal kar px-3 kar diya taake text ko saans lene ki jagah mile */}
-                          <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-3 py-1 rounded-full border border-indigo-500/20 uppercase tracking-widest ml-4 font-black shadow-sm">
+                          <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-2 py-1 rounded-full border border-indigo-500/20 uppercase tracking-widest ml-4 font-black shadow-sm">
                             Edited
                           </span>
                         </div>
