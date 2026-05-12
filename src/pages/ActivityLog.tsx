@@ -35,7 +35,6 @@ const ActivityLog = () => {
       <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm">
         <div className="max-w-7xl mx-auto h-full flex items-center">
           
-          {/* Back Button integrated into Indigo Box for Alignment */}
           <button 
             onClick={() => navigate('/')} 
             className="flex items-center gap-2.5 group active:scale-95 transition-all text-left"
@@ -43,7 +42,7 @@ const ActivityLog = () => {
             <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30 group-hover:bg-indigo-700 transition-colors">
               <ArrowLeft className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
             </div>
-            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors uppercase">
+            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
               Activity History
             </h1>
           </button>
@@ -56,10 +55,10 @@ const ActivityLog = () => {
           {loading ? (
             <div className="flex flex-col items-center justify-center py-20 space-y-3">
                <Loader2 className="w-8 h-8 animate-spin text-indigo-600" />
-               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Hisaab Load Ho Raha Hai...</p>
+               <p className="text-[10px] font-black uppercase tracking-widest text-slate-400">Loading Records...</p>
             </div>
           ) : logs.length === 0 ? (
-            <div className="text-center py-20 text-slate-400 font-black uppercase tracking-widest text-[12px]">
+            <div className="text-center py-20 text-slate-400 font-bold text-[12px]">
               Abhi tak koi activity record nahi hui.
             </div>
           ) : (
@@ -73,7 +72,8 @@ const ActivityLog = () => {
                         {log.action_type === 'DELETE' ? <Trash2 size={18} /> : <Edit3 size={18} />}
                       </div>
                       <div>
-                        <p className="font-black text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight uppercase tracking-tight">{log.customer_name}</p>
+                        {/* Title Case instead of All Caps */}
+                        <p className="font-black text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight tracking-tight uppercase">{log.customer_name}</p>
                         <p className="text-[9px] font-black text-slate-400 mt-0.5 uppercase tracking-widest">
                           {format(new Date(log.created_at), 'dd MMM • hh:mm a')}
                         </p>
@@ -84,21 +84,23 @@ const ActivityLog = () => {
                   <div className="pl-[52px]">
                     <div className="text-sm font-black tracking-tight">
                       {log.action_type === 'DELETE' ? (
-                        <p className="text-slate-500 dark:text-white/40 uppercase">Hisaab Delete Kiya: <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span></p>
+                        <p className="text-slate-500 dark:text-white/40">Hisaab delete kiya: <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span></p>
                       ) : (
-                        <div className="flex items-center gap-2 text-slate-500 dark:text-white/40 uppercase">
-                          <span className="opacity-40 line-through text-xs italic">Rs {log.old_data?.amount.toLocaleString()}</span>
+                        <div className="flex items-center gap-2">
+                          <span className="text-slate-500 dark:text-white/40 opacity-70 line-through text-xs italic">Rs {log.old_data?.amount.toLocaleString()}</span>
                           <ArrowRight size={12} className="text-slate-300" />
                           <span className="text-emerald-600 dark:text-emerald-400 text-base font-black">Rs {log.new_data?.amount.toLocaleString()}</span>
+                          {/* Edited Label Wapas Add kar diya */}
+                          <span className="text-[9px] bg-indigo-500/10 text-indigo-400 px-1.5 py-0.5 rounded-md border border-indigo-500/20 uppercase tracking-tighter ml-1">Edited</span>
                         </div>
                       )}
                     </div>
 
-                    {/* Remarks with Label */}
+                    {/* Horizontal Remarks with Space Optimization */}
                     {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
-                      <div className="mt-2 space-y-1">
-                        <p className="text-[8px] font-black text-indigo-500 uppercase tracking-tighter">Tafseel:</p>
-                        <p className="text-[11px] font-bold italic text-slate-400 dark:text-white/20 border-l-2 border-indigo-500/20 pl-2 leading-tight">
+                      <div className="mt-1.5 flex items-center gap-1.5">
+                        <span className="text-[8px] font-black text-indigo-500 uppercase tracking-tighter whitespace-nowrap">Tafseel:</span>
+                        <p className="text-[11px] font-bold italic text-slate-400 dark:text-white/20 border-l border-indigo-500/10 pl-1.5 leading-none truncate">
                           "{log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}"
                         </p>
                       </div>
