@@ -157,15 +157,20 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   // 7. FUNCTIONS (Handlers)
-const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remarks: string) => {
+  const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remarks: string) => {
     setLoading(true);
     try {
       let updatedTransactions;
-      
+
       // --- Audit Log Logic (CCTV for Editing) ---
       if (editingEntry) {
-        const newData = { ...editingEntry, type, amount: Number(amount), remarks: remarks };
-        
+        // Purane remarks aur naye remarks ko jorna
+        const combinedRemarks = remarks !== editingEntry.remarks
+          ? `${editingEntry.remarks} | Edit: ${remarks}`
+          : editingEntry.remarks;
+
+        const newData = { ...editingEntry, type, amount: Number(amount), remarks: combinedRemarks };
+
         await supabase.from('audit_logs').insert({
           user_id: (await supabase.auth.getUser()).data.user?.id,
           action_type: 'EDIT',
@@ -228,7 +233,7 @@ const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remark
       // 3. Ab asli delete query chalao
       const updatedTransactions = transactions.filter(t => t.id !== idToDelete);
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
-      
+
       if (error) throw error;
       setTransactions(updatedTransactions);
       toast.success("Entry delete ho gayi!");
@@ -251,42 +256,42 @@ const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remark
   };
 
   const shareFullHistory = () => {
-  // 1. Report ka naam decide karein (Roman Urdu with context)
-  const reportLabel = 
-    filterType === 'today' ? "Aaj ka Hisaab (Today's Summary)" :
-    filterType === 'thisMonth' ? "Is Mahine ki Report (Monthly)" :
-    filterType === 'custom' ? `Hisaab Period: ${startDate} — ${endDate}` :
-    "Pura Hisaab (Account Statement)";
+    // 1. Report ka naam decide karein (Roman Urdu with context)
+    const reportLabel =
+      filterType === 'today' ? "Aaj ka Hisaab (Today's Summary)" :
+        filterType === 'thisMonth' ? "Is Mahine ki Report (Monthly)" :
+          filterType === 'custom' ? `Hisaab Period: ${startDate} — ${endDate}` :
+            "Pura Hisaab (Account Statement)";
 
-  // 2. Message Header
-  let message = `*${displayShopName}* 📜\n*${reportLabel}*\n\n`;
-  message += `Customer: *${customer.name}*\n`;
-  message += `--------------------------\n`;
+    // 2. Message Header
+    let message = `*${displayShopName}* 📜\n*${reportLabel}*\n\n`;
+    message += `Customer: *${customer.name}*\n`;
+    message += `--------------------------\n`;
 
-  // 3. Transactions List
-  filteredTransactions.forEach((t) => {
-    const note = t.remarks ? ` _(${t.remarks})_` : "";
-    const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
-    const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
-    
-    message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
-  });
+    // 3. Transactions List
+    filteredTransactions.forEach((t) => {
+      const note = t.remarks ? ` _(${t.remarks})_` : "";
+      const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
+      const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
 
-  // 4. Net Balance Calculation
-  const filteredTotal = filteredTransactions.reduce((acc, tx) => {
-    return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
-  }, 0);
+      message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
+    });
 
-  message += `--------------------------\n`;
-  message += `*Baqaya Rakam: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
-  
-  // 5. Aapka Site Link (Vercel wala link yahan add kiya hai)
-  message += `_Powered by ashir-khata.vercel.app_`;
+    // 4. Net Balance Calculation
+    const filteredTotal = filteredTransactions.reduce((acc, tx) => {
+      return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
+    }, 0);
 
-  // 6. WhatsApp Redirect
-  const cleanPhone = customer.phone.replace(/^0/, "92");
-  window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-};
+    message += `--------------------------\n`;
+    message += `*Baqaya Rakam: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
+
+    // 5. Aapka Site Link (Vercel wala link yahan add kiya hai)
+    message += `_Powered by ashir-khata.vercel.app_`;
+
+    // 6. WhatsApp Redirect
+    const cleanPhone = customer.phone.replace(/^0/, "92");
+    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+  };
 
   // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
   const sendReminder = async () => {
