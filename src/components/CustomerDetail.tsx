@@ -157,15 +157,28 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   // 7. FUNCTIONS (Handlers)
-  const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remarks: string) => {
+const handleSaveEntry = async (type: "udhar" | "payment", amount: number, remarks: string) => {
     setLoading(true);
     try {
       let updatedTransactions;
+      
+      // --- Audit Log Logic (CCTV for Editing) ---
       if (editingEntry) {
+        const newData = { ...editingEntry, type, amount: Number(amount), remarks: remarks };
+        
+        await supabase.from('audit_logs').insert({
+          user_id: (await supabase.auth.getUser()).data.user?.id,
+          action_type: 'EDIT',
+          customer_name: customer.name,
+          old_data: editingEntry, // Badalne se pehle wala hisaab
+          new_data: newData       // Naya wala hisaab
+        });
+
         updatedTransactions = transactions.map(t =>
-          t.id === editingEntry.id ? { ...t, type, amount: Number(amount), remarks: remarks } : t
+          t.id === editingEntry.id ? newData : t
         );
       } else {
+        // Nayi entry ke liye wahi purani logic
         const newTransaction = {
           id: crypto.randomUUID(),
           type: type,
@@ -198,8 +211,24 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const confirmDeleteEntry = async () => {
     if (!idToDelete) return;
     try {
+      // 1. Pehle woh transaction dhoondo jo delete ho rahi hai (Audit Log ke liye)
+      const entryToDelete = transactions.find(t => t.id === idToDelete);
+
+      // 2. Audit Log mein entry dalo (CCTV Record)
+      if (entryToDelete) {
+        await supabase.from('audit_logs').insert({
+          user_id: (await supabase.auth.getUser()).data.user?.id,
+          action_type: 'DELETE',
+          customer_name: customer.name,
+          old_data: entryToDelete, // Purana saara hisaab yahan save ho jayega
+          new_data: null
+        });
+      }
+
+      // 3. Ab asli delete query chalao
       const updatedTransactions = transactions.filter(t => t.id !== idToDelete);
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
+      
       if (error) throw error;
       setTransactions(updatedTransactions);
       toast.success("Entry delete ho gayi!");
