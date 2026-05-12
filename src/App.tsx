@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { supabase } from './lib/supabase';
 import { Toaster } from "sonner";
-// --- Naya Import: ThemeProvider ---
+import ActivityLog from './pages/ActivityLog';
 import { ThemeProvider } from "./components/theme-provider"; 
 
 import Login from './pages/auth/Login';
@@ -45,6 +45,7 @@ function App() {
           <Route path="/" element={session ? <Index /> : <Navigate to="/login" />} />
           <Route path="/customer/:id" element={session ? <Index /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/" />} />
+          <Route path="/activity" element={session ? <ActivityLog /> : <Navigate to="/login" />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

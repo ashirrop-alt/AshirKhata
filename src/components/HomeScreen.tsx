@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Download } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Download, History } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import * as XLSX from 'xlsx';
@@ -34,14 +34,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   // --- Backup Function ---
- const handleExportBackup = () => {
+  const handleExportBackup = () => {
     try {
-      const worksheetData = customers.flatMap(customer => 
+      const worksheetData = customers.flatMap(customer =>
         (customer.transactions || []).map((t: any) => ({
           'Customer Name': customer.name,
           'Phone Number': customer.phone || '-',
           // Database mein column ka naam 'date' hai, isliye direct t.date use karenge
-          'Tareekh': t.date || '-', 
+          'Tareekh': t.date || '-',
           'Transaction Type': t.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila',
           'Amount (Rs)': t.amount,
           'Details (Remarks)': t.remarks || '-'
@@ -56,12 +56,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       // Excel Sheet banana aur column width set karna
       const worksheet = XLSX.utils.json_to_sheet(worksheetData);
       worksheet['!cols'] = [
-        {wch: 22}, {wch: 15}, {wch: 15}, {wch: 18}, {wch: 12}, {wch: 30}
+        { wch: 22 }, { wch: 15 }, { wch: 15 }, { wch: 18 }, { wch: 12 }, { wch: 30 }
       ];
 
       const workbook = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(workbook, worksheet, "Full Backup");
-      
+
       XLSX.writeFile(workbook, `Khatify_Backup_${new Date().toLocaleDateString()}.xlsx`);
     } catch (error) {
       console.error("Export Error:", error);
@@ -219,6 +219,20 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 </TooltipTrigger>
                 <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
                   <p>Backup Download Karein</p>
+                </TooltipContent>
+              </Tooltip>
+              {/* --- Activity History Button --- */}
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <button
+                    onClick={() => window.location.href = '/activity'}
+                    className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
+                  >
+                    <History className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                  <p>Activity History</p>
                 </TooltipContent>
               </Tooltip>
               <Tooltip>
