@@ -302,23 +302,23 @@ export function CustomerDetail({ customer, onBack }: Props) {
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
-// handleWhatsAppShare ko is se replace karein
-const handleWhatsAppShare = () => {
-  if (!customer || !customer.phone) {
-    toast.error("Customer ka phone number nahi mila");
-    return;
-  }
+  // handleWhatsAppShare ko is se replace karein
+  const handleWhatsAppShare = () => {
+    // 1. Live Link banana
+    const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
 
-  // Live link banana
-  const shareLink = `${window.location.origin}/view/${customer.share_id || ''}`;
-  
-  // Message tyyar karna
-  const message = `*Assalam-o-Alaikum ${customer.name}* ✨\n\nAapka live khata balance *Rs ${total.toLocaleString()}* hai.\n\nMazeed tafseel aur pura hisaab dekhne ke liye is link par click karein:\n${shareLink}\n\n*Shukriya!*`;
-  
-  // WhatsApp par redirect karna (92 country code ke sath)
-  const cleanPhone = customer.phone.replace(/^0/, "92");
-  window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-};
+    // 2. Simple aur Professional Message (Template literals use kiye hain takay asani ho)
+    const message = `✨ *Assalam-o-Alaikum ${customer.name}* ✨%0A%0A` +
+      `Aapka kul udhar: *Rs ${total.toLocaleString()}* 💰%0A%0A` +
+      `*Dukaan:* ${displayShopName}%0A%0A` + // <--- Yahan shopName ki jagah displayShopName kar dein
+      `Hisaab dekhne ke liye click karein:%0A` +
+      `🔗 ${shareUrl}%0A%0A` +
+      `*Shukriya!*`;
+
+    // 3. WhatsApp link par bhej dena
+    window.open(`https://wa.me/${customer.phone}?text=${message}`, '_blank');
+  };
+
 
   const downloadInvoice = async () => {
     const element = invoiceRef.current;
@@ -448,22 +448,26 @@ const handleWhatsAppShare = () => {
                 <div className="grid grid-cols-3 gap-3 mt-4">
 
                   {/* Reminder Button */}
-                  {/* WhatsApp Share Link Button (Updated Reminder) */}
+                  {/* WhatsApp Share Link (Updated Reminder) */}
                   <Tooltip>
                     <TooltipTrigger asChild>
-                      <Button
-                        variant="outline"
-                        className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-300/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-slate-400 shadow-sm dark:border-white/15 dark:bg-[#0f172a] dark:text-slate-300 dark:hover:bg-white/5"
+                      <button
                         onClick={handleWhatsAppShare}
+                        className="group flex flex-col h-16 items-center justify-center text-[11px] font-semibold rounded-xl w-full transition-all duration-200 border border-slate-200/70 bg-white text-slate-600 hover:bg-slate-50 hover:border-emerald-500/50 hover:text-emerald-600 dark:bg-[#0f172a] dark:border-white/10 dark:text-slate-400 dark:hover:bg-white/5 shadow-sm"
                       >
-                        <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" className="transition-transform duration-200 group-hover:scale-110 mb-0.5">
-                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.414 0 .018 5.393 0 12.03c0 2.12.554 4.189 1.602 6.006L0 24l6.117-1.605a11.803 11.803 0 005.925 1.586h.005c6.635 0 12.032-5.396 12.035-12.032a11.762 11.762 0 00-3.441-8.518z" />
+                        <svg
+                          viewBox="0 0 24 24"
+                          width="18" height="18"
+                          fill="currentColor"
+                          className="transition-transform duration-200 group-hover:scale-110 mb-0.5 text-emerald-500"
+                        >
+                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.067 2.877 1.215 3.076.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
                         </svg>
-                        <span className="leading-none text-slate-600 dark:text-slate-300">Share Link</span>
-                      </Button>
+                        <span className="leading-none uppercase tracking-widest text-[9px]">Share</span>
+                      </button>
                     </TooltipTrigger>
-                    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                      <p>WhatsApp Live Khata Link</p>
+                    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[10px] px-3 py-1.5 shadow-xl">
+                      Hisaab Bhejein
                     </TooltipContent>
                   </Tooltip>
 
