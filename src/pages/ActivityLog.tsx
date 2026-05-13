@@ -64,57 +64,57 @@ const ActivityLog = () => {
             <div className="grid grid-cols-1 gap-3">
               {logs.map((log) => (
                 // Is line ko logs.map ke andar replace karein:
-                <div
-                  key={log.id}
-                  className="w-full bg-slate-50/50 dark:bg-white/[0.02] rounded-[1.5rem] p-4 md:p-5 border border-slate-200/60 dark:border-white/[0.05] shadow-sm hover:border-indigo-500/30 transition-all duration-300"
-                >
-                  <div className="flex items-center justify-between mb-3">
-                    <div className="flex items-center gap-3">
-                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200/50 dark:border-white/5 shadow-inner ${log.action_type === 'DELETE' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'}`}>
-                        {log.action_type === 'DELETE' ? <Trash2 size={20} /> : <Edit3 size={20} />}
-                      </div>
-                      <div>
-                        <p className="font-black text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight tracking-tight uppercase">
-                          {log.customer_name}
-                        </p>
-                        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 mt-0.5 uppercase tracking-widest">
-                          {format(new Date(log.created_at), 'dd MMM • hh:mm a')}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
+<div 
+  key={log.id} 
+  className="w-full bg-slate-50/50 dark:bg-white/[0.02] rounded-[1.5rem] p-4 md:p-5 border border-slate-200/60 dark:border-white/[0.05] shadow-sm hover:border-indigo-500/30 transition-all duration-300"
+>
+  <div className="flex items-center justify-between mb-3">
+    <div className="flex items-center gap-3">
+      <div className={`w-11 h-11 rounded-xl flex items-center justify-center border border-slate-200/50 dark:border-white/5 shadow-inner ${log.action_type === 'DELETE' ? 'bg-rose-500/10 text-rose-500' : 'bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'}`}>
+        {log.action_type === 'DELETE' ? <Trash2 size={20} /> : <Edit3 size={20} />}
+      </div>
+      <div>
+        <p className="font-black text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight tracking-tight uppercase">
+          {log.customer_name}
+        </p>
+        <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 mt-0.5 uppercase tracking-widest">
+          {format(new Date(log.created_at), 'dd MMM • hh:mm a')}
+        </p>
+      </div>
+    </div>
+  </div>
 
-                  <div className="pl-[56px]">
-                    <div className="text-sm font-black tracking-tight flex items-center flex-wrap gap-2">
-                      {log.action_type === 'DELETE' ? (
-                        <p className="text-slate-500 dark:text-slate-400">
-                          Hisaab delete kiya: <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span>
-                        </p>
-                      ) : (
-                        <div className="flex items-center gap-2">
-                          <span className="text-slate-400 dark:text-slate-600 line-through text-xs italic">Rs {log.old_data?.amount.toLocaleString()}</span>
-                          <ArrowRight size={12} className="text-slate-300 dark:text-white/10" />
-                          <span className="text-emerald-600 dark:text-emerald-400 text-base font-black">
-                            Rs {log.new_data?.amount.toLocaleString()}
-                          </span>
-                          <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-3 py-0.5 rounded-full border border-indigo-500/20 uppercase tracking-widest ml-2 font-black shadow-sm">
-                            Edited
-                          </span>
-                        </div>
-                      )}
-                    </div>
+  <div className="pl-[56px]">
+    <div className="text-sm font-black tracking-tight flex items-center flex-wrap gap-2">
+      {log.action_type === 'DELETE' ? (
+        <p className="text-slate-500 dark:text-slate-400">
+          Hisaab delete kiya: <span className="text-rose-500">Rs {log.old_data?.amount.toLocaleString()}</span>
+        </p>
+      ) : (
+        <div className="flex items-center gap-2">
+          <span className="text-slate-400 dark:text-slate-600 line-through text-xs italic">Rs {log.old_data?.amount.toLocaleString()}</span>
+          <ArrowRight size={12} className="text-slate-300 dark:text-white/10" />
+          <span className="text-emerald-600 dark:text-emerald-400 text-base font-black">
+            Rs {log.new_data?.amount.toLocaleString()}
+          </span>
+          <span className="text-[9px] bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 px-3 py-0.5 rounded-full border border-indigo-500/20 uppercase tracking-widest ml-2 font-black shadow-sm">
+            Edited
+          </span>
+        </div>
+      )}
+    </div>
 
-                    {/* Remarks - Matching the Customer Entry Remarks Style */}
-                    {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
-                      <div className="mt-3 p-2 px-3 bg-white/50 dark:bg-black/20 rounded-xl border border-slate-100 dark:border-white/[0.03] inline-flex items-center gap-2">
-                        <span className="text-[9px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-tighter">Tafseel:</span>
-                        <p className="text-[11px] font-bold italic text-slate-600 dark:text-slate-400 leading-tight">
-                          {log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+    {/* Remarks - Matching the Customer Entry Remarks Style */}
+    {(log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks) && (
+      <div className="mt-3 p-2 px-3 bg-white/50 dark:bg-black/20 rounded-xl border border-slate-100 dark:border-white/[0.03] inline-flex items-center gap-2">
+        <span className="text-[9px] font-black text-indigo-500 dark:text-indigo-400 uppercase tracking-tighter">Tafseel:</span>
+        <p className="text-[11px] font-bold italic text-slate-600 dark:text-slate-400 leading-tight">
+          {log.action_type === 'EDIT' ? log.new_data?.remarks : log.old_data?.remarks}
+        </p>
+      </div>
+    )}
+  </div>
+</div>
               ))}
             </div>
           )}
