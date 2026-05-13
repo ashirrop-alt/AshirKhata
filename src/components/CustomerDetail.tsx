@@ -294,18 +294,25 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
-const sendReminder = () => {
+const sendReminder = async () => {
+  if (!customer.phone) return;
+
+  // 1. Phone number clean karna (0 hata kar 92 lagana)
+  const cleanPhone = customer.phone.replace(/^0/, "92");
+
+  // 2. Live Link banana
   const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
-  
-  // totalBalance ki jagah 'total' use karein jo aapke code mein pehle se mojud hai
-  const message = `👋 *Assalam-o-Alaikum ${customer.name}* %0A%0A` +
-                  `Aapka kul udhaar: *Rs ${total.toLocaleString()}* 💰%0A%0A` +
-                  `*Dukaan:* ${displayShopName}%0A%0A` +
-                  `📝 Hisaab dekhne ke liye click karein:%0A` +
-                  `🔗 ${shareUrl}%0A%0A` +
+
+  // 3. New Professional & Simple Message
+  const message = `👋 *Assalam-o-Alaikum ${customer.name}* \n\n` +
+                  `Aapka kul udhaar: *Rs ${total.toLocaleString()}* 💰\n\n` +
+                  `*Dukaan:* ${displayShopName}\n\n` +
+                  `📝 Hisaab dekhne ke liye click karein:\n` +
+                  `🔗 ${shareUrl}\n\n` +
                   `*Shukriya!*`;
 
-  window.open(`https://wa.me/${customer.phone}?text=${message}`, '_blank');
+  // 4. DIRECT APP OPEN LOGIC (The magic line)
+  window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
 };
 
   // handleWhatsAppShare ko is se replace karein
