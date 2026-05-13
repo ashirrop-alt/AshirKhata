@@ -76,10 +76,22 @@ export default function PublicCustomerView() {
                     <a
                         href={`${window.location.origin}/signup`}
                         target="_blank"
-                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-xl text-[10px] font-black transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
+                        className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-3 md:px-4 py-1.5 md:py-2 rounded-xl transition-all active:scale-95 shadow-lg shadow-emerald-500/20"
                     >
-                        <Store size={14} className="opacity-90" />
-                        <span className="tracking-wider">FREE KHATA KHOLIYE</span>
+                        {/* Icon - Mobile par chota laptop par bada */}
+                        <div className="bg-white/20 p-1 rounded-md hidden xs:block">
+                            <Store size={14} className="text-white" />
+                        </div>
+
+                        {/* Two-line Text Logic */}
+                        <div className="flex flex-col items-center md:items-start leading-tight">
+                            <span className="text-[9px] md:text-[10px] font-black tracking-[0.2em] opacity-90">
+                                FREE
+                            </span>
+                            <span className="text-[10px] md:text-[11px] font-black tracking-wider">
+                                KHATA KHOLIYE
+                            </span>
+                        </div>
                     </a>
                 </div>
             </header>
