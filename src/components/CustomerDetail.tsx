@@ -294,13 +294,19 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
-  const sendReminder = async () => {
-    if (!customer.phone) return;
-    const cleanPhone = customer.phone.replace(/^0/, "92");
-    // Reminder hamesha total balance bhejega (all-time history)
-    const message = `*Assalam o Alaikum!* ✨\n\nAapka udhar *Rs ${total.toLocaleString()}* baqi hai. Meharbani kar ke jald ada kar dein.\n\n*Shukriya,*\n*${displayShopName}*\n\n_Sent via Khatify_`;
-    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-  };
+const sendReminder = () => {
+  const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
+  
+  // totalBalance ki jagah 'total' use karein jo aapke code mein pehle se mojud hai
+  const message = `👋 *Assalam-o-Alaikum ${customer.name}* %0A%0A` +
+                  `Aapka kul udhaar: *Rs ${total.toLocaleString()}* 💰%0A%0A` +
+                  `*Dukaan:* ${displayShopName}%0A%0A` +
+                  `📝 Hisaab dekhne ke liye click karein:%0A` +
+                  `🔗 ${shareUrl}%0A%0A` +
+                  `*Shukriya!*`;
+
+  window.open(`https://wa.me/${customer.phone}?text=${message}`, '_blank');
+};
 
   // handleWhatsAppShare ko is se replace karein
   const handleWhatsAppShare = () => {
