@@ -46,6 +46,7 @@ function App() {
           <Route path="/customer/:id" element={session ? <Index /> : <Navigate to="/login" />} />
           <Route path="*" element={<Navigate to="/" />} />
           <Route path="/activity" element={session ? <ActivityLog /> : <Navigate to="/login" />} />
+          <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>
