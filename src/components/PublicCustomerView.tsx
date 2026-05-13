@@ -27,16 +27,31 @@ export default function PublicCustomerView() {
   }, [shareId]);
 
   const downloadPDF = async () => {
-    const element = pdfRef.current;
-    if (!element) return;
-    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
-    const imgData = canvas.toDataURL('image/png');
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
-    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${customer.name}_Khatify.pdf`);
-  };
+  const element = pdfRef.current;
+  if (!element) return;
+
+  // Loading state ya alert dikha sakte hain kyunke isme thora waqt lagta hai
+  const canvas = await html2canvas(element, { 
+    scale: 1.5, // 2 se kam karke 1.5 kiya taake size chota ho
+    useCORS: true,
+    logging: false,
+    backgroundColor: "#ffffff" // PDF ka background saaf rakhega
+  });
+
+  const imgData = canvas.toDataURL('image/jpeg', 0.7); // PNG ki bajaye JPEG aur 70% quality (size drastically kam hoga)
+  const pdf = new jsPDF({
+    orientation: 'p',
+    unit: 'mm',
+    format: 'a4',
+    compress: true // PDF compression on
+  });
+
+  const pdfWidth = pdf.internal.pageSize.getWidth();
+  const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+
+  pdf.addImage(imgData, 'JPEG', 0, 0, pdfWidth, pdfHeight, undefined, 'FAST');
+  pdf.save(`${customer.name}_Khatify.pdf`);
+};
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-indigo-600"><Loader2 className="animate-spin" /></div>;
   if (!customer) return <div className="h-screen flex items-center justify-center font-bold text-rose-500">Link Invalid</div>;
