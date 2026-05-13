@@ -72,7 +72,7 @@ export default function PublicCustomerView() {
         <div className="max-w-xl mx-auto space-y-6">
           
           {/* TOP BOX - Balanced Size */}
-          <Card className="p-6 md:p-8 bg-indigo-600 border-none shadow-xl rounded-[2rem] relative overflow-hidden text-white max-w-[450px] md:max-w-[520px] mx-auto">
+          <Card className="p-6 md:p-6 bg-indigo-600 border-none shadow-xl rounded-[2rem] relative overflow-hidden text-white max-w-[450px] md:max-w-[550px] mx-auto">
             <div className="flex justify-between items-start relative z-10">
               <div>
                 <p className="text-indigo-100/70 text-[10px] font-black uppercase tracking-[0.2em] mb-1.5">Kul Baqaya Rakam</p>
