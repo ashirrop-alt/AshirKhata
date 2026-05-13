@@ -9,7 +9,7 @@ import html2canvas from 'html2canvas';
 export default function PublicCustomerView() {
   const { shareId } = useParams();
   const [customer, setCustomer] = useState<any>(null);
-  const [shopName, setShopName] = useState("Khatify User");
+  const [shopName, setShopName] = useState("Fazal Baksh 2.0");
   const [loading, setLoading] = useState(true);
   const pdfRef = useRef<HTMLDivElement>(null);
 
@@ -18,8 +18,8 @@ export default function PublicCustomerView() {
       const { data } = await supabase.from('customers').select('*').eq('share_id', shareId).single();
       if (data) {
         setCustomer(data);
-        const { data: userData } = await supabase.from('profiles').select('shop_name').eq('id', data.user_id).single();
-        if (userData?.shop_name) setShopName(userData.shop_name);
+        const { data: profile } = await supabase.from('profiles').select('shop_name').eq('id', data.user_id).single();
+        if (profile?.shop_name) setShopName(profile.shop_name);
       }
       setLoading(false);
     }
@@ -29,16 +29,13 @@ export default function PublicCustomerView() {
   const downloadPDF = async () => {
     const element = pdfRef.current;
     if (!element) return;
-    
-    const canvas = await html2canvas(element, { scale: 2 });
+    const canvas = await html2canvas(element, { scale: 2, useCORS: true });
     const imgData = canvas.toDataURL('image/png');
     const pdf = new jsPDF('p', 'mm', 'a4');
-    const imgProps = pdf.getImageProperties(imgData);
     const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
-    
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${customer.name}_Statement.pdf`);
+    pdf.save(`${customer.name}_Khatify.pdf`);
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-indigo-600"><Loader2 className="animate-spin" /></div>;
@@ -48,69 +45,80 @@ export default function PublicCustomerView() {
     tx.type === "udhar" ? acc + tx.amount : acc - tx.amount, 0) || 0;
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 font-sans">
+    <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100">
       
-      {/* NAVBAR - Same Height as before */}
-      <header className="h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 sticky top-0 z-50">
+      {/* RESTORED NAVBAR STYLE */}
+      <header className="h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto h-full flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Store className="w-5 h-5 text-indigo-600" />
-            <h1 className="text-sm font-black tracking-tighter uppercase">{shopName}</h1>
+          <div className="flex items-center gap-2.5">
+            <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
+              <Store className="w-4 h-4 md:w-5 md:h-5 text-white" />
+            </div>
+            <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white uppercase">
+              {shopName}
+            </h1>
           </div>
-          <button onClick={downloadPDF} className="p-2 bg-indigo-600 text-white rounded-full shadow-lg active:scale-90 transition-all">
-            <Download size={18} />
+          <button 
+            onClick={downloadPDF}
+            className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl text-xs font-black transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+          >
+            <Download size={14} />
+            <span>PDF</span>
           </button>
         </div>
       </header>
 
-      {/* Main Content Area */}
-      <main className="p-4 md:p-6 pb-20">
-        <div className="max-w-lg mx-auto space-y-6" ref={pdfRef}>
+      <main className="p-4 md:p-8" ref={pdfRef}>
+        <div className="max-w-xl mx-auto space-y-6">
           
-          {/* Compact Balance Card */}
-          <Card className="p-6 bg-indigo-600 text-white border-none shadow-2xl rounded-[1.5rem] overflow-hidden relative">
-            <div className="relative z-10">
-              <p className="text-indigo-100 text-[10px] font-black uppercase tracking-widest opacity-80">Kul Baqaya</p>
-              <h2 className="text-3xl font-black mt-1">Rs {total.toLocaleString()}</h2>
-              <div className="mt-4 flex items-center gap-2 text-[11px] font-bold bg-white/10 w-fit px-3 py-1 rounded-full">
-                <FileText size={12} /> {customer.name}
+          {/* RESTORED ORIGINAL BOX STYLE (But Compact & Indigo) */}
+          <Card className="p-6 md:p-8 bg-indigo-600 dark:bg-indigo-600 border-none shadow-xl rounded-[2rem] relative overflow-hidden text-white">
+            <div className="flex justify-between items-start relative z-10">
+              <div>
+                <p className="text-indigo-100/70 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Kul Baqaya Rakam</p>
+                <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
+                  <span className="text-xl md:text-2xl mr-1 opacity-80 font-bold">Rs</span>
+                  {total.toLocaleString()}
+                </h2>
+                <div className="mt-4 pt-4 border-t border-white/10">
+                   <p className="text-xs md:text-sm font-black uppercase tracking-widest text-indigo-100">Grahak: {customer.name}</p>
+                </div>
+              </div>
+              {/* Box Icon Re-added */}
+              <div className="opacity-20">
+                <FileText size={64} className="md:w-20 md:h-20" />
               </div>
             </div>
-            {/* Design Circle */}
-            <div className="absolute -right-10 -bottom-10 w-32 h-32 bg-white/10 rounded-full blur-2xl" />
           </Card>
 
-          {/* History List */}
+          {/* Transactions List */}
           <div className="space-y-3">
-            <div className="flex items-center justify-between px-2">
-              <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Hisaab ki Tafseel</h3>
-              <span className="text-[10px] font-bold text-indigo-500 bg-indigo-50 dark:bg-indigo-500/10 px-2 py-0.5 rounded-md">LIVE</span>
-            </div>
+            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Hisaab ki Tafseel</h3>
             
             {customer.transactions?.slice().reverse().map((tx: any) => (
-              <div key={tx.id} className="bg-white dark:bg-white/[0.02] p-4 rounded-xl border border-slate-100 dark:border-white/5 flex justify-between items-center transition-all shadow-sm">
+              <div key={tx.id} className="bg-white dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200/50 dark:border-white/10 flex justify-between items-center shadow-sm">
                 <div className="flex items-center gap-3">
-                  <div className={`p-2 rounded-lg ${tx.type === 'udhar' ? 'bg-rose-50 dark:bg-rose-500/10' : 'bg-emerald-50 dark:bg-emerald-500/10'}`}>
-                    {tx.type === 'udhar' ? <ArrowUpRight className="text-rose-600" size={16} /> : <ArrowDownLeft className="text-emerald-500" size={16} />}
+                  <div className={`p-2 rounded-xl ${tx.type === 'udhar' ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
+                    {tx.type === 'udhar' ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
                   </div>
                   <div>
-                    <p className="text-[10px] text-slate-400 font-bold">{new Date(tx.date).toLocaleDateString('en-GB')}</p>
-                    <p className="font-black text-xs text-slate-700 dark:text-slate-200">{tx.remarks || "Bila Tafseel"}</p>
-                    <span className={`text-[9px] font-black uppercase ${tx.type === 'udhar' ? 'text-rose-500' : 'text-emerald-500'}`}>
+                    <p className="text-[9px] text-slate-400 font-black mb-0.5">{new Date(tx.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                    <p className="font-black text-sm text-slate-900 dark:text-slate-100 leading-tight">{tx.remarks || "Bila Tafseel"}</p>
+                    <span className={`text-[8px] font-black uppercase tracking-tighter ${tx.type === 'udhar' ? 'text-rose-500' : 'text-emerald-500'}`}>
                       {tx.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila'}
                     </span>
                   </div>
                 </div>
-                <div className={`font-black text-sm ${tx.type === 'udhar' ? 'text-rose-600' : 'text-emerald-500'}`}>
+                <div className={`text-base font-black ${tx.type === 'udhar' ? 'text-rose-600' : 'text-emerald-500'}`}>
                   {tx.type === 'udhar' ? '+' : '-'} {tx.amount.toLocaleString()}
                 </div>
               </div>
             ))}
           </div>
 
-          <div className="text-center pt-8 border-t border-slate-100 dark:border-white/5">
-            <p className="text-[9px] text-slate-400 font-black uppercase tracking-widest">
-              Powered by Khatify.ashir • Verified Link
+          <div className="text-center pt-10 opacity-30">
+            <p className="text-[9px] text-slate-400 font-black uppercase tracking-[0.3em]">
+                Verified by Khatify • ashir-khata.vercel.app
             </p>
           </div>
         </div>
