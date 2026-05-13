@@ -35,7 +35,7 @@ export default function PublicCustomerView() {
     const pdfWidth = pdf.internal.pageSize.getWidth();
     const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
     pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
-    pdf.save(`${customer.name}_Khatify.pdf`);
+    pdf.save(`${customer.name}_Statement.pdf`);
   };
 
   if (loading) return <div className="h-screen flex items-center justify-center bg-slate-50 dark:bg-[#020617] text-indigo-600"><Loader2 className="animate-spin" /></div>;
@@ -47,7 +47,7 @@ export default function PublicCustomerView() {
   return (
     <div className="min-h-screen bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100">
       
-      {/* RESTORED NAVBAR STYLE */}
+      {/* NAVBAR */}
       <header className="h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 sticky top-0 z-50">
         <div className="max-w-4xl mx-auto h-full flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -71,22 +71,21 @@ export default function PublicCustomerView() {
       <main className="p-4 md:p-8" ref={pdfRef}>
         <div className="max-w-xl mx-auto space-y-6">
           
-          {/* RESTORED ORIGINAL BOX STYLE (But Compact & Indigo) */}
-          <Card className="p-6 md:p-8 bg-indigo-600 dark:bg-indigo-600 border-none shadow-xl rounded-[2rem] relative overflow-hidden text-white">
+          {/* COMPACT BOX - Laptop Size Reduced */}
+          <Card className="p-6 md:p-6 lg:max-w-[90%] lg:mx-auto bg-indigo-600 border-none shadow-xl rounded-[2rem] relative overflow-hidden text-white">
             <div className="flex justify-between items-start relative z-10">
               <div>
                 <p className="text-indigo-100/70 text-[10px] font-black uppercase tracking-[0.2em] mb-1">Kul Baqaya Rakam</p>
-                <h2 className="text-4xl md:text-5xl font-black tracking-tighter">
-                  <span className="text-xl md:text-2xl mr-1 opacity-80 font-bold">Rs</span>
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter">
+                  <span className="text-lg md:text-xl mr-1 opacity-80 font-bold">Rs</span>
                   {total.toLocaleString()}
                 </h2>
-                <div className="mt-4 pt-4 border-t border-white/10">
-                   <p className="text-xs md:text-sm font-black uppercase tracking-widest text-indigo-100">Grahak: {customer.name}</p>
+                <div className="mt-3 pt-3 border-t border-white/10">
+                   <p className="text-[10px] md:text-xs font-black uppercase tracking-widest text-indigo-100">Grahak: {customer.name}</p>
                 </div>
               </div>
-              {/* Box Icon Re-added */}
               <div className="opacity-20">
-                <FileText size={64} className="md:w-20 md:h-20" />
+                <FileText className="w-14 h-14 md:w-16 md:h-16" />
               </div>
             </div>
           </Card>
@@ -96,17 +95,19 @@ export default function PublicCustomerView() {
             <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Hisaab ki Tafseel</h3>
             
             {customer.transactions?.slice().reverse().map((tx: any) => (
-              <div key={tx.id} className="bg-white dark:bg-white/[0.03] p-4 rounded-2xl border border-slate-200/50 dark:border-white/10 flex justify-between items-center shadow-sm">
+              <div key={tx.id} className="bg-white dark:bg-white/[0.03] p-3.5 rounded-2xl border border-slate-200/50 dark:border-white/10 flex justify-between items-center shadow-sm">
                 <div className="flex items-center gap-3">
                   <div className={`p-2 rounded-xl ${tx.type === 'udhar' ? 'bg-rose-500/10 text-rose-500' : 'bg-emerald-500/10 text-emerald-500'}`}>
-                    {tx.type === 'udhar' ? <ArrowUpRight size={18} /> : <ArrowDownLeft size={18} />}
+                    {tx.type === 'udhar' ? <ArrowUpRight size={16} /> : <ArrowDownLeft size={16} />}
                   </div>
                   <div>
-                    <p className="text-[9px] text-slate-400 font-black mb-0.5">{new Date(tx.date).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                    <div className="flex items-center gap-2 mb-0.5">
+                       <span className={`text-[9px] font-black px-1.5 py-0.5 rounded uppercase tracking-tighter ${tx.type === 'udhar' ? 'bg-rose-500 text-white' : 'bg-emerald-500 text-white'}`}>
+                        {tx.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila'}
+                      </span>
+                      <p className="text-[9px] text-slate-400 font-bold">{new Date(tx.date).toLocaleDateString('en-GB')}</p>
+                    </div>
                     <p className="font-black text-sm text-slate-900 dark:text-slate-100 leading-tight">{tx.remarks || "Bila Tafseel"}</p>
-                    <span className={`text-[8px] font-black uppercase tracking-tighter ${tx.type === 'udhar' ? 'text-rose-500' : 'text-emerald-500'}`}>
-                      {tx.type === 'udhar' ? 'Udhar Diya' : 'Paisa Mila'}
-                    </span>
                   </div>
                 </div>
                 <div className={`text-base font-black ${tx.type === 'udhar' ? 'text-rose-600' : 'text-emerald-500'}`}>
