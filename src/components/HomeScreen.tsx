@@ -175,7 +175,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     <div className="h-screen flex flex-col bg-slate-50 dark:bg-[#020617] text-slate-900 dark:text-slate-100 overflow-hidden transition-colors duration-500">
 
       <header className="flex-none h-16 md:h-[68px] border-b border-slate-200 dark:border-white/[0.05] bg-white dark:bg-[#0f172a] px-4 md:px-6 z-30 shadow-sm transition-all">
-       <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-x-2">
+        <div className="max-w-7xl mx-auto h-full flex items-center justify-between gap-x-2">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-indigo-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
               <input maxLength={18} value={tempName} onChange={e => setTempName(e.target.value)} className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white"
@@ -191,64 +191,71 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
               </div>
-              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[145px] md:max-w-none ml-1">
-  {shopName || "Apni Dukaan"}
-</h1>
+              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[135px] md:max-w-none ml-1">
+                {shopName || "Apni Dukaan"}
+              </h1>
             </button>
           )}
 
           <TooltipProvider delayDuration={100}>
-            <div className="flex items-center gap-1 md:gap-1.8 flex-shrink-0">
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <div className="flex items-center justify-center cursor-pointer">
-                    <ModeToggle />
-                  </div>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="p-1.8 md:p-2.5 bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Theme Badlein</p>
-                </TooltipContent>
-              </Tooltip>
-              {/* --- Backup Button Tooltip --- */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={handleExportBackup}
-                    className="p-1.8 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
-                  >
-                    <Download className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Backup Download Karein</p>
-                </TooltipContent>
-              </Tooltip>
-              {/* --- Activity History Button --- */}
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={() => window.location.href = '/activity'}
-                    className="p-1.8 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
-                  >
-                    <History className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Activity History</p>
-                </TooltipContent>
-              </Tooltip>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <button onClick={() => setLogoutDialogOpen(true)} 
-                  className="p-1.8 md:p-2.5 rounded-xl scale-90 md:scale-100 bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
-                    <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
-                  </button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
-                  <p>Logout Karein</p>
-                </TooltipContent>
-              </Tooltip>
-            </div>
+            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+  {/* --- Theme Toggle --- */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <div className="flex items-center justify-center cursor-pointer p-1.5 md:p-2 scale-90 md:scale-100 transition-all">
+        <ModeToggle />
+      </div>
+    </TooltipTrigger>
+    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+      <p>Theme Badlein</p>
+    </TooltipContent>
+  </Tooltip>
+
+  {/* --- Backup Button --- */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button
+        onClick={handleExportBackup}
+        className="p-2 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group scale-90 md:scale-100"
+      >
+        <Download className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+      </button>
+    </TooltipTrigger>
+    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+      <p>Backup Download Karein</p>
+    </TooltipContent>
+  </Tooltip>
+
+  {/* --- Activity History Button --- */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button
+        onClick={() => window.location.href = '/activity'}
+        className="p-2 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group scale-90 md:scale-100"
+      >
+        <History className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+      </button>
+    </TooltipTrigger>
+    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+      <p>Activity History</p>
+    </TooltipContent>
+  </Tooltip>
+
+  {/* --- Logout Button --- */}
+  <Tooltip>
+    <TooltipTrigger asChild>
+      <button 
+        onClick={() => setLogoutDialogOpen(true)}
+        className="p-2 md:p-2.5 rounded-xl scale-90 md:scale-100 bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center"
+      >
+        <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
+      </button>
+    </TooltipTrigger>
+    <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+      <p>Logout Karein</p>
+    </TooltipContent>
+  </Tooltip>
+</div>
           </TooltipProvider>
         </div>
       </header>
