@@ -189,14 +189,13 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
               </div>
-              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors">
-                {shopName || "Apni Dukaan"}
+             <h1 className="text-base md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[130px] sm:max-w-[200px] md:max-w-none">
               </h1>
             </button>
           )}
 
           <TooltipProvider delayDuration={100}>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0.5 md:gap-1.5 flex-shrink-0">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center justify-center cursor-pointer">
@@ -237,7 +236,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               </Tooltip>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <button onClick={() => setLogoutDialogOpen(true)} className="p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
+                  <button onClick={() => setLogoutDialogOpen(true)} className="p-2.5 rounded-xl scale-90 md:scale-100 bg-transparent text-black/60 dark:text-white/70 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-500/10 transition-all active:scale-95 flex items-center justify-center">
                     <LogOut className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
                   </button>
                 </TooltipTrigger>
