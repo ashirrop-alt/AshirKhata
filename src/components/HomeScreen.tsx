@@ -178,11 +178,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex items-center justify-between">
           {editingShop ? (
             <form onSubmit={handleSaveShopName} className="flex items-center gap-2 bg-white dark:bg-slate-800 p-1.5 px-3 rounded-xl border border-indigo-500/30 shadow-sm animate-in slide-in-from-left-2 duration-300">
-              <input
-                maxLength={18}
-                value={tempName}
-                onChange={e => setTempName(e.target.value)}
-                className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white"
+              <input maxLength={18} value={tempName} onChange={e => setTempName(e.target.value)} className="h-8 w-32 md:w-48 bg-transparent border-none outline-none text-sm font-bold text-slate-900 dark:text-white"
                 autoFocus
               />
               <div className="flex items-center gap-1 border-l border-slate-200 dark:border-slate-700 pl-1">
@@ -195,14 +191,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
               </div>
-              <h1 className="text-[17px] md:text-xl font-black tracking-tight text-slate-900 dark:text-white truncate max-w-[150px] md:max-w-none ml-1 transition-all">
+              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[120px] md:max-w-none ml-1">
                 {shopName || "Apni Dukaan"}
               </h1>
             </button>
           )}
 
           <TooltipProvider delayDuration={100}>
-            <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+            <div className="flex items-center gap-0 md:gap-1.5 flex-shrink-0">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center justify-center cursor-pointer">
