@@ -191,21 +191,21 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
               </div>
-              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[110px] md:max-w-none ml-1">
+              <h1 className="text-lg md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate max-w-[130px] md:max-w-none ml-1">
   {shopName || "Apni Dukaan"}
 </h1>
             </button>
           )}
 
           <TooltipProvider delayDuration={100}>
-            <div className="flex items-center gap-0 md:gap-1.5 flex-shrink-0">
+            <div className="flex items-center gap-1 md:gap-1.8 flex-shrink-0">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <div className="flex items-center justify-center cursor-pointer">
                     <ModeToggle />
                   </div>
                 </TooltipTrigger>
-                <TooltipContent side="bottom" className="p-1.5 md:p-2.5 bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
+                <TooltipContent side="bottom" className="p-1.8 md:p-2.5 bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
                   <p>Theme Badlein</p>
                 </TooltipContent>
               </Tooltip>
@@ -214,7 +214,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 <TooltipTrigger asChild>
                   <button
                     onClick={handleExportBackup}
-                    className="p-1.5 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
+                    className="p-1.8 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
                   >
                     <Download className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
                   </button>
@@ -228,7 +228,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                 <TooltipTrigger asChild>
                   <button
                     onClick={() => window.location.href = '/activity'}
-                    className="p-1.5 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
+                    className="p-1.8 md:p-2.5 rounded-xl bg-transparent text-black/60 dark:text-white/70 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-500/10 transition-all active:scale-95 flex items-center justify-center group"
                   >
                     <History className="w-[18.5px] h-[18.5px]" strokeWidth={2.2} />
                   </button>
