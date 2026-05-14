@@ -256,7 +256,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
   };
 
   const shareFullHistory = () => {
-    // 1. Report ka naam decide karein (Roman Urdu with context)
+    // 1. Report ka naam decide karein
     const reportLabel =
       filterType === 'today' ? "Aaj ka Hisaab (Today's Summary)" :
         filterType === 'thisMonth' ? "Is Mahine ki Report (Monthly)" :
@@ -268,52 +268,60 @@ export function CustomerDetail({ customer, onBack }: Props) {
     message += `Customer: *${customer.name}*\n`;
     message += `--------------------------\n`;
 
-    // 3. Transactions List
+    // 3. Transactions List (Jo filtered hain)
     filteredTransactions.forEach((t) => {
       const note = t.remarks ? ` _(${t.remarks})_` : "";
       const typeIcon = t.type === 'udhar' ? '🟥' : '🟩';
       const typeText = t.type === 'udhar' ? 'Udhar' : 'Mila';
-
       message += `${formatDate(t.date)}: Rs ${t.amount.toLocaleString()} ${typeText} ${typeIcon}${note}\n`;
     });
 
-    // 4. Net Balance Calculation
+    // 4. Double Balance Calculation (Confusion khatam karne ke liye)
     const filteredTotal = filteredTransactions.reduce((acc, tx) => {
       return tx.type === "udhar" ? acc + tx.amount : acc - tx.amount;
     }, 0);
 
     message += `--------------------------\n`;
-    message += `*Baqaya Rakam: Rs ${filteredTotal.toLocaleString()}* 💰\n\n`;
 
-    // 5. Aapka Site Link (Vercel wala link yahan add kiya hai)
+    // Agar filter laga hai toh "Period Total" dikhayein
+    if (filterType !== 'all') {
+      message += `*Is Period ka Total:* Rs ${filteredTotal.toLocaleString()} 📈\n`;
+    }
+
+    // Hamesha Asli Kul Baqaya (Total) dikhayein
+    message += `*Kul Baqaya (Total Balance):* *Rs ${total.toLocaleString()}* 💰\n\n`;
+
+    // 5. Live Link aur Branding
+    const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
+    message += `🔗 *Pura aur taza hisaab yahan dekhein:* \n${shareUrl}\n\n`;
     message += `_Powered by ashir-khata.vercel.app_`;
 
-    // 6. WhatsApp Redirect
+    // 6. WhatsApp Redirect (Direct App Open)
     const cleanPhone = customer.phone.replace(/^0/, "92");
     window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
   };
 
   // ✅ YE WALA FUNCTION WAPIS ADD KAREIN
-const sendReminder = async () => {
-  if (!customer.phone) return;
+  const sendReminder = async () => {
+    if (!customer.phone) return;
 
-  // 1. Phone number clean karna (0 hata kar 92 lagana)
-  const cleanPhone = customer.phone.replace(/^0/, "92");
+    // 1. Phone number clean karna (0 hata kar 92 lagana)
+    const cleanPhone = customer.phone.replace(/^0/, "92");
 
-  // 2. Live Link banana
-  const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
+    // 2. Live Link banana
+    const shareUrl = `${window.location.origin}/view/${customer.share_id}`;
 
-  // 3. New Professional & Simple Message
-  const message = `👋 *Assalam-o-Alaikum ${customer.name}* \n\n` +
-                  `Aapka kul udhaar: *Rs ${total.toLocaleString()}* 💰\n\n` +
-                  `*Dukaan:* ${displayShopName}\n\n` +
-                  `📝 Hisaab dekhne ke liye click karein:\n` +
-                  `🔗 ${shareUrl}\n\n` +
-                  `*Shukriya!*`;
+    // 3. New Professional & Simple Message
+    const message = `👋 *Assalam-o-Alaikum ${customer.name}* \n\n` +
+      `Aapka kul udhaar: *Rs ${total.toLocaleString()}* 💰\n\n` +
+      `*Dukaan:* ${displayShopName}\n\n` +
+      `📝 Hisaab dekhne ke liye click karein:\n` +
+      `🔗 ${shareUrl}\n\n` +
+      `*Shukriya!*`;
 
-  // 4. DIRECT APP OPEN LOGIC (The magic line)
-  window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
-};
+    // 4. DIRECT APP OPEN LOGIC (The magic line)
+    window.location.href = `whatsapp://send?phone=${cleanPhone}&text=${encodeURIComponent(message)}`;
+  };
 
   // handleWhatsAppShare ko is se replace karein
   const handleWhatsAppShare = () => {
