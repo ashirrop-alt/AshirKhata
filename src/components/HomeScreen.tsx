@@ -189,7 +189,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
               <div className="bg-indigo-600 p-2 rounded-lg shadow-lg shadow-indigo-500/30">
                 <Store className="w-4 h-4 md:w-4.5 md:h-4.5 text-white" />
               </div>
-             <h1 className="text-base md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate w-full max-w-[130px] sm:max-w-[200px] md:max-w-none ml-1">
+              <h1 className="text-base md:text-xl font-black tracking-tight text-slate-900 dark:text-white group-hover:text-indigo-600 transition-colors truncate w-full max-w-[130px] sm:max-w-[200px] md:max-w-none ml-1">
+                {shopName || "Apni Dukaan"}
               </h1>
             </button>
           )}
