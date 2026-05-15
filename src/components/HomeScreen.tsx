@@ -153,16 +153,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        // 1. Dono dates ko milliseconds mein lein
         const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
         const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
 
-        // 2. Comparison (Latest upar)
         if (dateB !== dateA) {
           return dateB - dateA;
         }
-
-        // 3. Agar date barabar ho (tie-breaker)
         return b.id.localeCompare(a.id);
       }
       if (sortType === 'alphabetical') {
