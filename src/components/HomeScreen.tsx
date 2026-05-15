@@ -153,8 +153,20 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        // Asli Naya Customer: Registration date (created_at) ki bunyaad par
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        return customers.slice().sort((a, b) => {
+          // 1. Dono dates ko numbers (milliseconds) mein convert karein
+          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+
+          // 2. Agar date mil rahi hai toh comparison karein
+          if (dateB !== dateA) {
+            return dateB - dateA; // Latest date hamesha upar
+          }
+
+          // 3. Agar dates bilkul barabar hain (seconds tak), toh fallback to ID
+          // Taake sequence hamesha predictable rahe
+          return b.id.localeCompare(a.id);
+        });
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
