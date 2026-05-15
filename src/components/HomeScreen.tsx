@@ -71,9 +71,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
   // ✅ Labels ko short kar diya hai
   const sortOptions = [
-    { id: 'all', label: 'Sab Dekhein' },
-    { id: 'high_balance', label: 'Zada Udhar' },
-    { id: 'recent', label: 'Naye Customers' },
+    { id: 'all', label: 'Saray Customers' },
+    { id: 'high_balance', label: 'Ziada Udhar' },
     { id: 'stale', label: 'Purana Udhar' },
     { id: 'alphabetical', label: 'A to Z' },
   ];
@@ -151,10 +150,6 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       }
       if (sortType === 'high_balance') {
         return getCustomerTotal(b) - getCustomerTotal(a);
-      }
-      if (sortType === 'recent') {
-        // Asli Naya Customer: Registration date (created_at) ki bunyaad par
-        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);

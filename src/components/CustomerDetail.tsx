@@ -70,10 +70,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const displayShopName = data?.shopName || savedShopName || "Khatify User";
 
   const filterOptions = [
-    { id: 'all', label: 'Sub Dekhein' },
+    { id: 'all', label: 'Saari Entries' },
     { id: 'today', label: 'Aaj Ka' },
     { id: 'thisMonth', label: 'Is Mahine' },
-    { id: 'custom', label: 'Tarikh Chunien' },
+    { id: 'custom', label: 'Tareekh Chunein' },
   ];
 
   // 4. EFFECTS
