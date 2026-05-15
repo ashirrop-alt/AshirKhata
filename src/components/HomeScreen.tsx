@@ -153,9 +153,8 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        // Ye logic hamesha list mein niche wale bande ko upar dikhayegi
-        // Bina kisi date ya database column ke
-        return customers.indexOf(b) - customers.indexOf(a);
+        // Asli Naya Customer: Registration date (created_at) ki bunyaad par
+        return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);

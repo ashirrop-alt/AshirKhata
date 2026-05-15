@@ -13,6 +13,7 @@ export interface Customer {
   name: string;
   phone: string;
   transactions: Transaction[];
+  created_at: string;
 }
 
 export interface AppData {
