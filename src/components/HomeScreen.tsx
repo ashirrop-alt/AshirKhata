@@ -153,20 +153,17 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        return customers.slice().sort((a, b) => {
-          // 1. Dono dates ko numbers (milliseconds) mein convert karein
-          const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-          const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        // 1. Dono dates ko milliseconds mein lein
+        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
+        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
 
-          // 2. Agar date mil rahi hai toh comparison karein
-          if (dateB !== dateA) {
-            return dateB - dateA; // Latest date hamesha upar
-          }
+        // 2. Comparison (Latest upar)
+        if (dateB !== dateA) {
+          return dateB - dateA;
+        }
 
-          // 3. Agar dates bilkul barabar hain (seconds tak), toh fallback to ID
-          // Taake sequence hamesha predictable rahe
-          return b.id.localeCompare(a.id);
-        });
+        // 3. Agar date barabar ho (tie-breaker)
+        return b.id.localeCompare(a.id);
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
