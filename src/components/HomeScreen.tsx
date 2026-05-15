@@ -153,13 +153,22 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         return getCustomerTotal(b) - getCustomerTotal(a);
       }
       if (sortType === 'recent') {
-        const dateA = a.created_at ? new Date(a.created_at).getTime() : 0;
-        const dateB = b.created_at ? new Date(b.created_at).getTime() : 0;
+        // Safe Date Parsing Logic
+        const getTimeSafe = (dateStr: any) => {
+          if (!dateStr) return 0;
+          const date = new Date(dateStr);
+          return isNaN(date.getTime()) ? 0 : date.getTime();
+        };
 
-        if (dateB !== dateA) {
-          return dateB - dateA;
+        const timeA = getTimeSafe(a.created_at);
+        const timeB = getTimeSafe(b.created_at);
+
+        if (timeB !== timeA) {
+          return timeB - timeA; // Latest pehle
         }
-        return b.id.localeCompare(a.id);
+
+        // Tie-breaker taake stability rahe
+        return (b.id || "").localeCompare(a.id || "");
       }
       if (sortType === 'alphabetical') {
         return a.name.localeCompare(b.name);
