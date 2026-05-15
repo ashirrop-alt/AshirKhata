@@ -132,49 +132,51 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }, []);
 
   // ✅ PROFESSIONAL SORTING LOGIC (Fixed for New Customers)
-  const filtered = customers
-    .filter(c => {
-      const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
+  const filtered = customers.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase());
 
-      if (sortType === 'stale') {
-        const thirtyDaysAgo = new Date().getTime() - (30 * 24 * 60 * 60 * 1000);
-        const lastActivity = getLastActivityDate(c);
-        return matchesSearch && lastActivity < thirtyDaysAgo && getCustomerTotal(c) > 0;
-      }
+    if (sortType === 'stale') {
+      const thirtyDaysAgo = new Date().getTime() - (30 * 24 * 60 * 60 * 1000);
+      const lastActivity = getLastActivityDate(c);
+      return matchesSearch && lastActivity < thirtyDaysAgo && getCustomerTotal(c) > 0;
+    }
 
-      return matchesSearch;
-    })
-    .sort((a, b) => {
-      if (sortType === 'all') {
-        // Default: Akhri transaction ki date par
-        return getLastActivityDate(b) - getLastActivityDate(a);
-      }
-      if (sortType === 'high_balance') {
-        return getCustomerTotal(b) - getCustomerTotal(a);
-      }
-      if (sortType === 'recent') {
-        // Safe Date Parsing Logic
-        const getTimeSafe = (dateStr: any) => {
-          if (!dateStr) return 0;
-          const date = new Date(dateStr);
-          return isNaN(date.getTime()) ? 0 : date.getTime();
-        };
+    return matchesSearch;
+  }); // <--- Ye bracket aur semicolon lagana zaroori tha
 
-        const timeA = getTimeSafe(a.created_at);
-        const timeB = getTimeSafe(b.created_at);
+  // 1. Function sort se bahar
+  const getTimeSafe = (dateStr: any) => {
+    if (!dateStr) return 0;
+    const date = new Date(dateStr);
+    return isNaN(date.getTime()) ? 0 : date.getTime();
+  };
 
-        if (timeB !== timeA) {
-          return timeB - timeA; // Latest pehle
-        }
+  // 2. Ab filtered array ko sort karein
+  const sorted = [...filtered].sort((a, b) => { // Maine [...] use kiya hai taake original list disturb na ho
+    if (sortType === 'all') {
+      return getLastActivityDate(b) - getLastActivityDate(a);
+    }
 
-        // Tie-breaker taake stability rahe
-        return (b.id || "").localeCompare(a.id || "");
+    if (sortType === 'high_balance') {
+      return getCustomerTotal(b) - getCustomerTotal(a);
+    }
+
+    if (sortType === 'recent') {
+      const timeA = getTimeSafe(a.created_at);
+      const timeB = getTimeSafe(b.created_at);
+
+      if (timeB !== timeA) {
+        return timeB - timeA;
       }
-      if (sortType === 'alphabetical') {
-        return a.name.localeCompare(b.name);
-      }
-      return 0;
-    });
+      return (b.id || "").localeCompare(a.id || "");
+    }
+
+    if (sortType === 'alphabetical') {
+      return a.name.localeCompare(b.name);
+    }
+
+    return 0;
+  });
 
   if (isLoading) {
     return (
