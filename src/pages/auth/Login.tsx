@@ -3,21 +3,27 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
-// Eye icons import karein
 import { Eye, EyeOff } from 'lucide-react'; 
 
 export default function Login() {
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState(''); // Mobile number login state
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  // Password dikhane ke liye state
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] = useState(false); // Login par default hidden hi behtar hai
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) alert(error.message);
+
+    // Signup wale formatted format mein generate karein taake match ho jaye
+    const formattedEmail = `${phone.trim()}@khatify.local`;
+
+    const { error } = await supabase.auth.signInWithPassword({ 
+      email: formattedEmail, 
+      password 
+    });
+
+    if (error) alert("Mobile number ya password theek nahi hai!");
     else window.location.href = '/';
     setLoading(false);
   };
@@ -32,38 +38,39 @@ export default function Login() {
             Khati<span className="text-indigo-600">fy</span>
           </h1>
           <p className="text-sm text-slate-500 mt-2 font-medium">
-            Welcome back! Sign in to continue.
+            Khush Aamdeed! Log in karke apna khata chalayein.
           </p>
         </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
-          {/* Email Field */}
+          {/* Mobile Number Field */}
           <div className="space-y-1.5">
-            <label className="text-sm font-bold text-slate-700 ml-1">Email Address</label>
+            <label className="text-sm font-bold text-slate-700 ml-1">Mobile Number</label>
             <Input
-              type="email"
-              placeholder="you@example.com"
+              type="tel"
+              placeholder="03001234567"
               className="h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>
 
-          {/* Password Field */}
+          {/* Password Field with Custom Support Trigger */}
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
               <label className="text-sm font-bold text-slate-700">Password</label>
-              <button
-                type="button"
-                onClick={() => alert("Password reset feature jald aa raha hai! Filhal naya account bana lein ya purana password yaad karein. 😊")}
-                className="text-xs font-semibold text-indigo-600 hover:text-indigo-800 hover:underline transition-all active:scale-95"
+              {/* WhatsApp Help Intent link— 100% Free aur Reliable */}
+              <a
+                href={`https://wa.me/923001234567?text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Mera%20number%20${phone || '_______'}%20hai.%20Help%20kardein.`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline transition-all active:scale-95"
               >
-                Forgot?
-              </button>
+                Password bhool gaye?
+              </a>
             </div>
             
-            {/* Input ke sath Eye Icon ki wrapper div */}
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
@@ -98,12 +105,12 @@ export default function Login() {
         </div>
 
         <p className="text-center text-sm text-slate-600 font-medium">
-          No account?{' '}
+          Account nahi hai?{' '}
           <Link
             to="/signup"
             className="text-indigo-600 font-bold hover:underline ml-1 cursor-pointer"
           >
-            Create one free
+            Naya account banayein
           </Link>
         </p>
       </div>

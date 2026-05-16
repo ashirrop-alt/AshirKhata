@@ -7,31 +7,47 @@ import { Eye, EyeOff } from 'lucide-react';
 
 export default function Signup() {
   const [fullName, setFullName] = useState('');
-  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState(''); // Mobile number state
   const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
+  // Target audience ke liye shuru mein password UNHIDE (true) rakha hai
+  const [showPassword, setShowPassword] = useState(true);
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords aapas mein nahi mil rahe!");
-      return;
-    }
     setLoading(true);
-    const { error } = await supabase.auth.signUp({
-      email,
+
+    // Supabase standard email auth use karta hai, toh hum number ke aage dummy domain laga kar backend bypass kar rahe hain
+    // Is se email field ka jhanjhat frontend par khatam ho gaya!
+    const formattedEmail = `${phone.trim()}@khatify.local`;
+
+    const { data, error } = await supabase.auth.signUp({
+      email: formattedEmail,
       password,
-      options: { data: { full_name: fullName } }
+      options: { 
+        data: { 
+          full_name: fullName,
+          phone_number: phone 
+        } 
+      }
     });
 
-    if (error) alert("Error: " + error.message);
-    else {
-      alert("Account ban gaya! Ab aap login kar sakte hain.");
-      window.location.href = '/login';
+    if (error) {
+      alert("Misaal: " + error.message);
+      setLoading(false);
+    } else {
+      // Direct Login Feature: Signup hote hi dobara login na karna pare, seedha entry!
+      const { error: loginError } = await supabase.auth.signInWithPassword({
+        email: formattedEmail,
+        password
+      });
+
+      if (loginError) {
+        window.location.href = '/login'; // Agar koi masla ho toh safe side login par bhej do
+      } else {
+        window.location.href = '/'; // Seedha software ke andar!
+      }
     }
-    setLoading(false);
   };
 
   return (
@@ -43,17 +59,17 @@ export default function Signup() {
             Khati<span className="text-indigo-600">fy</span>
           </h1>
           <p className="text-xs sm:text-sm text-slate-500 mt-1 font-medium">
-            Create your free account in seconds.
+            Apna muft khata account banayein seconds mein.
           </p>
         </div>
 
         <form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
           {/* Full Name */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 ml-1">Full Name</label>
+            <label className="text-xs font-bold text-slate-700 ml-1">Dukaan / Full Name</label>
             <Input
               type="text"
-              placeholder="Full Name"
+              placeholder="Maslan: Ali General Store"
               className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
@@ -61,55 +77,39 @@ export default function Signup() {
             />
           </div>
 
-          {/* Email Address */}
+          {/* Mobile Number */}
           <div className="space-y-1">
-            <label className="text-xs font-bold text-slate-700 ml-1">Email Address</label>
+            <label className="text-xs font-bold text-slate-700 ml-1">Mobile Number</label>
             <Input
-              type="email"
-              placeholder="you@example.com"
+              type="tel"
+              placeholder="03001234567"
               className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
               required
             />
           </div>
 
-          {/* Passwords - Grid layout for better use of space */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {/* Password with Single Toggle Eye Icon */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
-              <div className="relative">
-                <Input
-                  type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
-                  className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
-                  title={showPassword ? "Hide password" : "Show password"}
-                >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
-                </button>
-              </div>
-            </div>
-
-            {/* Confirm Password - Follows the same showPassword state */}
-            <div className="space-y-1">
-              <label className="text-xs font-bold text-slate-700 ml-1">Confirm</label>
+          {/* Password - Single input wrapper */}
+          <div className="space-y-1">
+            <label className="text-xs font-bold text-slate-700 ml-1">Password</label>
+            <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
-                placeholder="••••••••"
-                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Kam az kam 6 hifz"
+                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                title={showPassword ? "Hide password" : "Show password"}
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
             </div>
           </div>
 
@@ -118,7 +118,7 @@ export default function Signup() {
             type="submit" 
             className="w-full bg-indigo-600 hover:bg-indigo-700 h-10 sm:h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all mt-4 active:scale-95 text-sm sm:text-base"
           >
-            {loading ? 'Sabar karein...' : 'Create Free Account →'}
+            {loading ? 'Sabar karein...' : 'Khata Shuru Karein →'}
           </Button>
         </form>
 
@@ -128,7 +128,7 @@ export default function Signup() {
         </div>
 
         <p className="text-center text-xs sm:text-sm text-slate-600 font-medium">
-          Already have an account?{' '}
+          Pehle se account hai?{' '}
           <Link to="/login" className="text-indigo-600 font-bold hover:underline ml-1">
             Sign in
           </Link>
