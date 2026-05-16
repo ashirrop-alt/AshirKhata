@@ -3,7 +3,8 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react'; 
+import { Eye, EyeOff } from 'lucide-react';
+import { toast } from "sonner";
 
 export default function Login() {
   const [phone, setPhone] = useState(''); // Mobile number login state
@@ -15,16 +16,19 @@ export default function Login() {
     e.preventDefault();
     setLoading(true);
 
-    // Signup wale formatted format mein generate karein taake match ho jaye
     const formattedEmail = `${phone.trim()}@khatify.local`;
 
-    const { error } = await supabase.auth.signInWithPassword({ 
-      email: formattedEmail, 
-      password 
+    const { error } = await supabase.auth.signInWithPassword({
+      email: formattedEmail,
+      password
     });
 
-    if (error) alert("Mobile number ya password theek nahi hai!");
-    else window.location.href = '/';
+    if (error) {
+      // Purana alert khatam, naya professional toast chalu!
+      toast.error("Mobile number ya password theek nahi hai!");
+    } else {
+      window.location.href = '/';
+    }
     setLoading(false);
   };
 
@@ -70,7 +74,7 @@ export default function Login() {
                 Password bhool gaye?
               </a>
             </div>
-            
+
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
