@@ -398,11 +398,23 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       <Search className="w-8 h-8 text-slate-300 dark:text-slate-600" />
                     </div>
                     {/* ✅ Empty State Message Update */}
-                    <p className="text-slate-500 dark:text-slate-400 text-[13px] font-bold leading-relaxed max-w-[200px]">
-                      {sortType === 'stale'
-                        ? "Sab customers active hain! Kisi ka udhar 30 din se purana nahi hai."
-                        : "Koi customer nahi mila"}
-                    </p>
+                    <div className="text-slate-500 dark:text-slate-400 text-[13px] font-bold leading-relaxed max-w-[250px] space-y-1">
+                      {sortType === 'stale' ? (
+                        <p>Sab customers active hain! Kisi ka udhar 30 din se purana nahi hai.</p>
+                      ) : shopName && shopName.length > 0 ? (
+                        // Case 1: Agar pehle se customers hain, lekin search karne par nahi mil raha
+                        <>
+                          <p className="text-slate-900 dark:text-slate-200 text-sm font-black">Is naam ka koi customer nahi mila</p>
+                          <p className="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Naam ke spelling check karein ya naya customer add karein.</p>
+                        </>
+                      ) : (
+                        // Case 2: User bilkul naya hai, account khali hai (Jo default "Apni Dukaan" ya naye signup par aayega)
+                        <>
+                          <p className="text-slate-900 dark:text-slate-200 text-sm font-black">Abhi tak koi customer nahi hai</p>
+                          <p className="text-slate-400 dark:text-slate-500 text-[11px] font-medium">Apna pehla customer add karne ke liye neeche button par click karein.</p>
+                        </>
+                      )}
+                    </div>
                   </div>
                 ) : (
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
