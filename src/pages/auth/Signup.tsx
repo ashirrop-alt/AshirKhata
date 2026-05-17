@@ -3,7 +3,7 @@ import { supabase } from '../../lib/supabase';
 import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
-import { Eye, EyeOff } from 'lucide-react'; 
+import { Eye, EyeOff } from 'lucide-react';
 
 export default function Signup() {
   const [fullName, setFullName] = useState('');
@@ -17,43 +17,59 @@ export default function Signup() {
     e.preventDefault();
     setLoading(true);
 
-    // Supabase standard email auth use karta hai, toh hum number ke aage dummy domain laga kar backend bypass kar rahe hain
-    // Is se email field ka jhanjhat frontend par khatam ho gaya!
     const formattedEmail = `${phone.trim()}@khatify.local`;
 
-    const { data, error } = await supabase.auth.signUp({
+    // 1. Pehle user ka auth account banayein
+    const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: formattedEmail,
       password,
-      options: { 
-        data: { 
+      options: {
+        data: {
           full_name: fullName,
-          phone_number: phone 
-        } 
+          phone_number: phone
+        }
       }
     });
 
-    if (error) {
-      alert("Misaal: " + error.message);
+    if (signUpError) {
+      alert("Error: " + signUpError.message);
       setLoading(false);
-    } else {
-      // Direct Login Feature: Signup hote hi dobara login na karna pare, seedha entry!
-      const { error: loginError } = await supabase.auth.signInWithPassword({
-        email: formattedEmail,
-        password
-      });
+      return;
+    }
 
-      if (loginError) {
-        window.location.href = '/login'; // Agar koi masla ho toh safe side login par bhej do
-      } else {
-        window.location.href = '/'; // Seedha software ke andar!
+    // 2. AGAR account ban gaya hai, toh foran 'shops' table mein entry karein
+    if (signUpData?.user) {
+      const { error: shopError } = await supabase
+        .from('shops')
+        .insert([
+          {
+            user_id: signUpData.user.id,
+            name: fullName // Jo user ne signup form mein daala
+          }
+        ]);
+
+      if (shopError) {
+        console.error("Shop name save karne mein masla aaya:", shopError.message);
       }
+    }
+
+    // 3. Ab direct login karwa kar dashboard par bhejien
+    const { error: loginError } = await supabase.auth.signInWithPassword({
+      email: formattedEmail,
+      password
+    });
+
+    if (loginError) {
+      window.location.href = '/login';
+    } else {
+      window.location.href = '/'; // Ab yahan jab jayega toh "ABC General Store" likha aayega!
     }
   };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900 overflow-y-auto sm:overflow-hidden">
       <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all my-4 sm:my-0">
-        
+
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
             Khati<span className="text-indigo-600">fy</span>
@@ -113,9 +129,9 @@ export default function Signup() {
             </div>
           </div>
 
-          <Button 
-            disabled={loading} 
-            type="submit" 
+          <Button
+            disabled={loading}
+            type="submit"
             className="w-full bg-indigo-600 hover:bg-indigo-700 h-10 sm:h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all mt-4 active:scale-95 text-sm sm:text-base"
           >
             {loading ? 'Sabar karein...' : 'Khata Shuru Karein →'}
