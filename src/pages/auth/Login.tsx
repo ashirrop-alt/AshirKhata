@@ -66,9 +66,7 @@ export default function Login() {
               <label className="text-sm font-bold text-slate-700">Password</label>
               {/* WhatsApp Help Intent link— 100% Free aur Reliable */}
               <a
-                href={`https://wa.me/923001234567?text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Mera%20number%20${phone || '_______'}%20hai.%20Help%20kardein.`}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`https://wa.me/923172428057?text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Mera%20number%20${phone || '_______'}%20hai.%20Help%20kardein.`}
                 className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline transition-all active:scale-95"
               >
                 Password bhool gaye?
