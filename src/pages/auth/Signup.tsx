@@ -4,6 +4,7 @@ import { Button } from '../../components/ui/button';
 import { Input } from '../../components/ui/input';
 import { Link } from 'react-router-dom';
 import { Eye, EyeOff } from 'lucide-react';
+import { toast } from "sonner";
 
 export default function Signup() {
   const [fullName, setFullName] = useState('');
@@ -20,6 +21,7 @@ export default function Signup() {
     const formattedEmail = `${phone.trim()}@khatify.local`;
 
     // 1. Pehle user ka auth account banayein
+    // 1. Pehle user ka auth account banayein
     const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
       email: formattedEmail,
       password,
@@ -32,7 +34,12 @@ export default function Signup() {
     });
 
     if (signUpError) {
-      alert("Error: " + signUpError.message);
+      // Agar password 6 characters se kam hoga ya koi aur error aayega, toh yeh chalega
+      if (signUpError.message.includes("at least 6 characters")) {
+        toast.error("Password kam az kam 6 lafzon ya numbers ka hona chahiye!");
+      } else {
+        toast.error(signUpError.message);
+      }
       setLoading(false);
       return;
     }
@@ -112,7 +119,7 @@ export default function Signup() {
             <div className="relative">
               <Input
                 type={showPassword ? "text" : "password"}
-                placeholder="Kam az kam 6 hifz"
+                placeholder="Apna password banayein"
                 className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm pr-10"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
