@@ -15,7 +15,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
-  
+
   // Check karne ke liye ke user ka browser contact picker support karta hai ya nahi
   const [isContactSupported, setIsContactSupported] = useState(false);
 
@@ -44,10 +44,10 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
         // 2. Phone number clean aur autofill logic
         if (picked.tel && picked.tel.length > 0) {
           let rawPhone = picked.tel[0];
-          
+
           // Pakistani numbers ka clean-up setup (+92300... ya 0092300... ko clean karke standard 0300... banana)
           let cleanPhone = rawPhone.replace(/[^0-9+]/g, ""); // Sirf numbers aur '+' rakhein
-          
+
           if (cleanPhone.startsWith("+92")) {
             cleanPhone = "0" + cleanPhone.slice(3);
           } else if (cleanPhone.startsWith("92")) {
@@ -55,9 +55,8 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
           } else if (cleanPhone.startsWith("0092")) {
             cleanPhone = "0" + cleanPhone.slice(4);
           }
-          
+
           setPhone(cleanPhone);
-          toast.success("Contact details auto-fill ho gayeen! 😊");
         }
       }
     } catch (error: any) {
@@ -109,32 +108,35 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
             </div>
 
             {/* --- Phone Number (With Contact Picker Trigger) --- */}
+            {/* --- Phone Number --- */}
             <div className="space-y-1.5">
-              <div className="flex justify-between items-center px-2">
-                <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
-                  Phone Number
-                </p>
-                
-                {/* Agar mobile browser support karta hai tabhi yeh option chamkega */}
+              <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
+                Phone Number
+              </p>
+
+              <div className="relative flex items-center">
+                <Input
+                  placeholder="03xx-xxxxxxx"
+                  value={phone}
+                  onChange={(e) => setPhone(e.target.value)}
+                  type="tel"
+                  className={`h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400/60 dark:placeholder:text-slate-500/60 transition-all text-sm w-full ${isContactSupported ? "pr-12" : ""
+                    }`}
+                  required
+                />
+
+                {/* Agar mobile browser support kare, toh input ke ANDAR right side par icon button */}
                 {isContactSupported && (
                   <button
                     type="button"
                     onClick={handlePickContact}
-                    className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline active:scale-95 transition-all"
+                    className="absolute right-3 text-slate-400 hover:text-indigo-600 dark:text-slate-500 dark:hover:text-indigo-400 p-1.5 rounded-lg active:scale-90 transition-all"
+                    title="Contacts se dhoondien"
                   >
-                    <NotebookTabs size={13} />
-                    Contacts se dhoondien
+                    <NotebookTabs size={20} />
                   </button>
                 )}
               </div>
-              <Input
-                placeholder="03xx-xxxxxxx"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                type="tel"
-                className="h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-0 placeholder:text-slate-400/60 dark:placeholder:text-slate-500/60 transition-all text-sm"
-                required
-              />
             </div>
 
             {/* --- Save Button --- */}
