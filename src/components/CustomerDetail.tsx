@@ -50,6 +50,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [editName, setEditName] = useState(customer.name);
   const [editPhone, setEditPhone] = useState(customer.phone || "");
 
+  // Screen par live naam aur phone dikhane ke liye states
+  const [currentDisplayName, setCurrentDisplayName] = useState(customer.name);
+  const [currentDisplayPhone, setCurrentDisplayPhone] = useState(customer.phone || "");
+
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -227,10 +231,13 @@ export function CustomerDetail({ customer, onBack }: Props) {
         .eq('id', customer.id);
 
       if (error) throw error;
+
+      // 🔥 Magic Lines: Bina refresh kiye screen par naam aur number live badal jayega!
+      setCurrentDisplayName(editName.trim());
+      setCurrentDisplayPhone(editPhone.trim());
+
       toast.success("Customer ka khata update ho gaya! 😊");
       setCustomerEditOpen(false);
-      // Data refresh ke liye window reload ya state pass (Vercel par auto state sync hoti hai)
-      setTimeout(() => window.location.reload(), 800);
     } catch (err) {
       toast.error("Update nahi ho saka");
     } finally {
@@ -440,11 +447,11 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </button>
             <div className="flex flex-col text-left leading-none">
               <h1 className="text-[17px] md:text-xl font-black text-slate-900 dark:text-white tracking-tight">
-                {customer.name}
+                {currentDisplayName}
               </h1>
               {customer.phone && (
                 <span className="text-[10px] md:text-[11px] font-bold text-slate-400 dark:text-slate-500 mt-0.5 uppercase tracking-wider">
-                  {customer.phone}
+                  {currentDisplayPhone}
                 </span>
               )}
             </div>
@@ -575,7 +582,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     <TooltipContent side="bottom" className="bg-slate-800 text-white border-none font-bold text-[11px] px-3 py-1.5 shadow-xl">
                       <p>Hisaab Bhejein</p>
                     </TooltipContent>
-                  </Tooltip>        
+                  </Tooltip>
                   {/* Invoice Button */}
                   <Tooltip>
                     <TooltipTrigger asChild>
@@ -921,7 +928,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
           </div>
         </DialogContent>
-      </Dialog>            
+      </Dialog>
 
 
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
