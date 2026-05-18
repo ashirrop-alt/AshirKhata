@@ -457,18 +457,18 @@ export function CustomerDetail({ customer, onBack }: Props) {
             </div>
           </div>
 
-          {/* Right Side: Enhanced Prominent Icon */}
-          {/* Right Side: Enhanced Actions (Edit, Delete, Phone) */}
-          <div className="flex items-center gap-1">
+          {/* Right Side: Enhanced Actions (Edit, Delete, Phone) - Perfectly Aligned & Sharp */}
+          <div className="flex items-center gap-1.5 md:gap-2">
             {/* Edit Button */}
             <Button
               variant="ghost"
               size="icon"
               onClick={() => setCustomerEditOpen(true)}
-              className="bg-transparent hover:bg-amber-50 dark:hover:bg-amber-500/10 text-slate-400 hover:text-amber-500 dark:text-slate-500 dark:hover:text-amber-400 transition-all active:scale-90"
+              className="h-10 w-10 bg-transparent hover:bg-amber-50 dark:hover:bg-amber-500/10 text-slate-700 dark:text-slate-200 hover:text-amber-500 dark:hover:text-amber-400 transition-all active:scale-90 rounded-xl"
               title="Customer badlein"
             >
-              <Pencil className="w-[19px] h-[19px] stroke-[2.2]" />
+              {/* strokeWidth 2.5 kiya hai aur size 19 taake exact home screen jaisa bold look aaye */}
+              <Pencil className="w-[19px] h-[19px] stroke-[2.5]" />
             </Button>
 
             {/* Delete Button */}
@@ -476,10 +476,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
               variant="ghost"
               size="icon"
               onClick={() => setCustomerDeleteOpen(true)}
-              className="bg-transparent hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-all active:scale-90"
+              className="h-10 w-10 bg-transparent hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-700 dark:text-slate-200 hover:text-red-500 dark:hover:text-red-400 transition-all active:scale-90 rounded-xl"
               title="Poora khata delete karein"
             >
-              <Trash2 className="w-[19px] h-[19px] stroke-[2.2]" />
+              <Trash2 className="w-[19px] h-[19px] stroke-[2.5]" />
             </Button>
 
             {/* Dropdown Menu for Phone / WhatsApp Call */}
@@ -489,9 +489,9 @@ export function CustomerDetail({ customer, onBack }: Props) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="bg-transparent hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-90 border-none outline-none focus-visible:ring-0"
+                    className="h-10 w-10 bg-transparent hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-700 dark:text-slate-200 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-90 rounded-xl border-none outline-none focus-visible:ring-0"
                   >
-                    <PhoneCall className="w-[20px] h-[20px] stroke-[2.2] drop-shadow-sm" />
+                    <PhoneCall className="w-[19px] h-[19px] stroke-[2.5]" />
                   </Button>
                 </DropdownMenuTrigger>
 
