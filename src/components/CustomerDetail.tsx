@@ -893,7 +893,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
         </DialogContent>
       </Dialog>
 
-      {/* 2. CUSTOM MODAL: DANGER ACCOUNT DELETE ALERT */}
+      {/* 2. CUSTOM MODAL: DANGER ACCOUNT DELETE ALERT (Clean & Short System) */}
       <Dialog open={customerDeleteOpen} onOpenChange={setCustomerDeleteOpen}>
         <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
           <div className="space-y-6 text-center">
@@ -901,12 +901,12 @@ export function CustomerDetail({ customer, onBack }: Props) {
               <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="space-y-1">
               <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
                 Khata Delete Karein?
               </h2>
-              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold leading-relaxed px-1">
-                Kya aap waqayi *{customer.name}* ka poora khata delete karna chahte hain? Iska saara udhar hamesha ke liye khatam ho jayega.
+              <p className="text-sm text-slate-500 dark:text-slate-400 font-medium">
+                Ye account hamesha ke liye khatam ho jayega.
               </p>
             </div>
 
@@ -916,7 +916,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                 className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all border-none"
                 disabled={loading}
               >
-                {loading ? "Deleting..." : "Haan, Delete Karein"}
+                {loading ? "Deleting..." : "Haan"}
               </Button>
               <Button
                 onClick={() => setCustomerDeleteOpen(false)}
