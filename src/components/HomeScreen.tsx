@@ -10,7 +10,7 @@ import { useState, useEffect } from "react";
 import { Customer, getCustomerTotal, getTotalUdhar } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Download, History } from "lucide-react";
+import { Plus, Store, ChevronRight, Search, LogOut, Loader2, Users, Wallet, Check, X, ChevronDown, Download, History, Pencil, Trash2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import * as XLSX from 'xlsx';
@@ -424,37 +424,85 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                       const isStale = getLastActivityDate(c) < thirtyDaysAgo && total > 0;
 
                       return (
-                        <button key={c.id} onClick={() => onSelectCustomer(c.id)} className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300/70 dark:hover:border-indigo-500/50 transition-all duration-300 group active:scale-[0.99] flex items-center justify-between shadow-sm relative overflow-hidden">
+                        <div
+                          key={c.id}
+                          onClick={() => onSelectCustomer(c.id)}
+                          className="w-full bg-slate-50 dark:bg-white/[0.03] rounded-2xl p-4 border border-slate-200 dark:border-white/10 hover:border-indigo-300/70 dark:hover:border-indigo-500/50 transition-all duration-300 group/card active:scale-[0.99] flex items-center justify-between shadow-sm relative overflow-hidden cursor-pointer"
+                        >
                           {isStale && (
                             <div className="absolute top-0 left-0 bg-rose-500 text-white text-[7px] font-black px-2 py-0.5 rounded-br-lg uppercase tracking-tighter">
                               Inactive
                             </div>
                           )}
 
+                          {/* --- Left Side: Initials & Customer Info --- */}
                           <div className="flex items-center gap-3 md:gap-4 text-left">
-                            <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-indigo-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover:bg-indigo-600 transition-all shadow-sm">
-                              <span className="text-base md:text-lg font-black text-indigo-600 dark:text-indigo-400 group-hover:text-white transition-colors">{c.name.charAt(0).toUpperCase()}</span>
+                            <div className="w-10 h-10 md:w-11 md:h-11 rounded-xl bg-indigo-50 dark:bg-slate-700/50 flex items-center justify-center border border-slate-100 dark:border-white/5 group-hover/card:bg-indigo-600 transition-all shadow-sm">
+                              <span className="text-base md:text-lg font-black text-indigo-600 dark:text-indigo-400 group-hover/card:text-white transition-colors">
+                                {c.name.charAt(0).toUpperCase()}
+                              </span>
                             </div>
                             <div>
-                              <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover:text-indigo-600 transition-colors">{c.name}</p>
-                              {/* ✅ Transaction dates mobile/laptop dono se hata di hain */}
+                              <p className="font-bold text-slate-900 dark:text-slate-100 text-sm md:text-base leading-tight group-hover/card:text-indigo-600 transition-colors">
+                                {c.name}
+                              </p>
                               <div className="flex items-center gap-1.5 mt-0.5">
-                                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">{c.transactions.length} entries</p>
+                                <p className="text-[10px] text-slate-500 dark:text-slate-400 font-medium">
+                                  {c.transactions.length} entries
+                                </p>
                               </div>
                             </div>
                           </div>
+
+                          {/* --- Right Side: Balance, Action Tools & Arrow --- */}
                           <div className="flex items-center gap-3 md:gap-4">
+                            {/* Professional Edit & Delete Action Row (Fades in on Hover) */}
+                            <div className="flex items-center gap-1 opacity-0 group-hover/card:opacity-100 transition-all duration-200 mr-1 hidden sm:flex">
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Card navigation ko rokega
+                                  // TODO: Aapka edit function call hoga yahan (e.g., onEditCustomer(c))
+                                  alert(`Edit ${c.name}`);
+                                }}
+                                className="p-2 rounded-xl bg-slate-200/50 dark:bg-white/5 hover:bg-amber-500/10 text-slate-400 hover:text-amber-500 dark:text-slate-500 dark:hover:text-amber-400 transition-colors"
+                                title="Naam/Number badlein"
+                              >
+                                <Pencil size={14} />
+                              </button>
+
+                              <button
+                                type="button"
+                                onClick={(e) => {
+                                  e.stopPropagation(); // Card navigation ko rokega
+                                  // TODO: Aapka delete function call hoga yahan (e.g., onDeleteCustomer(c.id))
+                                  if (confirm(`Kya aap waqayi ${c.name} ka poora khata delete karna chahte hain?`)) {
+                                    alert(`Deleted ${c.id}`);
+                                  }
+                                }}
+                                className="p-2 rounded-xl bg-slate-200/50 dark:bg-white/5 hover:bg-rose-500/10 text-slate-400 hover:text-rose-500 dark:text-slate-500 dark:hover:text-rose-400 transition-colors"
+                                title="Customer delete karein"
+                              >
+                                <Trash2 size={14} />
+                              </button>
+                            </div>
+
+                            {/* Balance Display */}
                             <div className="text-right">
                               <p className={`text-base md:text-xl font-black tracking-tight leading-none ${total > 0 ? "text-rose-500" : "text-emerald-600 dark:text-emerald-400"}`}>
                                 {total > 0 ? "+" : ""} {Math.abs(total).toLocaleString()}
                               </p>
-                              <p className="text-[8px] md:text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 mt-1">Balance</p>
+                              <p className="text-[8px] md:text-[9px] uppercase font-bold text-slate-400 dark:text-slate-500 mt-1">
+                                Balance
+                              </p>
                             </div>
-                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover:bg-indigo-600 transition-colors">
-                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600 group-hover:text-white" />
+
+                            {/* Right Chevron Arrow */}
+                            <div className="w-7 h-7 md:w-8 md:h-8 rounded-full bg-slate-100 dark:bg-white/5 flex items-center justify-center group-hover/card:bg-indigo-600 transition-colors">
+                              <ChevronRight className="w-3.5 h-3.5 text-slate-400 dark:text-slate-600 group-hover/card:text-white" />
                             </div>
                           </div>
-                        </button>
+                        </div>
                       );
                     })}
                   </div>
