@@ -12,6 +12,7 @@ import InvoiceTemplate from './InvoiceTemplate';
 import { Customer } from "@/lib/store";
 import { AddEntryDialog } from "./AddEntryDialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { ArrowLeft, Trash2, History, Phone, WalletCards, PhoneCall, Pencil, ArrowUpRight, ArrowDownLeft, FileText, MessageCircle, RotateCcw, ChevronDown, Check, Calendar, } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { toast } from "sonner";
@@ -42,6 +43,12 @@ export function CustomerDetail({ customer, onBack }: Props) {
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [idToDelete, setIdToDelete] = useState<string | null>(null);
   const [editingEntry, setEditingEntry] = useState<any>(null);
+
+  // --- Customer Edit & Delete States ---
+  const [customerEditOpen, setCustomerEditOpen] = useState(false);
+  const [customerDeleteOpen, setCustomerDeleteOpen] = useState(false);
+  const [editName, setEditName] = useState(customer.name);
+  const [editPhone, setEditPhone] = useState(customer.phone || "");
 
   // 2. REFS
   const invoiceRef = useRef<HTMLDivElement>(null);
@@ -203,6 +210,58 @@ export function CustomerDetail({ customer, onBack }: Props) {
       setEditingEntry(null);
     } catch (error: any) {
       toast.error("Save nahi hua");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // A. Customer Ka Naam aur Number Badalne Ki Logic
+  const handleUpdateCustomer = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editName.trim() || !editPhone.trim()) return;
+    setLoading(true);
+    try {
+      const { error } = await supabase
+        .from('customers')
+        .update({ name: editName.trim(), phone: editPhone.trim() })
+        .eq('id', customer.id);
+
+      if (error) throw error;
+      toast.success("Customer ka khata update ho gaya! 😊");
+      setCustomerEditOpen(false);
+      // Data refresh ke liye window reload ya state pass (Vercel par auto state sync hoti hai)
+      setTimeout(() => window.location.reload(), 800);
+    } catch (err) {
+      toast.error("Update nahi ho saka");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // B. Poora Customer Account Delete Karne Ki Logic
+  const handleConfirmDeleteCustomer = async () => {
+    setLoading(true);
+    try {
+      // Pehle audit log mein record daal dete hain takay cctv record save rahe
+      await supabase.from('audit_logs').insert({
+        user_id: (await supabase.auth.getUser()).data.user?.id,
+        action_type: 'CUSTOMER_DELETE',
+        customer_name: customer.name,
+        old_data: { id: customer.id, name: customer.name, phone: customer.phone },
+        new_data: null
+      });
+
+      const { error } = await supabase
+        .from('customers')
+        .delete()
+        .eq('id', customer.id);
+
+      if (error) throw error;
+      toast.success("Customer ka poora khata delete ho gaya!");
+      setCustomerDeleteOpen(false);
+      onBack(); // Wapas main screen par bhej dein
+    } catch (err) {
+      toast.error("Delete nahi ho saka");
     } finally {
       setLoading(false);
     }
@@ -392,7 +451,31 @@ export function CustomerDetail({ customer, onBack }: Props) {
           </div>
 
           {/* Right Side: Enhanced Prominent Icon */}
-          <div className="flex items-center">
+          {/* Right Side: Enhanced Actions (Edit, Delete, Phone) */}
+          <div className="flex items-center gap-1">
+            {/* Edit Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCustomerEditOpen(true)}
+              className="bg-transparent hover:bg-amber-50 dark:hover:bg-amber-500/10 text-slate-400 hover:text-amber-500 dark:text-slate-500 dark:hover:text-amber-400 transition-all active:scale-90"
+              title="Customer badlein"
+            >
+              <Pencil className="w-[19px] h-[19px] stroke-[2.2]" />
+            </Button>
+
+            {/* Delete Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setCustomerDeleteOpen(true)}
+              className="bg-transparent hover:bg-red-50 dark:hover:bg-red-500/10 text-slate-400 hover:text-red-500 dark:text-slate-500 dark:hover:text-red-400 transition-all active:scale-90"
+              title="Poora khata delete karein"
+            >
+              <Trash2 className="w-[19px] h-[19px] stroke-[2.2]" />
+            </Button>
+
+            {/* Dropdown Menu for Phone / WhatsApp Call */}
             {customer.phone && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -401,7 +484,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
                     size="icon"
                     className="bg-transparent hover:bg-blue-50 dark:hover:bg-blue-500/10 text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-all active:scale-90 border-none outline-none focus-visible:ring-0"
                   >
-                    <PhoneCall className="w-[22px] h-[22px] stroke-[2.2] drop-shadow-sm" />
+                    <PhoneCall className="w-[20px] h-[20px] stroke-[2.2] drop-shadow-sm" />
                   </Button>
                 </DropdownMenuTrigger>
 
@@ -756,6 +839,90 @@ export function CustomerDetail({ customer, onBack }: Props) {
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* 1. CUSTOM MODAL: EDIT CUSTOMER DETAILS */}
+      <Dialog open={customerEditOpen} onOpenChange={setCustomerEditOpen}>
+        <DialogContent className="w-[88%] md:w-full max-w-[380px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none transition-all duration-300">
+          <form onSubmit={handleUpdateCustomer} className="space-y-6">
+            <h2 className="text-lg font-black text-slate-900 dark:text-white text-center tracking-tight">
+              Customer Badlein
+            </h2>
+
+            <div className="space-y-4">
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
+                  Customer ka Naam
+                </p>
+                <Input
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  className="h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 placeholder:text-slate-400 transition-all text-sm"
+                  required
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
+                  Phone Number
+                </p>
+                <Input
+                  value={editPhone}
+                  onChange={(e) => setEditPhone(e.target.value)}
+                  type="tel"
+                  className="h-12 bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-white/[0.12] text-slate-900 dark:text-white rounded-xl focus-visible:ring-2 focus-visible:ring-indigo-500 placeholder:text-slate-400 transition-all text-sm"
+                  required
+                />
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold shadow-lg shadow-indigo-500/20 active:scale-[0.97] transition-all mt-2 text-sm"
+                disabled={loading}
+              >
+                {loading ? "Updating..." : "Update Karein"}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* 2. CUSTOM MODAL: DANGER ACCOUNT DELETE ALERT */}
+      <Dialog open={customerDeleteOpen} onOpenChange={setCustomerDeleteOpen}>
+        <DialogContent className="w-[85%] max-w-[340px] bg-white dark:bg-[#0f172a] border border-slate-200 dark:border-white/20 shadow-2xl rounded-[2rem] p-7 outline-none">
+          <div className="space-y-6 text-center">
+            <div className="mx-auto w-14 h-14 bg-red-100 dark:bg-red-500/20 rounded-full flex items-center justify-center">
+              <span className="text-red-600 dark:text-red-500 text-xl">⚠️</span>
+            </div>
+
+            <div className="space-y-1.5">
+              <h2 className="text-lg font-black text-slate-900 dark:text-white tracking-tight">
+                Khata Delete Karein?
+              </h2>
+              <p className="text-xs text-slate-500 dark:text-slate-400 font-bold leading-relaxed px-1">
+                Kya aap waqayi *{customer.name}* ka poora khata delete karna chahte hain? Iska saara udhar hamesha ke liye khatam ho jayega.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3">
+              <Button
+                onClick={handleConfirmDeleteCustomer}
+                className="w-full h-12 bg-red-600 hover:bg-red-700 text-white rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all border-none"
+                disabled={loading}
+              >
+                {loading ? "Deleting..." : "Haan, Delete Karein"}
+              </Button>
+              <Button
+                onClick={() => setCustomerDeleteOpen(false)}
+                variant="outline"
+                className="w-full h-12 rounded-xl font-bold transition-all active:scale-95 border-slate-300 text-slate-700 hover:bg-slate-50 dark:border-white/20 dark:bg-white/5 dark:text-slate-200 dark:hover:bg-white/10"
+              >
+                Nahi
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>            
+
 
       <AddEntryDialog open={entryOpen} onClose={() => { setEntryOpen(false); setEditingEntry(null); }} type={entryType} onAdd={handleSaveEntry} initialAmount={editingEntry?.amount} initialRemarks={editingEntry?.remarks} />
 
