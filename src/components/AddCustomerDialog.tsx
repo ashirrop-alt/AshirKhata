@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { NotebookTabs } from "lucide-react"; // Chota aur pyara icon
+import { toast } from "sonner"; // Toast notification ke liye
 
 interface Props {
   open: boolean;
@@ -13,6 +15,56 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [loading, setLoading] = useState(false);
+  
+  // Check karne ke liye ke user ka browser contact picker support karta hai ya nahi
+  const [isContactSupported, setIsContactSupported] = useState(false);
+
+  useEffect(() => {
+    if ("contacts" in navigator && "ContactsManager" in window) {
+      setIsContactSupported(true);
+    }
+  }, []);
+
+  const handlePickContact = async () => {
+    try {
+      const props = ["name", "tel"];
+      const opts = { multiple: false }; // Ek waqt mein ek hi customer select hoga
+
+      // Mobile ki asli contact list trigger hogi yahan
+      const contacts = await (navigator as any).contacts.select(props, opts);
+
+      if (contacts && contacts.length > 0) {
+        const picked = contacts[0];
+
+        // 1. Name autofill logic
+        if (picked.name && picked.name.length > 0) {
+          setName(picked.name[0]);
+        }
+
+        // 2. Phone number clean aur autofill logic
+        if (picked.tel && picked.tel.length > 0) {
+          let rawPhone = picked.tel[0];
+          
+          // Pakistani numbers ka clean-up setup (+92300... ya 0092300... ko clean karke standard 0300... banana)
+          let cleanPhone = rawPhone.replace(/[^0-9+]/g, ""); // Sirf numbers aur '+' rakhein
+          
+          if (cleanPhone.startsWith("+92")) {
+            cleanPhone = "0" + cleanPhone.slice(3);
+          } else if (cleanPhone.startsWith("92")) {
+            cleanPhone = "0" + cleanPhone.slice(2);
+          } else if (cleanPhone.startsWith("0092")) {
+            cleanPhone = "0" + cleanPhone.slice(4);
+          }
+          
+          setPhone(cleanPhone);
+          toast.success("Contact details auto-fill ho gayeen! 😊");
+        }
+      }
+    } catch (error: any) {
+      // Agar user back daba kar baghair select kiye band kar de toh error handle ho jaye
+      console.log("Contact pick nahi kiya:", error.message);
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -26,6 +78,7 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
       onClose();
     } catch (error: any) {
       console.error("System Error:", error);
+      toast.error("Customer save karne mein masla aaya!");
     } finally {
       setLoading(false);
     }
@@ -55,11 +108,25 @@ export function AddCustomerDialog({ open, onClose, onAdd }: Props) {
               />
             </div>
 
-            {/* --- Phone Number --- */}
+            {/* --- Phone Number (With Contact Picker Trigger) --- */}
             <div className="space-y-1.5">
-              <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 ml-2 uppercase tracking-widest">
-                Phone Number
-              </p>
+              <div className="flex justify-between items-center px-2">
+                <p className="text-[10px] font-black text-slate-500 dark:text-slate-400 uppercase tracking-widest">
+                  Phone Number
+                </p>
+                
+                {/* Agar mobile browser support karta hai tabhi yeh option chamkega */}
+                {isContactSupported && (
+                  <button
+                    type="button"
+                    onClick={handlePickContact}
+                    className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 flex items-center gap-1 hover:underline active:scale-95 transition-all"
+                  >
+                    <NotebookTabs size={13} />
+                    Contacts se dhoondien
+                  </button>
+                )}
+              </div>
               <Input
                 placeholder="03xx-xxxxxxx"
                 value={phone}
