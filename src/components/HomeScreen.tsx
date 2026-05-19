@@ -87,7 +87,9 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     return Math.max(...dates);
   };
 
+  // ✅ Is Naye Code Se Replace Kardein:
   const thisMonthTotal = customers.reduce((acc, customer) => {
+    if (getCustomerTotal(customer) <= 0) return acc; // Suppliers ko ignore karne ke liye
     const monthSum = customer.transactions
       .filter(t => {
         const d = new Date(t.date);
@@ -98,6 +100,7 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   }, 0);
 
   const todayTotal = customers.reduce((acc, customer) => {
+    if (getCustomerTotal(customer) <= 0) return acc; // Suppliers ko ignore karne ke liye
     const daySum = customer.transactions
       .filter(t => {
         const d = new Date(t.date);
@@ -105,6 +108,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
       })
       .reduce((sum, t) => sum + t.amount, 0);
     return acc + daySum;
+  }, 0);
+
+  // Yeh line database se "Papa" jaise minus balance walon ka total nikalegi
+  const aapneDeneTotal = customers.reduce((acc, customer) => {
+    const total = getCustomerTotal(customer);
+    return total < 0 ? acc + Math.abs(total) : acc;
   }, 0);
 
   useEffect(() => { setTempName(shopName); }, [shopName]);
@@ -295,9 +304,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   <div className="w-px h-5 bg-white/20" />
 
                   {/* Column 3: Accounts Se Badal Kar 'Aapne Dene' (Exact Same Styling As Original) */}
+                  {/* ✅ Is Naye Line Se Replace Kardein: */}
                   <div className="flex flex-col items-end flex-1">
                     <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aapne Dene</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none">Rs 0</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">Rs {aapneDeneTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
