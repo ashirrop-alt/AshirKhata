@@ -74,9 +74,8 @@ export default function Signup() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900 overflow-y-auto sm:overflow-hidden">
-      <div className="w-full max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all my-4 sm:my-0">
-
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 xs:p-5 bg-slate-50 text-slate-900 overflow-y-auto">
+<div className="w-full max-w-[350px] sm:max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all mx-auto my-auto">
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
             Khati<span className="text-indigo-600">fy</span>
@@ -150,7 +149,7 @@ export default function Signup() {
           <div className="relative flex justify-center text-[10px] uppercase"><span className="bg-white px-3 text-slate-400 font-semibold tracking-widest">OR</span></div>
         </div>
 
-        <p className="text-center text-xs sm:text-sm text-slate-600 font-medium">
+        <p className="text-center text-xs sm:text-sm text-slate-600 font-medium flex flex-wrap items-center justify-center gap-1">
           Pehle se account hai?{' '}
           <Link to="/login" className="text-indigo-600 font-bold hover:underline ml-1">
             Sign in

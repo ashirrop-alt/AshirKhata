@@ -33,18 +33,18 @@ export default function Login() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-4 bg-slate-50 text-slate-900">
-      <div className="w-full max-w-md p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all">
+    <div className="flex flex-col items-center justify-center min-h-screen p-4 xs:p-5 bg-slate-50 text-slate-900 overflow-y-auto">
+      <div className="w-full max-w-[350px] sm:max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all mx-auto my-auto">
 
         {/* Logo Section */}
-        <div className="text-center mb-10">
-          <h1 className="text-4xl font-black tracking-tighter">
-            Khati<span className="text-indigo-600">fy</span>
-          </h1>
-          <p className="text-sm text-slate-500 mt-2 font-medium">
-            Khush Aamdeed! Log in karke apna khata chalayein.
-          </p>
-        </div>
+      <div className="text-center mb-6 sm:mb-10">
+        <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
+          Khati<span className="text-indigo-600">fy</span>
+        </h1>
+        <p className="text-xs sm:text-sm text-slate-500 mt-1.5 sm:mt-2 font-medium px-1">
+          Khush Aamdeed! Log in karke apna khata chalayein.
+        </p>
+      </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
           {/* Mobile Number Field */}
@@ -53,7 +53,7 @@ export default function Login() {
             <Input
               type="tel"
               placeholder="03001234567"
-              className="h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl"
+              className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm sm:text-base"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               required
@@ -67,7 +67,7 @@ export default function Login() {
               {/* WhatsApp Help Intent link— 100% Free aur Reliable */}
               <a
                 href={`whatsapp://send?phone=923172428057&text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Help%20kardein.%0A%0AMera%20number%20ye%20hai%3A%20${phone || '_______'}`}
-                className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline transition-all active:scale-95"
+                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm sm:text-base pr-10"
               >
                 Password bhool gaye?
               </a>
@@ -95,7 +95,7 @@ export default function Login() {
           <Button
             type="submit"
             disabled={loading}
-            className="w-full bg-indigo-600 hover:bg-indigo-700 h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-95"
+            className="w-full bg-indigo-600 hover:bg-indigo-700 h-10 sm:h-12 text-white font-bold rounded-xl shadow-lg shadow-indigo-100 transition-all active:scale-95 text-sm sm:text-base"
           >
             {loading ? 'Sabar karein...' : 'Sign In →'}
           </Button>

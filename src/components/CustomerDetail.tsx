@@ -236,7 +236,7 @@ export function CustomerDetail({ customer, onBack }: Props) {
       setCurrentDisplayName(editName.trim());
       setCurrentDisplayPhone(editPhone.trim());
 
-      toast.success("Customer ka khata update ho gaya! 😊");
+      toast.success("Customer ka khata update ho gaya!");
       setCustomerEditOpen(false);
     } catch (err) {
       toast.error("Update nahi ho saka");
