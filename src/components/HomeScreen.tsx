@@ -261,14 +261,14 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
-            {/* EXACT SAME ORIGINAL BOX SIZE & STRUCTURE */}
+            {/* EXACT SAME ORIGINAL BOX SIZE & STRUCTURE WITH VIP LOOKS */}
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               
               <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
-                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
+                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar Balance</p>
                 </div>
                 
                 <div className="flex items-baseline gap-1 md:gap-1.5">
@@ -278,26 +278,36 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   </h2>
                 </div>
                 
-                {/* BOTTOM SECTION: Exact same spacing and alignment as original */}
-                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
+                {/* BOTTOM SECTION: Premium Glazzmorphic Micro-Dashboard */}
+                <div className="pt-3.5 border-t border-white/15 flex items-center justify-between gap-2">
                   
-                  {/* Left Side: Aapne Lene Hain */}
-                  <div className="flex flex-col items-start flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aapne Lene</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none text-emerald-300">
-                      + {totalUdhar.toLocaleString()}
-                    </span>
+                  {/* Left Side: Aapne Lene Hain (With Elegant Icon Indicator) */}
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0">
+                    <div className="p-1 bg-emerald-500/20 text-emerald-300 rounded-lg flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </div>
+                    <div className="flex flex-col items-start min-w-0">
+                      <span className="text-[7px] md:text-[7.5px] uppercase font-bold text-white/60 tracking-wider mb-0.5 block truncate">Aapne Lene</span>
+                      <span className="text-[11px] md:text-[12.5px] font-black leading-none text-emerald-300 truncate">
+                        {totalUdhar.toLocaleString()}
+                      </span>
+                    </div>
                   </div>
                   
-                  {/* Divider: Exact same as original */}
-                  <div className="w-px h-5 bg-white/20" />
+                  {/* Divider Line */}
+                  <div className="w-px h-5 bg-white/15 self-center" />
                   
-                  {/* Right Side: Aapne Dene Hain */}
-                  <div className="flex flex-col items-end flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aapne Dene</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none text-rose-300">
-                      Rs 0
-                    </span>
+                  {/* Right Side: Aapne Dene Hain (With Elegant Icon Indicator) */}
+                  <div className="flex items-center gap-1.5 flex-1 min-w-0 justify-end">
+                    <div className="flex flex-col items-end min-w-0">
+                      <span className="text-[7px] md:text-[7.5px] uppercase font-bold text-white/60 tracking-wider mb-0.5 block truncate">Aapne Dene</span>
+                      <span className="text-[11px] md:text-[12.5px] font-black leading-none text-rose-300 truncate">
+                        0
+                      </span>
+                    </div>
+                    <div className="p-1 bg-rose-500/20 text-rose-300 rounded-lg flex-shrink-0">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17 17 7 17 7 7"></polyline></svg>
+                    </div>
                   </div>
 
                 </div>
