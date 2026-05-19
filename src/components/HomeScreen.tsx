@@ -261,12 +261,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
-            {/* 100% EXACT ORIGINAL SPAZIAL STRUCTURE & PREMIUM HEIGHT */}
+            {/* 100% EXACT ORIGINAL SPAZIAL STRUCTURE - ULTRA PREMIUM HIGH-CONTRAST LOOK */}
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
               
               <div className="relative z-10 space-y-4 md:space-y-5">
-                {/* Top Header - Pure Original Spacing */}
+                {/* Top Header */}
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
                   <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
@@ -280,33 +280,41 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   </h2>
                 </div>
                 
-                {/* BOTTOM SECTION: 100% Flat Minimalist Premium Split (No cheap icons, exact original heights) */}
-                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
+                {/* BOTTOM SECTION: Crisp Typography with Integrated Flow Indicators */}
+                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center">
                   
-                  {/* Left Column: Lene Hain block */}
-                  <div className="flex flex-col items-start flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-black tracking-wider text-white/60 mb-0.5">Aapne Lene</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none text-emerald-300">
-                      + {totalUdhar.toLocaleString()}
-                    </span>
+                  {/* Left Column: Aapne Lene (Aligned with Arrow on the Right of Amount) */}
+                  <div className="flex flex-col items-start flex-1 pl-1">
+                    <span className="text-[7.5px] md:text-[8px] uppercase font-black tracking-wider text-slate-200/80 mb-1">Aapne Lene</span>
+                    <div className="flex items-center gap-1">
+                      <span className="text-[12px] md:text-[14px] font-black leading-none text-emerald-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+                        +{totalUdhar.toLocaleString()}
+                      </span>
+                      {/* Modern Up-Right Arrow (Inflow) */}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#34d399" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="opacity-90 flex-shrink-0"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+                    </div>
                   </div>
                   
-                  {/* Center Vertical Divider - Same as Original */}
-                  <div className="w-px h-5 bg-white/20" />
+                  {/* Center Vertical Divider */}
+                  <div className="w-px h-5 bg-white/20 mx-1" />
                   
-                  {/* Right Column: Dene Hain block */}
-                  <div className="flex flex-col items-end flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-black tracking-wider text-white/60 mb-0.5">Aapne Dene</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none text-rose-300">
-                      Rs 0
-                    </span>
+                  {/* Right Column: Aapne Dene (Aligned with Arrow on the Left of Amount) */}
+                  <div className="flex flex-col items-end flex-1 pr-1">
+                    <span className="text-[7.5px] md:text-[8px] uppercase font-black tracking-wider text-slate-200/80 mb-1">Aapne Dene</span>
+                    <div className="flex items-center gap-1">
+                      {/* Modern Down-Left Arrow (Outflow) */}
+                      <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#f87171" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="opacity-90 flex-shrink-0"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17 17 7 17 7 7"></polyline></svg>
+                      <span className="text-[12px] md:text-[14px] font-black leading-none text-rose-400 drop-shadow-[0_1px_2px_rgba(0,0,0,0.2)]">
+                        Rs 0
+                      </span>
+                    </div>
                   </div>
 
                 </div>
               </div>
             </div>
 
-            {/* Below Content - Exact Same */}
+            {/* Search and Button Section */}
             <div className="space-y-3">
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors z-10" />
