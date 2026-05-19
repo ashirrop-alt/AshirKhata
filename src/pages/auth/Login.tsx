@@ -37,14 +37,14 @@ export default function Login() {
       <div className="w-full max-w-[350px] sm:max-w-md p-6 sm:p-8 bg-white rounded-3xl shadow-xl border border-slate-100 transition-all mx-auto my-auto">
 
         {/* Logo Section */}
-      <div className="text-center mb-6 sm:mb-10">
-        <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
-          Khati<span className="text-indigo-600">fy</span>
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1.5 sm:mt-2 font-medium px-1">
-          Khush Aamdeed! Log in karke apna khata chalayein.
-        </p>
-      </div>
+        <div className="text-center mb-6 sm:mb-10">
+          <h1 className="text-3xl sm:text-4xl font-black tracking-tighter">
+            Khati<span className="text-indigo-600">fy</span>
+          </h1>
+          <p className="text-xs sm:text-sm text-slate-500 mt-1.5 sm:mt-2 font-medium px-1">
+            Khush Aamdeed! Log in karke apna khata chalayein.
+          </p>
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-5">
           {/* Mobile Number Field */}
@@ -64,13 +64,6 @@ export default function Login() {
           <div className="space-y-1.5">
             <div className="flex justify-between items-center px-1">
               <label className="text-sm font-bold text-slate-700">Password</label>
-              {/* WhatsApp Help Intent link— 100% Free aur Reliable */}
-              <a
-                href={`whatsapp://send?phone=923172428057&text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Help%20kardein.%0A%0AMera%20number%20ye%20hai%3A%20${phone || '_______'}`}
-                className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm sm:text-base pr-10"
-              >
-                Password bhool gaye?
-              </a>
             </div>
 
             <div className="relative">
