@@ -261,69 +261,46 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
-
-            {/* CARD 1: AAPNE LENE HAIN (Premium Emerald Green) */}
-            <div className="bg-white dark:bg-[#0f172a] rounded-3xl p-5 border border-emerald-100 dark:border-emerald-500/10 shadow-md shadow-emerald-500/5 relative overflow-hidden flex flex-col justify-center transition-all">
-              <div className="absolute -right-4 -top-4 w-16 h-16 bg-emerald-500/5 rounded-full blur-xl" />
-              <div className="relative z-10 space-y-3">
-                <div className="flex items-center gap-1.5 text-emerald-600 dark:text-emerald-400">
-                  <div className="p-1 bg-emerald-50 dark:bg-emerald-500/10 rounded-lg">
-                    {/* Modern ArrowUpRight Icon for Inflow */}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="7" y1="17" x2="17" y2="7"></line><polyline points="7 7 17 7 17 17"></polyline></svg>
+            <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
+              <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
+              <div className="relative z-10 space-y-4 md:space-y-5">
+                <div className="flex items-center gap-1.5 opacity-90">
+                  <Wallet className="w-3.5 h-3.5" />
+                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
+                </div>
+                <div className="flex items-baseline gap-1 md:gap-1.5">
+                  <span className="text-sm md:text-base font-medium opacity-70">Rs</span>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">{totalUdhar.toLocaleString()}</h2>
+                </div>
+                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
+                  <div className="flex flex-col items-start flex-1">
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Is Mahine</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {thisMonthTotal.toLocaleString()}</span>
                   </div>
-                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.08em]">Aapne Lene Hain</p>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs font-bold text-emerald-600/70 dark:text-emerald-400/70">Rs</span>
-                  {/* totalLeneHain variable hum backend se laayein ge */}
-                  <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-emerald-600 dark:text-emerald-400 leading-none">
-                    {(typeof totalLeneHain !== 'undefined' ? totalLeneHain : totalUdhar).toLocaleString()}
-                  </h2>
-                </div>
-                <div className="pt-2.5 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-slate-500 text-xs">
-                  <span className="text-[10px] font-medium opacity-80">Active Accounts</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">{customers.length}</span>
+                  <div className="w-px h-5 bg-white/20" />
+                  <div className="flex flex-col items-center flex-1 px-1">
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aaj</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {todayTotal.toLocaleString()}</span>
+                  </div>
+                  <div className="w-px h-5 bg-white/20" />
+                  <div className="flex flex-col items-end flex-1">
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Accounts</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">{customers.length}</span>
+                  </div>
                 </div>
               </div>
             </div>
 
-            {/* CARD 2: AAPNE DENE HAIN (Premium Rose Red) */}
-            <div className="bg-white dark:bg-[#0f172a] rounded-3xl p-5 border border-rose-100 dark:border-rose-500/10 shadow-md shadow-rose-500/5 relative overflow-hidden flex flex-col justify-center transition-all">
-              <div className="absolute -right-4 -top-4 w-16 h-16 bg-rose-500/5 rounded-full blur-xl" />
-              <div className="relative z-10 space-y-3">
-                <div className="flex items-center gap-1.5 text-rose-600 dark:text-rose-400">
-                  <div className="p-1 bg-rose-50 dark:bg-rose-500/10 rounded-lg">
-                    {/* Modern ArrowDownLeft Icon for Outflow */}
-                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="17" y1="7" x2="7" y2="17"></line><polyline points="17 17 7 17 7 7"></polyline></svg>
-                  </div>
-                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.08em]">Aapne Dene Hain</p>
-                </div>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xs font-bold text-rose-600/70 dark:text-rose-400/70">Rs</span>
-                  {/* totalDeneHain variable hum backend se laayein ge, abhi dummy 0 rakha hai */}
-                  <h2 className="text-2xl md:text-3xl font-black tracking-tighter text-rose-600 dark:text-rose-400 leading-none">
-                    {(typeof totalDeneHain !== 'undefined' ? totalDeneHain : 0).toLocaleString()}
-                  </h2>
-                </div>
-                <div className="pt-2.5 border-t border-slate-100 dark:border-white/5 flex items-center justify-between text-slate-500 text-xs">
-                  <span className="text-[10px] font-medium opacity-80">Suppliers / Parties</span>
-                  <span className="font-bold text-slate-700 dark:text-slate-300">0</span>
-                </div>
-              </div>
-            </div>
-
-            {/* Search and New Customer Buttons (Pehele jese) */}
-            <div className="space-y-3 pt-1">
+            <div className="space-y-3">
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors z-10" />
-                <Input placeholder="Customer dhunndien..." className="pl-10 h-11 rounded-xl bg-white dark:bg-[#0f172a] border-slate-300/70 dark:border-white/20 shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white text-sm" value={search} onChange={(e) => setSearch(e.target.value)} />
+                <Input placeholder="Customer dhunndien..." className="pl-10 h-11 rounded-xl bg-white dark:bg-[#0f172a] border-slate-300/70 dark:border-white/20 shadow-sm focus:ring-2 focus:ring-indigo-500 transition-all dark:text-white" value={search} onChange={(e) => setSearch(e.target.value)} />
               </div>
-              <Button onClick={onAddCustomer} className="w-full h-11 rounded-xl bg-indigo-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all hover:bg-indigo-700 dark:hover:bg-slate-200 text-sm">
+              <Button onClick={onAddCustomer} className="w-full h-11 rounded-xl bg-indigo-600 dark:bg-white text-white dark:text-slate-950 font-bold shadow-lg shadow-indigo-500/10 active:scale-[0.98] transition-all hover:bg-indigo-700 dark:hover:bg-slate-200">
                 <Plus className="w-4 h-4 mr-2" />
                 Naya Customer
               </Button>
             </div>
-
           </div>
 
           <div className="flex-1 flex flex-col min-h-0 bg-white dark:bg-[#0f172a] rounded-3xl shadow-sm border border-slate-200 dark:border-white/[0.05] overflow-hidden transition-all">
