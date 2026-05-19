@@ -261,36 +261,53 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
         <div className="max-w-7xl mx-auto h-full flex flex-col md:flex-row gap-4 md:gap-6 p-4 md:p-6">
 
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
+            {/* Signature Indigo Premium Card */}
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
+              
               <div className="relative z-10 space-y-4 md:space-y-5">
+                {/* Header Title */}
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
-                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
+                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar Balance</p>
                 </div>
+                
+                {/* Net Total Display */}
                 <div className="flex items-baseline gap-1 md:gap-1.5">
                   <span className="text-sm md:text-base font-medium opacity-70">Rs</span>
-                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">{totalUdhar.toLocaleString()}</h2>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">
+                    {/* (Lene Hain - Dene Hain) auto calculation bad mein integrate hogi, abhi totalUdhar chalega */}
+                    {totalUdhar.toLocaleString()}
+                  </h2>
                 </div>
+                
+                {/* Split Bottom Columns (Sirf 2 Clean Blocks) */}
                 <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
+                  
+                  {/* Left Column: Aapne Lene Hain */}
                   <div className="flex flex-col items-start flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Is Mahine</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {thisMonthTotal.toLocaleString()}</span>
+                    <span className="text-[7.5px] md:text-[8px] uppercase font-black tracking-wider opacity-75 mb-1">Aapne Lene Hain</span>
+                    <span className="text-[12px] md:text-[14px] font-black leading-none text-emerald-300">
+                      Rs {totalUdhar.toLocaleString()}
+                    </span>
                   </div>
-                  <div className="w-px h-5 bg-white/20" />
-                  <div className="flex flex-col items-center flex-1 px-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aaj</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {todayTotal.toLocaleString()}</span>
-                  </div>
-                  <div className="w-px h-5 bg-white/20" />
+                  
+                  {/* Divider Line */}
+                  <div className="w-px h-6 bg-white/20 mx-2" />
+                  
+                  {/* Right Column: Aapne Dene Hain */}
                   <div className="flex flex-col items-end flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Accounts</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none">{customers.length}</span>
+                    <span className="text-[7.5px] md:text-[8px] uppercase font-black tracking-wider opacity-75 mb-1">Aapne Dene Hain</span>
+                    <span className="text-[12px] md:text-[14px] font-black leading-none text-rose-300">
+                      Rs 0
+                    </span>
                   </div>
+
                 </div>
               </div>
             </div>
 
+            {/* Search inputs aur buttons pehle ki tarah perfect safe hain */}
             <div className="space-y-3">
               <div className="relative group">
                 <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-indigo-500 transition-colors z-10" />
