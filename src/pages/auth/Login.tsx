@@ -62,8 +62,39 @@ export default function Login() {
 
           {/* Password Field with Custom Support Trigger */}
           <div className="space-y-1.5">
-            <div className="flex justify-between items-center px-1">
-              <label className="text-sm font-bold text-slate-700">Password</label>
+            {/* Password Field with Custom Support Trigger */}
+            <div className="space-y-1.5">
+              <div className="flex justify-between items-center px-1">
+                <label className="text-sm font-bold text-slate-700">Password</label>
+              </div>
+
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  className="h-10 sm:h-12 bg-slate-50 border-slate-200 focus:bg-white focus:ring-2 focus:ring-indigo-500/20 transition-all rounded-xl text-sm sm:text-base pr-10"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-indigo-600 transition-colors"
+                >
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                </button>
+              </div>
+
+              {/* Bilkul perfect alignment wala link yahan niche rahega */}
+              <div className="text-right mt-1.5 px-1">
+                <a
+                  href={`whatsapp://send?phone=923172428057&text=Hi%20Khatify%20Support%2C%20main%20apna%20password%20bhool%20gaya%20hoon.%20Help%20kardein.%0A%0AMera%20number%20ye%20hai%3A%20${phone || '_______'}`}
+                  className="text-xs font-bold text-indigo-600 hover:text-indigo-800 hover:underline inline-block transition-all active:scale-95"
+                >
+                  Password bhool gaye?
+                </a>
+              </div>
             </div>
 
             <div className="relative">
