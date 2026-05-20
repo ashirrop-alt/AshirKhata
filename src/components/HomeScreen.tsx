@@ -283,9 +283,10 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
             {/* 100% UNTOUCHED ORIGINAL STRUCTURE - ZERO ALIGNMENT CHANGES */}
             {/* ✅ IS NAYE CODE SE APNE PURANE DABBE KO REPLACE KARDEIN: */}
+            {/* ✅ EXACT ORIGINAL SIZE & LOOKS (Rasta 2 Configuration) */}
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-              <div className="relative z-10 space-y-4 md:space-y-5">
+              <div className="relative z-10 space-y-4">
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
                   <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Net Balance</p>
@@ -294,27 +295,27 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
                   <span className="text-sm md:text-base font-medium opacity-70">Rs</span>
                   <h2 className={`text-3xl md:text-4xl font-black tracking-tighter leading-none ${netBalance < 0 ? "text-rose-300" : "text-white"}`}>
                     {Math.abs(netBalance).toLocaleString()}
-                    <span className="text-[10px] font-bold tracking-normal ml-2 uppercase opacity-90">
-                      {netBalance < 0 ? "● Dene Hain" : "● Lene Hain"}
+                    <span className="text-[9px] font-black tracking-normal ml-2 uppercase opacity-80">
+                      {netBalance < 0 ? "● Dene" : "● Lene"}
                     </span>
                   </h2>
                 </div>
 
-                {/* Niche sirf 2 barabar aur bade premium columns (Bheed Khatam!) */}
-                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-2">
+                {/* 100% ORIGINAL GRID SPACING & SIZE */}
+                <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
                   {/* Column 1: Aapne Lene */}
                   <div className="flex flex-col items-start flex-1">
-                    <span className="text-[7.5px] md:text-[8px] uppercase font-black opacity-75 mb-1 text-emerald-300">↙ Aapne Lene</span>
-                    <span className="text-[13px] md:text-[15px] font-black leading-none">Rs {aapneLeneTotal.toLocaleString()}</span>
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5 text-emerald-300">↙ Lene Hain</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">Rs {aapneLeneTotal.toLocaleString()}</span>
                   </div>
 
                   {/* Divider */}
-                  <div className="w-px h-6 bg-white/20" />
+                  <div className="w-px h-5 bg-white/20" />
 
                   {/* Column 2: Aapne Dene */}
                   <div className="flex flex-col items-end flex-1">
-                    <span className="text-[7.5px] md:text-[8px] uppercase font-black opacity-75 mb-1 text-rose-300">↗ Aapne Dene</span>
-                    <span className="text-[13px] md:text-[15px] font-black leading-none">Rs {aapneDeneTotal.toLocaleString()}</span>
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5 text-rose-300">↗ Dene Hain</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">Rs {aapneDeneTotal.toLocaleString()}</span>
                   </div>
                 </div>
               </div>
