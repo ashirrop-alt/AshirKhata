@@ -131,11 +131,25 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     }
   };
 
+  // ✅ Is Naye Code Se Replace Kardein (Bina page reload kiye background mein sync hoga):
   useEffect(() => {
     const channel = supabase
       .channel('db-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, () => { window.location.reload(); })
+      .on(
+        'postgres_changes',
+        { event: '*', schema: 'public', table: 'transactions' },
+        () => {
+          // Page reload karne ke bajaye router ko refresh/sync signal dete hain
+          // Is se background mein data update ho jayega aur faoran home par dikhega
+          if (typeof window !== 'undefined') {
+            // Agar aap Next.js use kar rahe hain ya custom fetcher, toh ye event refresh trigger karega
+            const event = new Event('visibilitychange');
+            window.dispatchEvent(event);
+          }
+        }
+      )
       .subscribe();
+
     return () => { supabase.removeChannel(channel); };
   }, []);
 
