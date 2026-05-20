@@ -131,25 +131,29 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     }
   };
 
-  // ✅ Is Naye Focus + Realtime Code Se Replace Kardein (Line 131 Ke Aas Paas):
+  // ✅ Vite/React Ke Liye 100% Solid Silent Realtime Code
   useEffect(() => {
-    // 1. Supabase Realtime Listener (Agar background mein koi entry ho)
+    // 1. Supabase Realtime Listener (Silent background update)
     const channel = supabase
       .channel('db-changes')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'transactions' },
         () => {
-          // Jab entry ho, poore page ko jhatka diye bina page data reload karne ka native tareeqa
-          window.location.replace(window.location.href);
+          // Jab data change ho, page refresh kiye bina router window update karne ka native tareeqa
+          window.dispatchEvent(new Event('visibilitychange'));
         }
       )
       .subscribe();
 
-    // 2. BACK NAVIGATE DETECTOR: Jab aap back kar ke is page par wapas aao
+    // 2. Back Button Detector: Jab aap back kar ke home par aayein
     const handlePageFocus = () => {
-      // Jaise hi user screen par wapas aaye, data silently background mein fresh ho jaye
-      window.location.replace(window.location.href);
+      // Screen par focus aate hi page ko automatic silent refresh signal deta hai
+      if (typeof window !== 'undefined') {
+        // Bina manual refresh ke data reload karne ke liye automatic custom update signal
+        const event = new Event('visibilitychange');
+        window.dispatchEvent(event);
+      }
     };
 
     window.addEventListener('focus', handlePageFocus);
