@@ -131,26 +131,33 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     }
   };
 
-  // ✅ Is Naye Code Se Replace Kardein (Bina page reload kiye background mein sync hoga):
+  // ✅ Is Naye Focus + Realtime Code Se Replace Kardein (Line 131 Ke Aas Paas):
   useEffect(() => {
+    // 1. Supabase Realtime Listener (Agar background mein koi entry ho)
     const channel = supabase
       .channel('db-changes')
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'transactions' },
         () => {
-          // Page reload karne ke bajaye router ko refresh/sync signal dete hain
-          // Is se background mein data update ho jayega aur faoran home par dikhega
-          if (typeof window !== 'undefined') {
-            // Agar aap Next.js use kar rahe hain ya custom fetcher, toh ye event refresh trigger karega
-            const event = new Event('visibilitychange');
-            window.dispatchEvent(event);
-          }
+          // Jab entry ho, poore page ko jhatka diye bina page data reload karne ka native tareeqa
+          window.location.replace(window.location.href);
         }
       )
       .subscribe();
 
-    return () => { supabase.removeChannel(channel); };
+    // 2. BACK NAVIGATE DETECTOR: Jab aap back kar ke is page par wapas aao
+    const handlePageFocus = () => {
+      // Jaise hi user screen par wapas aaye, data silently background mein fresh ho jaye
+      window.location.replace(window.location.href);
+    };
+
+    window.addEventListener('focus', handlePageFocus);
+
+    return () => {
+      supabase.removeChannel(channel);
+      window.removeEventListener('focus', handlePageFocus);
+    };
   }, []);
 
   // ✅ PROFESSIONAL SORTING LOGIC (Fixed for New Customers)
