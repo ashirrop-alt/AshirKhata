@@ -88,19 +88,33 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
   };
 
   // ✅ Is Naye Code Se Replace Kardein:
-  // ✅ IS NAYE CODE SE REPLACE KARDEIN (Calculations Area):
-  const aapneLeneTotal = customers.reduce((acc, customer) => {
-    const total = getCustomerTotal(customer);
-    return total > 0 ? acc + total : acc;
+  const thisMonthTotal = customers.reduce((acc, customer) => {
+    if (getCustomerTotal(customer) <= 0) return acc; // Suppliers ko ignore karne ke liye
+    const monthSum = customer.transactions
+      .filter(t => {
+        const d = new Date(t.date);
+        return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && (t.type as string) === 'udhar';
+      })
+      .reduce((sum, t) => sum + t.amount, 0);
+    return acc + monthSum;
   }, 0);
 
+  const todayTotal = customers.reduce((acc, customer) => {
+    if (getCustomerTotal(customer) <= 0) return acc; // Suppliers ko ignore karne ke liye
+    const daySum = customer.transactions
+      .filter(t => {
+        const d = new Date(t.date);
+        return d.getDate() === now.getDate() && d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear() && (t.type as string) === 'udhar';
+      })
+      .reduce((sum, t) => sum + t.amount, 0);
+    return acc + daySum;
+  }, 0);
+
+  // Yeh line database se "Papa" jaise minus balance walon ka total nikalegi
   const aapneDeneTotal = customers.reduce((acc, customer) => {
     const total = getCustomerTotal(customer);
     return total < 0 ? acc + Math.abs(total) : acc;
   }, 0);
-
-  // Dono ka net farq (Minus ya Plus nikalne ke liye)
-  const netBalance = aapneLeneTotal - aapneDeneTotal;
 
   useEffect(() => { setTempName(shopName); }, [shopName]);
 
@@ -117,37 +131,12 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
     }
   };
 
-  // ✅ Vite/React Ke Liye 100% Solid Silent Realtime Code
   useEffect(() => {
-    // 1. Supabase Realtime Listener (Silent background update)
     const channel = supabase
       .channel('db-changes')
-      .on(
-        'postgres_changes',
-        { event: '*', schema: 'public', table: 'transactions' },
-        () => {
-          // Jab data change ho, page refresh kiye bina router window update karne ka native tareeqa
-          window.dispatchEvent(new Event('visibilitychange'));
-        }
-      )
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'transactions' }, () => { window.location.reload(); })
       .subscribe();
-
-    // 2. Back Button Detector: Jab aap back kar ke home par aayein
-    const handlePageFocus = () => {
-      // Screen par focus aate hi page ko automatic silent refresh signal deta hai
-      if (typeof window !== 'undefined') {
-        // Bina manual refresh ke data reload karne ke liye automatic custom update signal
-        const event = new Event('visibilitychange');
-        window.dispatchEvent(event);
-      }
-    };
-
-    window.addEventListener('focus', handlePageFocus);
-
-    return () => {
-      supabase.removeChannel(channel);
-      window.removeEventListener('focus', handlePageFocus);
-    };
+    return () => { supabase.removeChannel(channel); };
   }, []);
 
   // ✅ PROFESSIONAL SORTING LOGIC (Fixed for New Customers)
@@ -282,39 +271,42 @@ export function HomeScreen({ shopName, customers, isLoading, onSetShopName, onSe
 
           <div className="flex-none w-full md:w-72 flex flex-col space-y-4">
             {/* 100% UNTOUCHED ORIGINAL STRUCTURE - ZERO ALIGNMENT CHANGES */}
-            {/* ✅ IS NAYE CODE SE APNE PURANE DABBE KO REPLACE KARDEIN: */}
-            {/* ✅ EXACT ORIGINAL SIZE & LOOKS (Rasta 2 Configuration) */}
             <div className="bg-indigo-600 rounded-3xl p-5 md:p-6 text-white shadow-xl shadow-indigo-500/10 relative overflow-hidden min-h-[145px] flex flex-col justify-center transition-all">
               <div className="absolute -right-4 -top-4 w-20 h-20 bg-white/10 rounded-full blur-2xl" />
-              <div className="relative z-10 space-y-4">
+              <div className="relative z-10 space-y-4 md:space-y-5">
                 <div className="flex items-center gap-1.5 opacity-90">
                   <Wallet className="w-3.5 h-3.5" />
-                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Net Balance</p>
+                  <p className="text-[10px] md:text-[10.5px] font-black uppercase tracking-[0.1em]">Kul Udhar</p>
                 </div>
                 <div className="flex items-baseline gap-1 md:gap-1.5">
                   <span className="text-sm md:text-base font-medium opacity-70">Rs</span>
-                  <h2 className={`text-3xl md:text-4xl font-black tracking-tighter leading-none ${netBalance < 0 ? "text-rose-300" : "text-white"}`}>
-                    {Math.abs(netBalance).toLocaleString()}
-                    <span className="text-[9px] font-black tracking-normal ml-2 uppercase opacity-80">
-                      {netBalance < 0 ? "● Dene" : "● Lene"}
-                    </span>
-                  </h2>
+                  <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">{totalUdhar.toLocaleString()}</h2>
                 </div>
 
-                {/* 100% ORIGINAL GRID SPACING & SIZE */}
+                {/* 100% ORIGINAL GRID CONFIGURATION */}
                 <div className="pt-4 border-t border-white/20 flex items-center justify-between text-center gap-1">
-                  {/* Column 1: Aapne Lene */}
+                  {/* Column 1: Is Mahine */}
                   <div className="flex flex-col items-start flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5 text-emerald-300">↙ Lene Hain</span>
-                    <span className="text-[11px] md:text-[13px] font-black leading-none">Rs {aapneLeneTotal.toLocaleString()}</span>
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Is Mahine</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {thisMonthTotal.toLocaleString()}</span>
                   </div>
 
-                  {/* Divider */}
+                  {/* Divider 1 */}
                   <div className="w-px h-5 bg-white/20" />
 
-                  {/* Column 2: Aapne Dene */}
+                  {/* Column 2: Aaj */}
+                  <div className="flex flex-col items-center flex-1 px-1">
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aaj</span>
+                    <span className="text-[11px] md:text-[13px] font-black leading-none">+ {todayTotal.toLocaleString()}</span>
+                  </div>
+
+                  {/* Divider 2 */}
+                  <div className="w-px h-5 bg-white/20" />
+
+                  {/* Column 3: Accounts Se Badal Kar 'Aapne Dene' (Exact Same Styling As Original) */}
+                  {/* ✅ Is Naye Line Se Replace Kardein: */}
                   <div className="flex flex-col items-end flex-1">
-                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5 text-rose-300">↗ Dene Hain</span>
+                    <span className="text-[7px] md:text-[7.5px] uppercase font-bold opacity-70 mb-0.5">Aapne Dene</span>
                     <span className="text-[11px] md:text-[13px] font-black leading-none">Rs {aapneDeneTotal.toLocaleString()}</span>
                   </div>
                 </div>
