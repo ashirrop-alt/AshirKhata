@@ -28,9 +28,10 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 interface Props {
   customer: Customer & { share_id?: string };
   onBack: () => void;
+  onTransactionSaved?: (customerId: string, updatedTransactions: any[]) => void;
 }
 
-export function CustomerDetail({ customer, onBack }: Props) {
+export function CustomerDetail({ customer, onBack, onTransactionSaved }: Props) {
   // 1. STATES
   const [startDate, setStartDate] = useState('');
   const [endDate, setEndDate] = useState('');
@@ -208,8 +209,10 @@ export function CustomerDetail({ customer, onBack }: Props) {
       const { error } = await supabase.from('customers').update({ transactions: updatedTransactions }).eq('id', customer.id);
       if (error) throw error;
 
-      setTransactions(updatedTransactions);
+     setTransactions(updatedTransactions);
       toast.success(editingEntry ? "Hisaab update ho gaya!" : "Hisaab save ho gaya!");
+      // ✅ Home screen ko batao ke data badal gaya
+      onTransactionSaved?.(customer.id, updatedTransactions);
       setEntryOpen(false);
       setEditingEntry(null);
     } catch (error: any) {
@@ -303,6 +306,8 @@ export function CustomerDetail({ customer, onBack }: Props) {
       if (error) throw error;
       setTransactions(updatedTransactions);
       toast.success("Entry delete ho gayi!");
+      // ✅ Home screen ko batao
+      onTransactionSaved?.(customer.id, updatedTransactions);
     } catch (error: any) {
       toast.error("Delete nahi ho saka");
     } finally {

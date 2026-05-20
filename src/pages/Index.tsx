@@ -38,8 +38,10 @@ const Index = () => {
         <CustomerDetail
           customer={selectedCustomer}
           onBack={handleBack}
-          onAddTransaction={addTransaction}
-          onDeleteTransaction={deleteTransaction}
+          onTransactionSaved={(customerId, updatedTransactions) => {
+            const customer = data.customers.find((c: any) => c.id === customerId);
+            if (customer) customer.transactions = updatedTransactions;
+          }}
         />
       ) : (
         <HomeScreen
